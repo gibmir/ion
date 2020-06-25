@@ -1,0 +1,12 @@
+com\github\gibmir\ion\api\core\procedure\JsonRemoteProcedure3.class
+com\github\gibmir\ion\api\core\request\Request$Initializer.class
+com\github\gibmir\ion\api\core\procedure\JsonRemoteProcedure0.class
+com\github\gibmir\ion\api\core\request\id\JsonRpcRequestIdSupplier.class
+com\github\gibmir\ion\api\core\procedure\JsonRemoteProcedure2.class
+com\github\gibmir\ion\api\core\request\callback\ResponseCallback.class
+com\github\gibmir\ion\api\core\request\factory\RequestFactory.class
+com\github\gibmir\ion\api\core\request\Request$SyncCallback.class
+com\github\gibmir\ion\api\core\procedure\JsonRemoteProcedure1.class
+com\github\gibmir\ion\api\core\bind\JsonRpcFactoryBinder.class
+com\github\gibmir\ion\api\core\request\Request$AsyncResponseProcessor.class
+com\github\gibmir\ion\api\core\request\Request.class

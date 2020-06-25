@@ -1,0 +1,10 @@
+com\github\gibmir\ion\api\core\environment\mock\TestJsonRpcResponseProcessor.class
+com\github\gibmir\ion\api\core\environment\IonTestEnvironment.class
+com\github\gibmir\ion\api\core\environment\mock\JsonRpcChannelMock.class
+com\github\gibmir\ion\api\core\serialization\SerializationUtilsTest.class
+com\github\gibmir\ion\api\core\procedure\RequestFactoryTest.class
+com\github\gibmir\ion\api\core\environment\IonTestEnvironment$TestApi.class
+com\github\gibmir\ion\api\core\environment\IonTestEnvironment$TestException.class
+com\github\gibmir\ion\api\core\environment\IonTestEnvironment$SyncCallback.class
+com\github\gibmir\ion\api\core\environment\mock\TestJsonRpcRequestProcessor.class
+com\github\gibmir\ion\api\core\environment\IonTestEnvironment$TestDto.class
