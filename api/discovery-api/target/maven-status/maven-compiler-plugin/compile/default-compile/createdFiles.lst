@@ -1,9 +1,0 @@
-com\github\gibmir\ion\api\discovery\listener\ApiServiceListener.class
-com\github\gibmir\ion\api\discovery\event\data\EventData.class
-com\github\gibmir\ion\api\discovery\event\version\VersionUri.class
-com\github\gibmir\ion\api\discovery\event\type\ApiEventType.class
-com\github\gibmir\ion\api\discovery\listener\ServiceListener.class
-com\github\gibmir\ion\api\discovery\event\ApiEvent.class
-com\github\gibmir\ion\api\discovery\event\Event.class
-com\github\gibmir\ion\api\discovery\ServiceDiscovery.class
-com\github\gibmir\ion\api\discovery\serialization\SerializationUtils.class

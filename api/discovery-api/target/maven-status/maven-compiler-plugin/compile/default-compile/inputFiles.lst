@@ -1,9 +1,0 @@
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\event\type\ApiEventType.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\event\data\EventData.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\ServiceDiscovery.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\listener\ApiServiceListener.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\event\ApiEvent.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\event\Event.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\event\version\VersionUri.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\serialization\SerializationUtils.java
-F:\Projects\ion\api\discovery-api\src\main\java\com\github\gibmir\ion\api\discovery\listener\ServiceListener.java

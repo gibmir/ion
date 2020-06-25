@@ -1,4 +1,0 @@
-com\github\gibmir\ion\api\client\context\RequestContext.class
-com\github\gibmir\ion\api\client\callback\JsonRpcResponseCallback.class
-com\github\gibmir\ion\api\client\context\RequestContext$DefaultRequestContext.class
-com\github\gibmir\ion\api\client\sender\JsonRpcRequestSender.class

@@ -1,5 +1,0 @@
-com\github\gibmir\ion\lib\nio\client\sender\channel\resolver\ChannelResolver.class
-com\github\gibmir\ion\lib\nio\client\sender\channel\cache\ChannelCache.class
-com\github\gibmir\ion\lib\nio\client\sender\NioJsonRpcRequestSender.class
-com\github\gibmir\ion\lib\nio\client\sender\channel\cache\listener\ChannelsCacheListener.class
-com\github\gibmir\ion\lib\nio\client\sender\selector\IonClientSelector.class

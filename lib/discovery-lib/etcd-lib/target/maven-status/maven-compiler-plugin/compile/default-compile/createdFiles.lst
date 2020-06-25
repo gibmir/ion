@@ -1,4 +1,0 @@
-com\github\gibmir\ion\lib\discovery\etcd\exception\ClosingException.class
-com\github\gibmir\ion\lib\discovery\etcd\listener\ListenerEtcdWatchPair.class
-com\github\gibmir\ion\lib\discovery\etcd\EtcdServiceDiscovery.class
-com\github\gibmir\ion\lib\discovery\etcd\EtcdServiceDiscovery$1.class
