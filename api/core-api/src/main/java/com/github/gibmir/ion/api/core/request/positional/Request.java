@@ -1,8 +1,7 @@
-package com.github.gibmir.ion.api.core.request;
+package com.github.gibmir.ion.api.core.request.positional;
 
-import com.github.gibmir.ion.api.client.sender.JsonRpcRequestSender;
 import com.github.gibmir.ion.api.client.context.RequestContext;
-import com.github.gibmir.ion.api.core.request.callback.ResponseCallback;
+import com.github.gibmir.ion.api.client.sender.JsonRpcRequestSender;
 import com.github.gibmir.ion.api.core.request.id.JsonRpcRequestIdSupplier;
 import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
@@ -19,11 +18,8 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 //TODO schema generation
 public class Request<R> {
@@ -78,101 +74,57 @@ public class Request<R> {
     return this;
   }
 
-  public R execute() throws Throwable {
-    SyncCallback<R> responseCallback = new SyncCallback<>(timeout, timeUnit);
-    executeAsync(responseCallback);
-    return responseCallback.getResult();
-  }
-
-  public void executeAsync(ResponseCallback<R> responseCallback) {
-    try {
-      var futureTask = new FutureTask<>(() -> {
-        doExecute(responseCallback);
-        return null;
-      });
-      new Thread(futureTask).start();
-      futureTask.get(timeout, timeUnit);
-    } catch (ExecutionException e) {
-      throw new JsonRpcProcessingException(e.getCause());
-    } catch (TimeoutException e) {
-      responseCallback.onComplete(null, e);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      responseCallback.onComplete(null, e);
-    }
-  }
-
-  private void doExecute(ResponseCallback<R> responseCallback) {
-    AsyncResponseProcessor<R> asyncResponseProcessor = new AsyncResponseProcessor<>(responseCallback, resultType);
+  public CompletableFuture<R> execute() {
+    CompletableFuture<R> completableFuture = new CompletableFuture<>();
+    CompletableResponseProcessor<R> asyncResponseProcessor = new CompletableResponseProcessor<>(resultType, completableFuture);
     String id = jsonRpcRequestIdSupplier.get();
     JsonRpcRequest request = new PositionalRequest(id, methodName, args);
     byte[] requestPayload = jsonb.toJson(request).getBytes(charset);
-    RequestContext requestContext = RequestContext.defaultContext(methodName, requestPayload, id);
+    RequestContext requestContext = RequestContext.defaultContext(methodName, requestPayload, id, timeout, timeUnit);
     jsonRpcRequestSender.sendAsync(requestContext, (responsePayload, exception) -> {
       if (responsePayload != null) {
-        JsonObject jsonObject = jsonb.fromJson(new String(responsePayload, charset), JsonObject.class);
-        JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, resultType, jsonb);
-        jsonRpcResponse.processWith(asyncResponseProcessor);
+        processResponse(completableFuture, asyncResponseProcessor, responsePayload);
       } else if (exception != null) {
-        responseCallback.onComplete(null, new JsonRpcProcessingException(exception));
+        completableFuture.completeExceptionally(exception);
       } else {
         ErrorResponse errorResponse = ErrorResponse.withJsonRpcError(id, Errors.INVALID_RPC.getError());
-        responseCallback.onComplete(null, new JsonRpcProcessingException(errorResponse));
+        JsonRpcProcessingException jsonRpcProcessingException = new JsonRpcProcessingException(errorResponse);
+        completableFuture.completeExceptionally(jsonRpcProcessingException);
       }
     });
+    return completableFuture;
   }
 
-  private static class SyncCallback<R> implements ResponseCallback<R> {
-    private final Semaphore semaphore = new Semaphore(0);
-    private final long timeout;
-    private final TimeUnit timeUnit;
-    private Throwable throwable;
-    private R result;
 
-    private SyncCallback(long timeout, TimeUnit timeUnit) {
-      this.timeout = timeout;
-      this.timeUnit = timeUnit;
-    }
 
-    @Override
-    public void onComplete(R result, Throwable throwable) {
-      try {
-        this.result = result;
-        this.throwable = throwable;
-      } finally {
-        semaphore.release();
-      }
-    }
-
-    public R getResult() throws Throwable {
-      if (semaphore.tryAcquire(timeout, timeUnit)) {
-        if (throwable != null) {
-          throw throwable;
-        }
-        return result;
-      } else {
-        throw new TimeoutException();
-      }
+  private void processResponse(CompletableFuture<R> completableFuture, CompletableResponseProcessor<R> asyncResponseProcessor,
+                               byte[] responsePayload) {
+    try {
+      JsonObject jsonObject = jsonb.fromJson(new String(responsePayload, charset), JsonObject.class);
+      JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, resultType, jsonb);
+      jsonRpcResponse.processWith(asyncResponseProcessor);
+    } catch (Exception e) {
+      completableFuture.completeExceptionally(e);
     }
   }
 
-  private static class AsyncResponseProcessor<T> implements JsonRpcResponseProcessor {
-    private final ResponseCallback<T> responseCallback;
+  private static class CompletableResponseProcessor<T> implements JsonRpcResponseProcessor {
     private final Class<T> returnType;
+    private final CompletableFuture<T> completableFuture;
 
-    private AsyncResponseProcessor(ResponseCallback<T> responseCallback, Class<T> returnType) {
-      this.responseCallback = responseCallback;
+    private CompletableResponseProcessor(Class<T> returnType, CompletableFuture<T> completableFuture) {
       this.returnType = returnType;
+      this.completableFuture = completableFuture;
     }
 
     @Override
     public void process(ErrorResponse errorResponse) {
-      responseCallback.onComplete(null, new JsonRpcProcessingException(errorResponse));
+      completableFuture.completeExceptionally(new JsonRpcProcessingException(errorResponse));
     }
 
     @Override
     public void process(SuccessResponse successResponse) {
-      responseCallback.onComplete(returnType.cast(successResponse.getResult()), null);
+      completableFuture.complete(returnType.cast(successResponse.getResult()));
     }
   }
 }

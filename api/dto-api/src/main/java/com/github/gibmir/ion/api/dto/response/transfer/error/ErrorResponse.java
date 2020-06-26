@@ -46,7 +46,7 @@ public class ErrorResponse extends AbstractJsonRpcResponse implements JsonRpcRes
     return '{' +
       " jsonrpc: " + jsonRpcProtocolVersion + ',' +
       " id: " + id + ',' +
-      " error:" + error +
+      " error: " + error +
       '}';
   }
 }

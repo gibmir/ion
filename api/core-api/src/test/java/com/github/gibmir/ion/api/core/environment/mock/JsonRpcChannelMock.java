@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 
 public class JsonRpcChannelMock {
 
-  public static JsonRpcRequestSender newMockWithResponsePayload(byte[] responsePayload) throws Throwable {
+  public static JsonRpcRequestSender newMockWithResponsePayload(byte[] responsePayload) {
     JsonRpcRequestSender jsonRpcRequestSender = mock(JsonRpcRequestSender.class);
     doAnswer(invocation -> {
       JsonRpcResponseCallback argument = invocation.getArgument(1, JsonRpcResponseCallback.class);
@@ -21,7 +21,7 @@ public class JsonRpcChannelMock {
     return jsonRpcRequestSender;
   }
 
-  public static JsonRpcRequestSender newMockWithException(Throwable exception) throws Throwable {
+  public static JsonRpcRequestSender newMockWithException(Throwable exception) {
     JsonRpcRequestSender jsonRpcRequestSender = mock(JsonRpcRequestSender.class);
     doAnswer(invocation -> {
       JsonRpcResponseCallback argument = invocation.getArgument(1, JsonRpcResponseCallback.class);
@@ -31,7 +31,7 @@ public class JsonRpcChannelMock {
     return jsonRpcRequestSender;
   }
 
-  public static JsonRpcRequestSender newMockWithTimeout(long timeout, TimeUnit timeUnit) throws Throwable {
+  public static JsonRpcRequestSender newMockWithTimeout(long timeout, TimeUnit timeUnit) {
     JsonRpcRequestSender jsonRpcRequestSender = mock(JsonRpcRequestSender.class);
     doAnswer(invocation -> {
       timeUnit.sleep(timeout);

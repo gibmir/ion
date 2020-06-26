@@ -35,8 +35,8 @@ public class JsonRpcError {
   @Override
   public String toString() {
     return '{' +
-      "code: " + code + ',' +
-      "message: " + message +
+      " code: " + code + ',' +
+      " message: " + message +
       '}';
   }
 }

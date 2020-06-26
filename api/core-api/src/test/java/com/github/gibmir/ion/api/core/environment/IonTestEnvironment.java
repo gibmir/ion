@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.core.environment;
 
-import com.github.gibmir.ion.api.core.request.Request.Initializer;
-import com.github.gibmir.ion.api.core.request.factory.RequestFactory;
+import com.github.gibmir.ion.api.core.request.positional.Request.Initializer;
+import com.github.gibmir.ion.api.core.request.positional.factory.PositionalRequestFactory;
 import com.github.gibmir.ion.api.core.request.callback.ResponseCallback;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
@@ -25,7 +25,7 @@ public class IonTestEnvironment {
     .getBytes(StandardCharsets.UTF_8);
   public static final ErrorResponse TEST_ERROR_RESPONSE = ErrorResponse.fromThrowable(JSON_RPC_ID, new IllegalArgumentException());
   public static final byte[] ERROR_RESPONSE_PAYLOAD = JSONB.toJson(TEST_ERROR_RESPONSE).getBytes(StandardCharsets.UTF_8);
-  public static final JsonRemoteProcedure1<TestDto, Initializer<TestDto>> TEST_API_PROCEDURE = RequestFactory.singleArg(TestApi.class, TestDto.class);
+  public static final JsonRemoteProcedure1<TestDto, Initializer<TestDto>> TEST_API_PROCEDURE = PositionalRequestFactory.singleArg(TestApi.class, TestDto.class);
 
   public static class TestDto {
     private String string;

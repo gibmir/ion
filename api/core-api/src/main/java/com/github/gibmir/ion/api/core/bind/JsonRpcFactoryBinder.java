@@ -1,9 +1,7 @@
 package com.github.gibmir.ion.api.core.bind;
 
-import com.github.gibmir.ion.api.core.request.factory.RequestFactory;
+import com.github.gibmir.ion.api.core.request.positional.factory.PositionalRequestFactory;
 
 public interface JsonRpcFactoryBinder {
-  RequestFactory createRequestFactory();
-
-
+  PositionalRequestFactory createRequestFactory();
 }
