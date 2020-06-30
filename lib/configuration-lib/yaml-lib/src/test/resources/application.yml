@@ -1,0 +1,9 @@
+ion:
+  json:
+    encoding:
+      UTF-8
+  discovery:
+    etcd:
+      endpoints:
+        - 10.11.22.33:62333
+        - 10.22.33.44:51234

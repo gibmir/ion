@@ -14,15 +14,4 @@
     <modules>
         <module>etcd-lib</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>discovery-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 </project>

@@ -20,6 +20,10 @@
             <artifactId>discovery-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>configuration-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.etcd</groupId>
             <artifactId>jetcd-all</artifactId>
             <version>${jetcd.version}</version>

@@ -20,5 +20,9 @@
             <artifactId>snakeyaml</artifactId>
             <version>${snakeyaml.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>configuration-api</artifactId>
+        </dependency>
     </dependencies>
 </project>
