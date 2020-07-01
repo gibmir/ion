@@ -2,7 +2,7 @@ package com.github.gibmir.ion.api.dto.serialization;
 
 import com.github.gibmir.ion.api.dto.method.signature.Signature;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
-import com.github.gibmir.ion.api.dto.request.transfer.positional.PositionalRequest;
+import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
@@ -45,7 +45,7 @@ public class SerializationUtils {
       throw new UnsupportedOperationException("Method " + methodValue + " is not supported");
     }
     Object[] arguments = extractArguments(object, jsonb, signature);
-    return new PositionalRequest(id, methodName, arguments);
+    return new RequestDto(id, methodName, arguments);
   }
 
   private static Object[] extractArguments(JsonObject object, Jsonb jsonb, Signature signature) {

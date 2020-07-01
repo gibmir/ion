@@ -15,6 +15,7 @@
         <module>nio-lib</module>
         <module>discovery-lib</module>
         <module>configuration-lib</module>
+        <module>http-lib</module>
     </modules>
     <dependencyManagement>
         <dependencies>

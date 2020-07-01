@@ -5,26 +5,20 @@ import com.github.gibmir.ion.api.dto.AbstractJsonRpcBody;
 import javax.json.bind.annotation.JsonbProperty;
 
 public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody {
-  protected String id;
+
   @JsonbProperty("method")
   protected String methodName;
+  @JsonbProperty("params")
+  protected Object[] args;
 
   public AbstractJsonRpcRequest() {
     super();
   }
 
-  public AbstractJsonRpcRequest(String id, String methodName) {
+  public AbstractJsonRpcRequest(String methodName, Object[] args) {
     super();
-    this.id = id;
     this.methodName = methodName;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
+    this.args = args;
   }
 
   public String getMethodName() {
@@ -33,5 +27,13 @@ public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody {
 
   public void setMethodName(String methodName) {
     this.methodName = methodName;
+  }
+
+  public Object[] getArgs() {
+    return args;
+  }
+
+  public void setArgs(Object[] args) {
+    this.args = args;
   }
 }
