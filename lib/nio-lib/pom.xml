@@ -12,7 +12,6 @@
     <artifactId>nio-lib</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>nio-client-lib</module>
         <module>nio-common-lib</module>
         <module>nio-server-lib</module>
     </modules>

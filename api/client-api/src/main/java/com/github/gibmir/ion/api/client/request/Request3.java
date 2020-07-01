@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.api.client.request;
 
-import com.github.gibmir.ion.api.client.request.named.NamedArgument;
+import com.github.gibmir.ion.api.client.request.argument.NamedArgument;
 
 import java.util.concurrent.CompletableFuture;
 

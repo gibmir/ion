@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.client.request.named;
+package com.github.gibmir.ion.api.client.request.argument;
 
 public class NamedArgument<P> {
   private String name;

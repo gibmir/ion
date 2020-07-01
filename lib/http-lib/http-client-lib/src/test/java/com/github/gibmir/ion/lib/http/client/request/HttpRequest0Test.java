@@ -1,13 +1,7 @@
 package com.github.gibmir.ion.lib.http.client.request;
 
-import com.github.gibmir.ion.api.client.request.named.NamedArgument;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
-import com.github.gibmir.ion.lib.http.client.request.factory.HttpRequestFactory;
 import org.junit.jupiter.api.Test;
-
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 class HttpRequest0Test {
   public interface TestApi extends JsonRemoteProcedure1<String, String> {
