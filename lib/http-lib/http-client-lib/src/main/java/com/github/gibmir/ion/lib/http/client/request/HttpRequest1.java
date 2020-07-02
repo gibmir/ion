@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R>>
@@ -23,7 +24,7 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T arg) {
-    RequestDto requestDto = new RequestDto(id, methodName, new Object[]{arg});
+    RequestDto requestDto = RequestDto.positional(id, methodName, new Object[]{arg});
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
@@ -39,7 +40,7 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
 
   @Override
   public CompletableFuture<R> namedCall(String id, NamedArgument<T> namedArg) {
-    RequestDto requestDto = new RequestDto(id, methodName, new Object[]{namedArg});
+    RequestDto requestDto = RequestDto.named(id, methodName, Map.of(namedArg.getName(), namedArg.getArgument()));
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);

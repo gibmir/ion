@@ -24,7 +24,7 @@ public class NamedArgument<P> {
     this.name = name;
   }
 
-  public P getNamedArgument() {
+  public P getArgument() {
     return namedArgument;
   }
 

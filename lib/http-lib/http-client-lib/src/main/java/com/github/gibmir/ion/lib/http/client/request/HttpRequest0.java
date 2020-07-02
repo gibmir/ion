@@ -24,7 +24,9 @@ public class HttpRequest0<R> extends AbstractHttpRequest<R, HttpRequest0<R>>
 
   @Override
   public CompletableFuture<R> call(String id) {
-    RequestDto requestDto = new RequestDto(id, methodName, EMPTY_PAYLOAD);
+    RequestDto requestDto = new RequestDto();
+    requestDto.setId(id);
+    requestDto.setMethodName(methodName);
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);

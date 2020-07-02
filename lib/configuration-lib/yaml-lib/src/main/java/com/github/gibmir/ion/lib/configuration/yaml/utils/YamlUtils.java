@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.configuration.yaml.utils;
 
-import com.github.gibmir.ion.api.configuration.properties.PropertiesConstants;
+import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -16,7 +16,7 @@ public class YamlUtils {
   public static Map<String, Object> loadAsJavaProperty(Yaml yaml, InputStream inputStream) {
     Map<String, Object> load = yaml.load(inputStream);
     Map<String, Object> configMap = new TreeMap<>();
-    fillConfiguration(PropertiesConstants.ROOT_PREFIX, configMap, load.get(PropertiesConstants.ROOT_PREFIX));
+    fillConfiguration(ConfigurationUtils.ROOT_PREFIX, configMap, load.get(ConfigurationUtils.ROOT_PREFIX));
     return configMap;
   }
 
@@ -26,7 +26,7 @@ public class YamlUtils {
       Set<?> keys = map.keySet();
       for (Object key : keys) {
         Object value = map.get(key);
-        fillConfiguration(parentKey + PropertiesConstants.DOT_SEPARATOR + key.toString(), configuration, value);
+        fillConfiguration(parentKey + ConfigurationUtils.DOT_SEPARATOR + key.toString(), configuration, value);
       }
     } else {
       configuration.put(parentKey, yaml);

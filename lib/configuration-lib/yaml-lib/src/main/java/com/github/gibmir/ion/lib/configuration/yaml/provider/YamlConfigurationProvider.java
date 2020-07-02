@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.configuration.yaml.provider;
 
-import com.github.gibmir.ion.api.configuration.properties.PropertiesConstants;
+import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.lib.configuration.yaml.YamlConfiguration;
 import com.github.gibmir.ion.lib.configuration.yaml.utils.YamlUtils;
@@ -24,7 +24,7 @@ public class YamlConfigurationProvider implements ConfigurationProvider {
   public YamlConfiguration provide() {
     Yaml yaml = new Yaml();
     ClassLoader classLoader = YamlConfigurationProvider.class.getClassLoader();
-    String configurationFilePath = System.getProperty(PropertiesConstants.CONFIG_FILE_PATH_JAVA_PROPERTY);
+    String configurationFilePath = System.getProperty(ConfigurationUtils.CONFIG_FILE_PATH_JAVA_PROPERTY);
     InputStream configurationFileInputStream = getConfigurationFileInputStream(classLoader, configurationFilePath);
     Map<String, Object> configMap = YamlUtils.loadAsJavaProperty(yaml, configurationFileInputStream);
     return new YamlConfiguration(configMap);

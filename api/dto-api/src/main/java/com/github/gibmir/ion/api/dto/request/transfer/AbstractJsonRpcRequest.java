@@ -9,13 +9,13 @@ public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody {
   @JsonbProperty("method")
   protected String methodName;
   @JsonbProperty("params")
-  protected Object[] args;
+  protected Object args;
 
   public AbstractJsonRpcRequest() {
     super();
   }
 
-  public AbstractJsonRpcRequest(String methodName, Object[] args) {
+  public AbstractJsonRpcRequest(String methodName, Object args) {
     super();
     this.methodName = methodName;
     this.args = args;
@@ -29,11 +29,11 @@ public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody {
     this.methodName = methodName;
   }
 
-  public Object[] getArgs() {
+  public Object getArgs() {
     return args;
   }
 
-  public void setArgs(Object[] args) {
+  public void setArgs(Object args) {
     this.args = args;
   }
 }

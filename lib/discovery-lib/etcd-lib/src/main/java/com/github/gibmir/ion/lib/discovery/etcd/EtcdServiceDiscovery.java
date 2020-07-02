@@ -39,7 +39,7 @@ public class EtcdServiceDiscovery implements ServiceDiscovery {
 
   @Override
   public void registerListener(String apiName, ServiceListener<Event> listener) {
-    Watch.Watcher watcher = watchListener.watch(ByteSequence.from(apiName, StandardCharsets.UTF_8)
+    Watch.Watcher watcher = watchListener.watch(ByteSequence.from(apiName, charset)
       , watchResponse -> parseEvents(apiName, watchResponse.getEvents(), jsonb, charset).forEach(listener::notifyWith/*Event*/));
     apiPerListeners.put(apiName, new ListenerEtcdWatchPair(watcher, listener));
   }

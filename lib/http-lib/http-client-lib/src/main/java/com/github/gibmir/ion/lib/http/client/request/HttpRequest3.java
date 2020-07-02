@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequest3<T1, T2, T3, R>>
@@ -23,7 +24,7 @@ public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequ
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2, T3 arg3) {
-    RequestDto requestDto = new RequestDto(id, methodName, new Object[]{arg1, arg2, arg3});
+    RequestDto requestDto = RequestDto.positional(id, methodName, new Object[]{arg1, arg2, arg3});
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
@@ -40,7 +41,9 @@ public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequ
   @Override
   public CompletableFuture<R> namedCall(String id, NamedArgument<T1> namedArgument1, NamedArgument<T2> namedArgument2,
                                         NamedArgument<T3> namedArgument3) {
-    RequestDto requestDto = new RequestDto(id, methodName, new Object[]{namedArgument1, namedArgument2, namedArgument3});
+    RequestDto requestDto = RequestDto.named(id, methodName, Map.of(namedArgument1.getName(), namedArgument1.getArgument(),
+      namedArgument2.getName(), namedArgument2.getArgument(),
+      namedArgument3.getName(), namedArgument3.getArgument()));
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);

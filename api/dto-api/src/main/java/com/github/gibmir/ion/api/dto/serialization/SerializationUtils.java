@@ -45,7 +45,7 @@ public class SerializationUtils {
       throw new UnsupportedOperationException("Method " + methodValue + " is not supported");
     }
     Object[] arguments = extractArguments(object, jsonb, signature);
-    return new RequestDto(id, methodName, arguments);
+    return RequestDto.positional(id, methodName, arguments);
   }
 
   private static Object[] extractArguments(JsonObject object, Jsonb jsonb, Signature signature) {
