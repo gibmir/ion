@@ -38,6 +38,7 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
     httpRequestSender.send(bodyPublisher, uri, timeout);
   }
 
+  //todo redo on annotation mapping
   @Override
   public CompletableFuture<R> namedCall(String id, NamedArgument<T> namedArg) {
     RequestDto requestDto = RequestDto.named(id, methodName, Map.of(namedArg.getName(), namedArg.getArgument()));

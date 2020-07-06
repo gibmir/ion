@@ -1,10 +1,11 @@
 package com.github.gibmir.ion.api.dto.request.transfer;
 
 import com.github.gibmir.ion.api.dto.AbstractJsonRpcBody;
+import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody {
+public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody implements JsonRpcRequest {
 
   @JsonbProperty("method")
   protected String methodName;

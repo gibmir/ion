@@ -1,12 +1,11 @@
 package com.github.gibmir.ion.api.dto.request.transfer;
 
 import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
-import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 
 import java.util.Map;
 
-public class RequestDto extends AbstractJsonRpcRequest implements JsonRpcRequest {
+public class RequestDto extends AbstractJsonRpcRequest {
   protected String id;
 
   public RequestDto() {

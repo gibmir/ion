@@ -12,10 +12,10 @@
     <artifactId>lib</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>nio-lib</module>
         <module>discovery-lib</module>
         <module>configuration-lib</module>
         <module>http-lib</module>
+        <module>netty-lib</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -42,6 +42,11 @@
             <dependency>
                 <groupId>com.github.gibmir.ion</groupId>
                 <artifactId>configuration-api</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.gibmir.ion</groupId>
+                <artifactId>server-api</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
         </dependencies>

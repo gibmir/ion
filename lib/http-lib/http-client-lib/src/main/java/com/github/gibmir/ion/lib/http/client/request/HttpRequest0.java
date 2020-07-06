@@ -40,6 +40,7 @@ public class HttpRequest0<R> extends AbstractHttpRequest<R, HttpRequest0<R>>
     httpRequestSender.send(bodyPublisher, uri, timeout);
   }
 
+  //todo return new request
   @Override
   public HttpRequest0<R> uri(URI uri) {
     this.uri = uri;

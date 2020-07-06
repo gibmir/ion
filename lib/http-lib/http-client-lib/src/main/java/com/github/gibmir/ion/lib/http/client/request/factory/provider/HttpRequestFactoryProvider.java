@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.http.client.request.factory.provider;
 
-import com.github.gibmir.ion.api.client.request.factory.properties.RequestConfigurationUtils;
+import com.github.gibmir.ion.api.client.request.factory.configuration.RequestConfigurationUtils;
 import com.github.gibmir.ion.api.client.request.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;

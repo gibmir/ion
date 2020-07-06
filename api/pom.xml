@@ -17,6 +17,7 @@
         <module>client-api</module>
         <module>discovery-api</module>
         <module>configuration-api</module>
+        <module>server-api</module>
     </modules>
 
     <dependencies>
