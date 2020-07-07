@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.http.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request3;
-import com.github.gibmir.ion.api.client.request.argument.NamedArgument;
 import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
@@ -11,7 +10,6 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequest3<T1, T2, T3, R>>
@@ -36,17 +34,6 @@ public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequ
     String json = jsonb.toJson(notificationDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     httpRequestSender.send(bodyPublisher, uri, timeout);
-  }
-
-  @Override
-  public CompletableFuture<R> namedCall(String id, NamedArgument<T1> namedArgument1, NamedArgument<T2> namedArgument2,
-                                        NamedArgument<T3> namedArgument3) {
-    RequestDto requestDto = RequestDto.named(id, methodName, Map.of(namedArgument1.getName(), namedArgument1.getArgument(),
-      namedArgument2.getName(), namedArgument2.getArgument(),
-      namedArgument3.getName(), namedArgument3.getArgument()));
-    String json = jsonb.toJson(requestDto);
-    HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
-    return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
   }
 
   @Override

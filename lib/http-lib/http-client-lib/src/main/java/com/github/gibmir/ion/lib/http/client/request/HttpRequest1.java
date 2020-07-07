@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.http.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request1;
-import com.github.gibmir.ion.api.client.request.argument.NamedArgument;
 import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
@@ -11,7 +10,6 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R>>
@@ -37,16 +35,6 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     httpRequestSender.send(bodyPublisher, uri, timeout);
   }
-
-  //todo redo on annotation mapping
-  @Override
-  public CompletableFuture<R> namedCall(String id, NamedArgument<T> namedArg) {
-    RequestDto requestDto = RequestDto.named(id, methodName, Map.of(namedArg.getName(), namedArg.getArgument()));
-    String json = jsonb.toJson(requestDto);
-    HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
-    return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
-  }
-
 
   @Override
   public HttpRequest1<T, R> uri(URI uri) {
