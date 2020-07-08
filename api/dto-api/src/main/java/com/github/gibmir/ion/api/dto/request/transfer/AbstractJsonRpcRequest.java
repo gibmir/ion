@@ -8,7 +8,7 @@ import javax.json.bind.annotation.JsonbProperty;
 public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody implements JsonRpcRequest {
 
   @JsonbProperty("method")
-  protected String methodName;
+  protected String procedureName;
   @JsonbProperty("params")
   protected Object args;
 
@@ -16,18 +16,18 @@ public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody impleme
     super();
   }
 
-  public AbstractJsonRpcRequest(String methodName, Object args) {
+  public AbstractJsonRpcRequest(String procedureName, Object args) {
     super();
-    this.methodName = methodName;
+    this.procedureName = procedureName;
     this.args = args;
   }
 
-  public String getMethodName() {
-    return methodName;
+  public String getProcedureName() {
+    return procedureName;
   }
 
-  public void setMethodName(String methodName) {
-    this.methodName = methodName;
+  public void setProcedureName(String procedureName) {
+    this.procedureName = procedureName;
   }
 
   public Object getArgs() {

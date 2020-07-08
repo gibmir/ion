@@ -15,14 +15,14 @@ import java.util.concurrent.CompletableFuture;
 public class HttpRequest2<T1, T2, R> extends AbstractHttpRequest<R, HttpRequest2<T1, T2, R>>
   implements Request2<T1, T2, R> {
 
-  public HttpRequest2(Class<R> returnType, String methodName, HttpRequestSender defaultHttpRequestSender, URI defaultUri,
+  public HttpRequest2(Class<R> returnType, String procedureName, HttpRequestSender defaultHttpRequestSender, URI defaultUri,
                       Duration defaultTimeout, Jsonb defaultJsonb, Charset defaultCharset) {
-    super(returnType, methodName, defaultHttpRequestSender, defaultUri, defaultTimeout, defaultJsonb, defaultCharset);
+    super(returnType, procedureName, defaultHttpRequestSender, defaultUri, defaultTimeout, defaultJsonb, defaultCharset);
   }
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2) {
-    RequestDto requestDto = RequestDto.positional(id, methodName, new Object[]{arg1, arg2});
+    RequestDto requestDto = RequestDto.positional(id, procedureName, new Object[]{arg1, arg2});
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
@@ -30,7 +30,7 @@ public class HttpRequest2<T1, T2, R> extends AbstractHttpRequest<R, HttpRequest2
 
   @Override
   public void notificationCall(T1 arg1, T2 arg2) {
-    NotificationDto notificationDto = new NotificationDto(methodName, new Object[]{arg1, arg2});
+    NotificationDto notificationDto = new NotificationDto(procedureName, new Object[]{arg1, arg2});
     String json = jsonb.toJson(notificationDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     httpRequestSender.send(bodyPublisher, uri, timeout);

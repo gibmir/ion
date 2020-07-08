@@ -3,9 +3,9 @@ package com.github.gibmir.ion.api.server.cache.processor;
 import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
 
 public interface ProcedureProcessorRegistry {
-  JsonRpcRequestProcessor getProcedureProcessorFor(String methodName);
+  JsonRpcRequestProcessor getProcedureProcessorFor(String procedureName);
 
-  void putProcedureProcessorFor(String methodName, JsonRpcRequestProcessor jsonRpcRequestProcessor);
+  void putProcedureProcessorFor(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor);
 
-  void clean(String methodName);
+  void clean(String procedureName);
 }

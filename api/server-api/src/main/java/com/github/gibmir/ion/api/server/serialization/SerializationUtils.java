@@ -29,13 +29,13 @@ public class SerializationUtils {
     if (methodValue == null) {
       throw new IllegalArgumentException("Method key is not present in:" + object);
     }
-    String methodName = ((JsonString) methodValue).getString();
-    Signature signature = methodSignature.getProcedureSignatureFor(methodName);
+    String procedureName = ((JsonString) methodValue).getString();
+    Signature signature = methodSignature.getProcedureSignatureFor(procedureName);
     if (signature == null) {
       throw new UnsupportedOperationException("Method " + methodValue + " is not supported");
     }
     Object[] arguments = extractArguments(object, jsonb, signature);
-    return RequestDto.positional(id, methodName, arguments);
+    return RequestDto.positional(id, procedureName, arguments);
   }
 
   private static Object[] extractArguments(JsonObject object, Jsonb jsonb, Signature signature) {

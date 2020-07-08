@@ -12,17 +12,17 @@ public class SimpleSignatureRegistry implements SignatureRegistry {
   }
 
   @Override
-  public Signature getProcedureSignatureFor(String methodName) {
-    return signatureMap.get(methodName);
+  public Signature getProcedureSignatureFor(String procedureName) {
+    return signatureMap.get(procedureName);
   }
 
   @Override
-  public void putProcedureSignature(String methodName, Signature procedureSignature) {
-    signatureMap.put(methodName, procedureSignature);
+  public void putProcedureSignature(String procedureName, Signature procedureSignature) {
+    signatureMap.put(procedureName, procedureSignature);
   }
 
   @Override
-  public void clean(String methodName) {
-    signatureMap.computeIfPresent(methodName, (k, w) -> null);
+  public void clean(String procedureName) {
+    signatureMap.computeIfPresent(procedureName, (k, w) -> null);
   }
 }

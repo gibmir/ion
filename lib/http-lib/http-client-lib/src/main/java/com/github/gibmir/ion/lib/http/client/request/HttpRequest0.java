@@ -17,16 +17,16 @@ public class HttpRequest0<R> extends AbstractHttpRequest<R, HttpRequest0<R>>
 
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
 
-  public HttpRequest0(Class<R> returnType, String methodName, HttpRequestSender defaultHttpRequestSender, URI defaultUri,
+  public HttpRequest0(Class<R> returnType, String procedureName, HttpRequestSender defaultHttpRequestSender, URI defaultUri,
                       Duration defaultTimeout, Jsonb defaultJsonb, Charset defaultCharset) {
-    super(returnType, methodName, defaultHttpRequestSender, defaultUri, defaultTimeout, defaultJsonb, defaultCharset);
+    super(returnType, procedureName, defaultHttpRequestSender, defaultUri, defaultTimeout, defaultJsonb, defaultCharset);
   }
 
   @Override
   public CompletableFuture<R> call(String id) {
     RequestDto requestDto = new RequestDto();
     requestDto.setId(id);
-    requestDto.setMethodName(methodName);
+    requestDto.setProcedureName(procedureName);
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
@@ -34,7 +34,7 @@ public class HttpRequest0<R> extends AbstractHttpRequest<R, HttpRequest0<R>>
 
   @Override
   public void notificationCall() {
-    NotificationDto notificationDto = new NotificationDto(methodName, EMPTY_PAYLOAD);
+    NotificationDto notificationDto = new NotificationDto(procedureName, EMPTY_PAYLOAD);
     String json = jsonb.toJson(notificationDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     httpRequestSender.send(bodyPublisher, uri, timeout);

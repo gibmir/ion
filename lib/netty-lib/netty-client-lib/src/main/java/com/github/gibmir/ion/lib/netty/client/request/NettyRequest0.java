@@ -15,14 +15,14 @@ public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
 
 
-  public NettyRequest0(Class<R> returnType, String methodName, JsonRpcNettySender defaultJsonRpcNettySender,
+  public NettyRequest0(Class<R> returnType, String procedureName, JsonRpcNettySender defaultJsonRpcNettySender,
                        SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
-    super(returnType, methodName, defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
+    super(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
   }
 
   @Override
   public CompletableFuture<R> call(String id) {
-    RequestDto positional = RequestDto.positional(id, methodName, EMPTY_PAYLOAD);
+    RequestDto positional = RequestDto.positional(id, procedureName, EMPTY_PAYLOAD);
     return defaultJsonRpcNettySender.send(positional, jsonb, charset, returnType, defaultSocketAddress);
   }
 

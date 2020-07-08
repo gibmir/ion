@@ -22,7 +22,7 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T arg) {
-    RequestDto requestDto = RequestDto.positional(id, methodName, new Object[]{arg});
+    RequestDto requestDto = RequestDto.positional(id, procedureName, new Object[]{arg});
     String json = jsonb.toJson(requestDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     return httpRequestSender.send(bodyPublisher, uri, timeout, jsonb, charset, returnType);
@@ -30,7 +30,7 @@ public class HttpRequest1<T, R> extends AbstractHttpRequest<R, HttpRequest1<T, R
 
   @Override
   public void notificationCall(T arg) {
-    NotificationDto notificationDto = new NotificationDto(methodName, new Object[]{arg});
+    NotificationDto notificationDto = new NotificationDto(procedureName, new Object[]{arg});
     String json = jsonb.toJson(notificationDto);
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(json.getBytes(charset));
     httpRequestSender.send(bodyPublisher, uri, timeout);

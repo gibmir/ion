@@ -18,7 +18,7 @@ public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     super.channelRead(ctx, msg);
     JsonRpcRequest jsonRpcRequest = (JsonRpcRequest) msg;
-    JsonRpcResponse jsonRpcResponse = procedureProcessorRegistry.getProcedureProcessorFor(jsonRpcRequest.getMethodName())
+    JsonRpcResponse jsonRpcResponse = procedureProcessorRegistry.getProcedureProcessorFor(jsonRpcRequest.getProcedureName())
       .process(jsonRpcRequest);
     ctx.write(jsonRpcResponse);
   }

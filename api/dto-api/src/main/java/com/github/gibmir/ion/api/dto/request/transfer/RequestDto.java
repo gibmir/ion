@@ -12,8 +12,8 @@ public class RequestDto extends AbstractJsonRpcRequest {
     super();
   }
 
-  private RequestDto(String id, String methodName, Object args) {
-    super(methodName, args);
+  private RequestDto(String id, String procedureName, Object args) {
+    super(procedureName, args);
     this.id = id;
   }
 

@@ -21,4 +21,9 @@ public class NettyProcedureManager implements ProcedureManager {
     signatureRegistry.clean(methodName);
     procedureProcessorRegistry.clean(methodName);
   }
+
+  @Override
+  public String getProcedureName() {
+    return methodName;
+  }
 }

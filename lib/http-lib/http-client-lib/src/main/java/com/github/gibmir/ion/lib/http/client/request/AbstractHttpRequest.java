@@ -10,18 +10,18 @@ import java.time.Duration;
 public abstract class AbstractHttpRequest<T, Request extends ConfigurableHttpRequest<Request>>
   implements ConfigurableHttpRequest<Request> {
   protected final Class<T> returnType;
-  protected final String methodName;
+  protected final String procedureName;
   protected final HttpRequestSender httpRequestSender;
   protected URI uri;
   protected Duration timeout;
   protected Jsonb jsonb;
   protected Charset charset;
 
-  public AbstractHttpRequest(Class<T> returnType, String methodName, HttpRequestSender defaultHttpRequestSender,
+  public AbstractHttpRequest(Class<T> returnType, String procedureName, HttpRequestSender defaultHttpRequestSender,
                              URI defaultUri, Duration defaultTimeout, Jsonb defaultJsonb, Charset defaultCharset) {
     this.httpRequestSender = defaultHttpRequestSender;
     this.returnType = returnType;
-    this.methodName = methodName;
+    this.procedureName = procedureName;
     this.uri = defaultUri;
     this.timeout = defaultTimeout;
     this.jsonb = defaultJsonb;

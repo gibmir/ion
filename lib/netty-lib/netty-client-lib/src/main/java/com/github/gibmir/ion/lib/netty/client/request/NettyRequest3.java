@@ -11,9 +11,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class NettyRequest3<T1, T2, T3, R> extends AbstractNettyRequest<R, NettyRequest3<T1, T2, T3, R>>
   implements Request3<T1, T2, T3, R> {
-  public NettyRequest3(Class<R> returnType, String methodName, JsonRpcNettySender defaultJsonRpcNettySender,
+  public NettyRequest3(Class<R> returnType, String procedureName, JsonRpcNettySender defaultJsonRpcNettySender,
                        SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
-    super(returnType, methodName, defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
+    super(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
   }
 
   @Override
@@ -36,7 +36,7 @@ public class NettyRequest3<T1, T2, T3, R> extends AbstractNettyRequest<R, NettyR
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2, T3 arg3) {
-    RequestDto positional = RequestDto.positional(id, methodName, new Object[]{arg1, arg2, arg3});
+    RequestDto positional = RequestDto.positional(id, procedureName, new Object[]{arg1, arg2, arg3});
     return defaultJsonRpcNettySender.send(positional, jsonb, charset, returnType, defaultSocketAddress);
   }
 

@@ -9,17 +9,17 @@ import java.nio.charset.Charset;
 public abstract class AbstractNettyRequest<T, Request extends ConfigurableNettyRequest<Request>>
   implements ConfigurableNettyRequest<Request> {
   protected final Class<T> returnType;
-  protected final String methodName;
+  protected final String procedureName;
   protected final JsonRpcNettySender defaultJsonRpcNettySender;
   protected SocketAddress defaultSocketAddress;
   protected Jsonb jsonb;
   protected Charset charset;
 
-  public AbstractNettyRequest(Class<T> returnType, String methodName, JsonRpcNettySender defaultJsonRpcNettySender,
+  public AbstractNettyRequest(Class<T> returnType, String procedureName, JsonRpcNettySender defaultJsonRpcNettySender,
                               SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
     this.defaultJsonRpcNettySender = defaultJsonRpcNettySender;
     this.returnType = returnType;
-    this.methodName = methodName;
+    this.procedureName = procedureName;
     this.defaultSocketAddress = defaultSocketAddress;
     this.jsonb = defaultJsonb;
     this.charset = defaultCharset;

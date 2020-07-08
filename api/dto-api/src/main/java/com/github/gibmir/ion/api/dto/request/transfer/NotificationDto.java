@@ -7,8 +7,8 @@ public class NotificationDto extends AbstractJsonRpcRequest {
   public NotificationDto() {
   }
 
-  public NotificationDto(String methodName, Object[] args) {
-    super(methodName, args);
+  public NotificationDto(String procedureName, Object[] args) {
+    super(procedureName, args);
   }
 
   @Override
