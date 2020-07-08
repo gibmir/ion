@@ -1,7 +1,8 @@
-package com.github.gibmir.ion.lib.netty.client.initializer;
+package com.github.gibmir.ion.lib.netty.client.sender.initializer;
 
-import com.github.gibmir.ion.lib.netty.client.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.codecs.encoder.JsonRpcRequestEncoder;
+import com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder.JsonRpcRequestEncoder;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.JsonRpcResponseHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -22,6 +23,6 @@ public class JsonRpcNettyClientInitializer extends ChannelInitializer<SocketChan
   protected void initChannel(SocketChannel ch) {
     ChannelPipeline pipeline = ch.pipeline();
     pipeline.addLast(new JsonRpcRequestEncoder(jsonb, charset))
-      .addLast(new JsonRpcResponseDecoder(jsonb, charset));
+      .addLast(new JsonRpcResponseDecoder(jsonb, charset)).addLast(new JsonRpcResponseHandler());
   }
 }

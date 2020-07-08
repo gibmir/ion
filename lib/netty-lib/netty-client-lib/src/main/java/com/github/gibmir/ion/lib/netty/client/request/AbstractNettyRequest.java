@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.request;
 
-import com.github.gibmir.ion.lib.netty.client.JsonRpcNettyClient;
+import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -10,17 +10,17 @@ public abstract class AbstractNettyRequest<T, Request extends ConfigurableNettyR
   implements ConfigurableNettyRequest<Request> {
   protected final Class<T> returnType;
   protected final String methodName;
-  protected final JsonRpcNettyClient defaultJsonRpcNettyClient;
-  protected SocketAddress socketAddress;
+  protected final JsonRpcNettySender defaultJsonRpcNettySender;
+  protected SocketAddress defaultSocketAddress;
   protected Jsonb jsonb;
   protected Charset charset;
 
-  public AbstractNettyRequest(Class<T> returnType, String methodName, JsonRpcNettyClient defaultJsonRpcNettyClient,
-                              SocketAddress socketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
-    this.defaultJsonRpcNettyClient = defaultJsonRpcNettyClient;
+  public AbstractNettyRequest(Class<T> returnType, String methodName, JsonRpcNettySender defaultJsonRpcNettySender,
+                              SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
+    this.defaultJsonRpcNettySender = defaultJsonRpcNettySender;
     this.returnType = returnType;
     this.methodName = methodName;
-    this.socketAddress = socketAddress;
+    this.defaultSocketAddress = defaultSocketAddress;
     this.jsonb = defaultJsonb;
     this.charset = defaultCharset;
   }
@@ -37,6 +37,6 @@ public abstract class AbstractNettyRequest<T, Request extends ConfigurableNettyR
 
   @Override
   public SocketAddress socketAddress() {
-    return socketAddress;
+    return defaultSocketAddress;
   }
 }

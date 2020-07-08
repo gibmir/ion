@@ -2,7 +2,7 @@ package com.github.gibmir.ion.lib.netty.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request0;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
-import com.github.gibmir.ion.lib.netty.client.JsonRpcNettyClient;
+import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -14,15 +14,15 @@ public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
 
 
-  public NettyRequest0(Class<R> returnType, String methodName, JsonRpcNettyClient defaultJsonRpcNettyClient,
-                       SocketAddress socketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
-    super(returnType, methodName, defaultJsonRpcNettyClient, socketAddress, defaultJsonb, defaultCharset);
+  public NettyRequest0(Class<R> returnType, String methodName, JsonRpcNettySender defaultJsonRpcNettySender,
+                       SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {
+    super(returnType, methodName, defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
   }
 
   @Override
   public CompletableFuture<R> call(String id) {
     RequestDto positional = RequestDto.positional(id, methodName, EMPTY_PAYLOAD);
-    return defaultJsonRpcNettyClient.send(positional, jsonb, charset, returnType, socketAddress);
+    return defaultJsonRpcNettySender.send(positional, jsonb, charset, returnType, defaultSocketAddress);
   }
 
   @Override
@@ -32,7 +32,7 @@ public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
 
   @Override
   public NettyRequest0<R> socketAddress(SocketAddress socketAddress) {
-    this.socketAddress = socketAddress;
+    this.defaultSocketAddress = socketAddress;
     return this;
   }
 

@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.lib.netty.client.codecs.decoder;
+package com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder;
 
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import io.netty.buffer.ByteBuf;

@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.lib.netty.client;
+package com.github.gibmir.ion.lib.netty.client.sender;
 
 import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
@@ -7,13 +7,11 @@ import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import com.github.gibmir.ion.api.dto.serialization.SerializationUtils;
-import com.github.gibmir.ion.lib.netty.client.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.initializer.JsonRpcNettyClientInitializer;
+import com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 
 import javax.json.JsonObject;
 import javax.json.bind.Jsonb;
@@ -21,14 +19,22 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public class JsonRpcNettyClient {
+public class JsonRpcNettySender {
 
+  private final Class<? extends Channel> channelClass;
+  private final EventLoopGroup group;
+
+  public JsonRpcNettySender(Class<? extends Channel> channelClass, EventLoopGroup group) {
+    this.channelClass = channelClass;
+    this.group = group;
+  }
+
+  //todo channel pool
   public <R> CompletableFuture<R> send(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType, SocketAddress socketAddress) {
     CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
-    EventLoopGroup group = new NioEventLoopGroup();
     Channel channel = new Bootstrap()
       .group(group)
-      .channel(NioSocketChannel.class)
+      .channel(channelClass)
       .handler(new JsonRpcNettyClientInitializer(jsonb, charset))
       .connect(socketAddress)
       .channel();
