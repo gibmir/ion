@@ -14,6 +14,7 @@
     <modules>
         <module>netty-server-lib</module>
         <module>netty-client-lib</module>
+        <module>netty-common-lib</module>
     </modules>
     <properties>
         <netty.version>4.1.50.Final</netty.version>

@@ -1,6 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.configuration;
 
 import com.github.gibmir.ion.api.configuration.Configuration;
+import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -17,8 +18,8 @@ public class NettyRequestConfigurationUtils {
   public static final String NETTY_CLIENT_GROUP_THREADS_COUNT = ROOT_PREFIX + ".netty.client.group.threads.count";
   //string properties
   public static final String NETTY_CLIENT_SOCKET_ADDRESS_HOST = ROOT_PREFIX + ".netty.client.socket.address.host";
-  public static final String NETTY_CLIENT_CHANNEL_TYPE = ROOT_PREFIX + ".netty.client.channel";
-  public static final String NETTY_CLIENT_GROUP_TYPE = ROOT_PREFIX + ".netty.client.group";
+  public static final String NETTY_CLIENT_CHANNEL_TYPE = ROOT_PREFIX + ".netty.client.channel.type";
+  public static final String NETTY_CLIENT_GROUP_TYPE = ROOT_PREFIX + ".netty.client.group.type";
 
   public static final Integer DEFAULT_NETTY_CLIENT_GROUP_THREADS_COUNT = Runtime.getRuntime().availableProcessors();
 
@@ -33,23 +34,23 @@ public class NettyRequestConfigurationUtils {
     return new InetSocketAddress(socketAddressHost, socketAddressPort);
   }
 
-  public static Class<? extends Channel> resolveChannelWith(Configuration configuration) {
+  public static Class<? extends Channel> resolveChannelClass(Configuration configuration) {
     return configuration.getOptionalValue(NETTY_CLIENT_CHANNEL_TYPE, String.class)
-      .map(NettyChannelType::valueOf)
-      .orElse(NettyChannelType.NIO)
+      .map(NettyClientChannelType::valueOf)
+      .orElse(NettyClientChannelType.NIO)
       .resolveChannelClass();
   }
 
-  public static EventLoopGroup resolveEventLoopGroup(Configuration configuration) {
+  public static EventLoopGroup createEventLoopGroup(Configuration configuration) {
     NettyGroupType nettyGroupType = configuration.getOptionalValue(NETTY_CLIENT_GROUP_TYPE, String.class)
       .map(NettyGroupType::valueOf)
       .orElse(NettyGroupType.NIO);
     Integer threadsCount = configuration.getOptionalValue(NETTY_CLIENT_GROUP_THREADS_COUNT, Integer.class)
       .orElse(DEFAULT_NETTY_CLIENT_GROUP_THREADS_COUNT);
-    return createNettyGroup(nettyGroupType, threadsCount);
+    return createGroup(nettyGroupType, threadsCount);
   }
 
-  private static EventLoopGroup createNettyGroup(NettyGroupType nettyGroupType, Integer threadsCount) {
+  private static EventLoopGroup createGroup(NettyGroupType nettyGroupType, Integer threadsCount) {
     switch (nettyGroupType) {
       case EPOLL:
         return new EpollEventLoopGroup(threadsCount);

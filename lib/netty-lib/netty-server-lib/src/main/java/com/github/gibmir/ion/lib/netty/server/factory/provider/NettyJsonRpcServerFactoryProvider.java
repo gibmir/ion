@@ -12,15 +12,14 @@ import com.github.gibmir.ion.api.server.factory.configuration.ServerConfiguratio
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
 import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
+import com.github.gibmir.ion.lib.netty.server.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.factory.NettyJsonRpcServerFactory;
 import com.github.gibmir.ion.lib.netty.server.handler.JsonRpcRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
+import io.netty.channel.EventLoopGroup;
 import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.bind.Jsonb;
@@ -28,22 +27,36 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryProvider {
+  private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
+
   @Override
   public JsonRpcServerFactory provide() {
+    NettyJsonRpcServerFactory localInstance = nettyJsonRpcServerFactory;
+    //double-check singleton
+    if (localInstance == null) {
+      synchronized (NettyJsonRpcServerFactory.class) {
+        localInstance = nettyJsonRpcServerFactory;
+        if (localInstance == null) {
+          nettyJsonRpcServerFactory = localInstance = createJsonRpcServerFactory();
+        }
+      }
+    }
+    return localInstance;
+  }
+
+  private NettyJsonRpcServerFactory createJsonRpcServerFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
-    //todo registry module. Provide through SPI
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(new HashMap<>());
     ProcedureProcessorRegistry procedureProcessorRegistry = new SimpleProcedureProcessorRegistry(new HashMap<>());
     Charset charset = ServerConfigurationUtils.createCharsetWith(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
-    NioEventLoopGroup bossGroup = new NioEventLoopGroup();
-    NioEventLoopGroup workerGroup = new NioEventLoopGroup();
-
+    EventLoopGroup bossGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
+    EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     try {
       serverBootstrap.group(bossGroup, workerGroup)
-        .channel(NioServerSocketChannel.class)
-        .handler(new LoggingHandler(LogLevel.INFO))
+        .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
+        .handler(new LoggingHandler(NettyServerConfigurationUtils.resolveLogLevel(configuration)))
         .childHandler(new ChannelInitializer<>() {
           @Override
           protected void initChannel(Channel channel) {
@@ -53,7 +66,7 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
               .addLast(new JsonRpcRequestHandler(procedureProcessorRegistry));
           }
         });
-      serverBootstrap.bind(52_222).sync().channel().closeFuture().sync();
+      serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration)).sync().channel().closeFuture().sync();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Can't start server", e);

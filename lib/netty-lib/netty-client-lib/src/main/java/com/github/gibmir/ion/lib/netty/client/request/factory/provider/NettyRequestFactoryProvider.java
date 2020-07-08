@@ -38,8 +38,8 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
     Jsonb defaultJsonb = ConfigurationUtils.createJsonbWith(configuration);
     Charset defaultCharset = RequestConfigurationUtils.createCharsetWith(configuration);
     SocketAddress defaultSocketAddress = NettyRequestConfigurationUtils.createSocketAddressWith(configuration);
-    Class<? extends Channel> channelClass = NettyRequestConfigurationUtils.resolveChannelWith(configuration);
-    EventLoopGroup group = NettyRequestConfigurationUtils.resolveEventLoopGroup(configuration);
+    Class<? extends Channel> channelClass = NettyRequestConfigurationUtils.resolveChannelClass(configuration);
+    EventLoopGroup group = NettyRequestConfigurationUtils.createEventLoopGroup(configuration);
     JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelClass, group);
     return new NettyRequestFactory(jsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
   }

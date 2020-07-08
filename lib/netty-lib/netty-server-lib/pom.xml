@@ -28,6 +28,11 @@
             <artifactId>server-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>netty-common-lib</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <version>1.0.1</version>

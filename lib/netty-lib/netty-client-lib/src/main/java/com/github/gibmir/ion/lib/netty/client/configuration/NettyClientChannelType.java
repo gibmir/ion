@@ -4,13 +4,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public enum NettyChannelType {
+public enum NettyClientChannelType {
 
   NIO(NioSocketChannel.class), EPOLL(EpollSocketChannel.class);
 
   private final Class<? extends Channel> channelClass;
 
-  NettyChannelType(Class<? extends Channel> channelClass) {
+  NettyClientChannelType(Class<? extends Channel> channelClass) {
     this.channelClass = channelClass;
   }
 
