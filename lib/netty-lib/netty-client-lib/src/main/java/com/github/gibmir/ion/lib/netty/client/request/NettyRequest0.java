@@ -8,7 +8,8 @@ import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
-//todo write other requests. write factory. write provider
+
+//todo write notification request
 public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
   implements Request0<R> {
   public static final Object[] EMPTY_PAYLOAD = new Object[0];

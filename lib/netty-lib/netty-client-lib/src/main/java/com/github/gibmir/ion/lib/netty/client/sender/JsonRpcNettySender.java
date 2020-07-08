@@ -47,6 +47,25 @@ public class JsonRpcNettySender {
       jsonRpcResponse.processWith(responseProcessor);
       return responseProcessor.result;
     });
+  } //todo channel pool
+
+  public <R> CompletableFuture<R> sendNotification(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType, SocketAddress socketAddress) {
+    CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
+    Channel channel = new Bootstrap()
+      .group(group)
+      .channel(channelClass)
+      .handler(new JsonRpcNettyClientInitializer(jsonb, charset))
+      .connect(socketAddress)
+      .channel();
+
+    channel.pipeline().get(JsonRpcResponseDecoder.class).setCompletableFuture(completableFuture);
+    channel.writeAndFlush(request);
+    return completableFuture.thenApply(jsonObject -> {
+      JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, returnType, jsonb);
+      NettyResponseProcessor<R> responseProcessor = new NettyResponseProcessor<>(returnType);
+      jsonRpcResponse.processWith(responseProcessor);
+      return responseProcessor.result;
+    });
   }
 
   private static class NettyResponseProcessor<R> implements JsonRpcResponseProcessor {
