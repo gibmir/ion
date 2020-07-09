@@ -6,23 +6,29 @@ import com.github.gibmir.ion.lib.netty.client.sender.handler.JsonRpcResponseHand
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-
-import javax.json.bind.Jsonb;
-import java.nio.charset.Charset;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 public class JsonRpcNettyClientInitializer extends ChannelInitializer<SocketChannel> {
-  private final Jsonb jsonb;
-  private final Charset charset;
+  private final JsonRpcRequestEncoder jsonRpcRequestEncoder;
+  private final JsonRpcResponseDecoder jsonRpcResponseDecoder;
 
-  public JsonRpcNettyClientInitializer(Jsonb jsonb, Charset charset) {
-    this.jsonb = jsonb;
-    this.charset = charset;
+  public JsonRpcNettyClientInitializer(JsonRpcRequestEncoder jsonRpcRequestEncoder, JsonRpcResponseDecoder jsonRpcResponseDecoder) {
+    this.jsonRpcRequestEncoder = jsonRpcRequestEncoder;
+    this.jsonRpcResponseDecoder = jsonRpcResponseDecoder;
   }
 
   @Override
   protected void initChannel(SocketChannel ch) {
-    ChannelPipeline pipeline = ch.pipeline();
-    pipeline.addLast(new JsonRpcRequestEncoder(jsonb, charset))
-      .addLast(new JsonRpcResponseDecoder(jsonb, charset)).addLast(new JsonRpcResponseHandler());
+    ch.pipeline().addLast(new LoggingHandler(LogLevel.TRACE)).addLast(jsonRpcRequestEncoder)
+      .addLast(jsonRpcResponseDecoder).addLast(new JsonRpcResponseHandler());
+  }
+
+  public JsonRpcRequestEncoder getJsonRpcRequestEncoder() {
+    return jsonRpcRequestEncoder;
+  }
+
+  public JsonRpcResponseDecoder getJsonRpcResponseDecoder() {
+    return jsonRpcResponseDecoder;
   }
 }

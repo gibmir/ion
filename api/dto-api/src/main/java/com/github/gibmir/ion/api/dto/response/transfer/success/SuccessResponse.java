@@ -7,7 +7,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.AbstractJsonRpcResponse;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class SuccessResponse extends AbstractJsonRpcResponse implements JsonRpcResponse {
-  private static final String JSON_RPC_NULL_ID = "null";
+
   @JsonbProperty("result")
   private Object result;
 

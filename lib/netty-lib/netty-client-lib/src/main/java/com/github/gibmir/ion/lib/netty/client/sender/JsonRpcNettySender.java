@@ -8,6 +8,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import com.github.gibmir.ion.api.dto.serialization.SerializationUtils;
 import com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder.JsonRpcRequestEncoder;
 import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -32,15 +33,20 @@ public class JsonRpcNettySender {
   //todo channel pool
   public <R> CompletableFuture<R> send(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType, SocketAddress socketAddress) {
     CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
-    Channel channel = new Bootstrap()
-      .group(group)
-      .channel(channelClass)
-      .handler(new JsonRpcNettyClientInitializer(jsonb, charset))
-      .connect(socketAddress)
-      .channel();
-
-    channel.pipeline().get(JsonRpcResponseDecoder.class).setCompletableFuture(completableFuture);
-    channel.writeAndFlush(request);
+    try {
+      Channel channel = new Bootstrap()
+        .group(group)
+        .channel(channelClass)
+        .handler(new JsonRpcNettyClientInitializer(new JsonRpcRequestEncoder(jsonb, charset),
+          new JsonRpcResponseDecoder(jsonb, charset)))
+        .connect(socketAddress).sync()
+        .channel();
+      channel.pipeline().get(JsonRpcResponseDecoder.class).setCompletableFuture(completableFuture);
+      channel.writeAndFlush(request);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      completableFuture.completeExceptionally(e);
+    }
     return completableFuture.thenApply(jsonObject -> {
       JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, returnType, jsonb);
       NettyResponseProcessor<R> responseProcessor = new NettyResponseProcessor<>(returnType);
@@ -54,11 +60,12 @@ public class JsonRpcNettySender {
     Channel channel = new Bootstrap()
       .group(group)
       .channel(channelClass)
-      .handler(new JsonRpcNettyClientInitializer(jsonb, charset))
+      .handler(new JsonRpcNettyClientInitializer(new JsonRpcRequestEncoder(jsonb, charset),
+        new JsonRpcResponseDecoder(jsonb, charset)))
       .connect(socketAddress)
       .channel();
-
-    channel.pipeline().get(JsonRpcResponseDecoder.class).setCompletableFuture(completableFuture);
+    channel.pipeline().get(JsonRpcNettyClientInitializer.class).getJsonRpcResponseDecoder()
+      .setCompletableFuture(completableFuture);
     channel.writeAndFlush(request);
     return completableFuture.thenApply(jsonObject -> {
       JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, returnType, jsonb);

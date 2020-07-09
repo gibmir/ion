@@ -33,7 +33,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
 
   @Override
   public <T, R, P extends JsonRemoteProcedure1<T, R>> ProcedureManager registerProcedureProcessor(
-    Class<? extends JsonRemoteProcedure1<T, R>> procedureClass, P procedureImpl) {
+    Class<? extends JsonRemoteProcedure1<T, R>> procedureClass,P procedureImpl) {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.putProcedureProcessorFor(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));

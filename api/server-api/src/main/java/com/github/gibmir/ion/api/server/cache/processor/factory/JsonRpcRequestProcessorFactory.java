@@ -17,7 +17,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 public class JsonRpcRequestProcessorFactory {
-
+  //todo make friends with lambda
   public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
                                                             T service) {
     final NamedMethodHandle[] methodHandles;
@@ -84,7 +84,7 @@ public class JsonRpcRequestProcessorFactory {
 
     private JsonRpcResponse invokeMethod(RequestDto jsonRpcRequest) throws Throwable {
       for (final NamedMethodHandle methodHandle : namedMethodHandles) {
-        if (methodHandle.methodName.equals(jsonRpcRequest.getProcedureName())) {
+        if (methodHandle.methodName.equals("call")) {
           final Object result = methodHandle.invokeWithArguments(service, jsonRpcRequest.getArgs());
           return SuccessResponse.createWithStringId(jsonRpcRequest.getId(), result);
         }

@@ -22,5 +22,7 @@ public class JsonRpcRequestEncoder extends MessageToByteEncoder<JsonRpcRequest> 
   protected void encode(ChannelHandlerContext ctx, JsonRpcRequest msg, ByteBuf out) {
     byte[] payload = jsonb.toJson(msg).getBytes(charset);
     out.writeBytes(payload);
+
+//    ctx.flush();
   }
 }

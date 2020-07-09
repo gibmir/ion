@@ -1,5 +1,5 @@
 package com.github.gibmir.ion.api.dto.method.signature;
-
+//todo use method.returnGenericTypes
 public class Signature {
   private final Class<?>[] argumentTypes;
 

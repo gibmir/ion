@@ -25,7 +25,9 @@ public class JsonRpcRequestDecoder extends ReplayingDecoder<JsonRpcRequest> {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-    JsonObject jsonObject = jsonb.fromJson(in.toString(charset), JsonObject.class);
+    byte[] bytes = new byte[in.writerIndex()];
+    in.readBytes(bytes);
+    JsonObject jsonObject = jsonb.fromJson(new String(bytes, charset), JsonObject.class);
     JsonRpcRequest jsonRpcRequest = SerializationUtils.extractRequestFrom(jsonObject, signatureRegistry, jsonb);
     out.add(jsonRpcRequest);
   }
