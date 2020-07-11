@@ -1,6 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request3;
+import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
@@ -36,12 +37,13 @@ public class NettyRequest3<T1, T2, T3, R> extends AbstractNettyRequest<R, NettyR
 
   @Override
   public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2, T3 arg3) {
-    RequestDto positional = RequestDto.positional(id, procedureName, new Object[]{arg1, arg2, arg3});
-    return defaultJsonRpcNettySender.send(positional, jsonb, charset, returnType, defaultSocketAddress);
+    return defaultJsonRpcNettySender.send(RequestDto.positional(id, procedureName, new Object[]{arg1, arg2, arg3}),
+      jsonb, charset, returnType, defaultSocketAddress);
   }
 
   @Override
   public void notificationCall(T1 arg1, T2 arg2, T3 arg3) {
-
+    defaultJsonRpcNettySender.sendNotification(new NotificationDto(procedureName, new Object[]{arg1, arg2, arg3}),
+      jsonb, charset, defaultSocketAddress);
   }
 }

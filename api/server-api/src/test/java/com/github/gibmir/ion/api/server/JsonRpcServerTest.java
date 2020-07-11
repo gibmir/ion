@@ -1,15 +1,14 @@
 package com.github.gibmir.ion.api.server;
 
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
-import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import org.junit.jupiter.api.Test;
 
 class JsonRpcServerTest {
-  public interface TestApi extends JsonRemoteProcedure0<String> {
+  public interface TestProcedure extends JsonRemoteProcedure0<String> {
 
   }
 
-  public class TestApiImpl implements TestApi {
+  public class TestProcedureImpl implements TestProcedure {
 
     @Override
     public String call() {

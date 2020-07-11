@@ -8,12 +8,6 @@ import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.lib.netty.client.configuration.NettyRequestConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.request.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
-import io.netty.channel.Channel;
-import io.netty.channel.EventLoopGroup;
-
-import javax.json.bind.Jsonb;
-import java.net.SocketAddress;
-import java.nio.charset.Charset;
 
 public class NettyRequestFactoryProvider implements RequestFactoryProvider {
   private static volatile NettyRequestFactory nettyRequestFactoryInstance;
@@ -35,12 +29,11 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
 
   private NettyRequestFactory createNettyRequestFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
-    Jsonb defaultJsonb = ConfigurationUtils.createJsonbWith(configuration);
-    Charset defaultCharset = RequestConfigurationUtils.createCharsetWith(configuration);
-    SocketAddress defaultSocketAddress = NettyRequestConfigurationUtils.createSocketAddressWith(configuration);
-    Class<? extends Channel> channelClass = NettyRequestConfigurationUtils.resolveChannelClass(configuration);
-    EventLoopGroup group = NettyRequestConfigurationUtils.createEventLoopGroup(configuration);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelClass, group);
-    return new NettyRequestFactory(jsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset);
+    return new NettyRequestFactory(new JsonRpcNettySender(NettyRequestConfigurationUtils.resolveLogLevel(configuration),
+      NettyRequestConfigurationUtils.resolveChannelClass(configuration),
+      NettyRequestConfigurationUtils.createEventLoopGroup(configuration)),
+      NettyRequestConfigurationUtils.createSocketAddressWith(configuration),
+      ConfigurationUtils.createJsonbWith(configuration),
+      RequestConfigurationUtils.createCharsetWith(configuration));
   }
 }

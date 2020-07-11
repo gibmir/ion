@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.handler.logging.LogLevel;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -20,6 +21,7 @@ public class NettyRequestConfigurationUtils {
   public static final String NETTY_CLIENT_SOCKET_ADDRESS_HOST = ROOT_PREFIX + ".netty.client.socket.address.host";
   public static final String NETTY_CLIENT_CHANNEL_TYPE = ROOT_PREFIX + ".netty.client.channel.type";
   public static final String NETTY_CLIENT_GROUP_TYPE = ROOT_PREFIX + ".netty.client.group.type";
+  public static final String NETTY_CLIENT_LOG_LEVEL = ROOT_PREFIX + ".netty.client.log.level";
 
   public static final Integer DEFAULT_NETTY_CLIENT_GROUP_THREADS_COUNT = Runtime.getRuntime().availableProcessors();
 
@@ -58,5 +60,11 @@ public class NettyRequestConfigurationUtils {
       default:
         return new NioEventLoopGroup(threadsCount);
     }
+  }
+
+  public static LogLevel resolveLogLevel(Configuration configuration) {
+    return configuration.getOptionalValue(NETTY_CLIENT_LOG_LEVEL, String.class)
+      .map(LogLevel::valueOf)
+      .orElse(LogLevel.INFO);
   }
 }

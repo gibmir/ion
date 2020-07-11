@@ -13,6 +13,8 @@ import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyCli
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.JsonObject;
 import javax.json.bind.Jsonb;
@@ -21,24 +23,26 @@ import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
 public class JsonRpcNettySender {
-
+  private final LogLevel logLevel;
   private final Class<? extends Channel> channelClass;
   private final EventLoopGroup group;
 
-  public JsonRpcNettySender(Class<? extends Channel> channelClass, EventLoopGroup group) {
+  public JsonRpcNettySender(LogLevel logLevel, Class<? extends Channel> channelClass, EventLoopGroup group) {
+    this.logLevel = logLevel;
     this.channelClass = channelClass;
     this.group = group;
   }
 
   //todo channel pool
-  public <R> CompletableFuture<R> send(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType, SocketAddress socketAddress) {
+  public <R> CompletableFuture<R> send(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType,
+                                       SocketAddress socketAddress) {
     CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
     try {
       Channel channel = new Bootstrap()
         .group(group)
         .channel(channelClass)
-        .handler(new JsonRpcNettyClientInitializer(new JsonRpcRequestEncoder(jsonb, charset),
-          new JsonRpcResponseDecoder(jsonb, charset)))
+        .handler(new JsonRpcNettyClientInitializer(new LoggingHandler(logLevel),
+          new JsonRpcRequestEncoder(jsonb, charset), new JsonRpcResponseDecoder(jsonb, charset)))
         .connect(socketAddress).sync()
         .channel();
       channel.pipeline().get(JsonRpcResponseDecoder.class).setCompletableFuture(completableFuture);
@@ -53,26 +57,18 @@ public class JsonRpcNettySender {
       jsonRpcResponse.processWith(responseProcessor);
       return responseProcessor.result;
     });
-  } //todo channel pool
+  }
 
-  public <R> CompletableFuture<R> sendNotification(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType, SocketAddress socketAddress) {
-    CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
+  public void sendNotification(JsonRpcRequest request, Jsonb jsonb, Charset charset, SocketAddress socketAddress) {
     Channel channel = new Bootstrap()
       .group(group)
       .channel(channelClass)
-      .handler(new JsonRpcNettyClientInitializer(new JsonRpcRequestEncoder(jsonb, charset),
-        new JsonRpcResponseDecoder(jsonb, charset)))
+      //todo only send. Do not await result
+      .handler(new JsonRpcNettyClientInitializer(new LoggingHandler(logLevel),
+        new JsonRpcRequestEncoder(jsonb, charset), new JsonRpcResponseDecoder(jsonb, charset)))
       .connect(socketAddress)
       .channel();
-    channel.pipeline().get(JsonRpcNettyClientInitializer.class).getJsonRpcResponseDecoder()
-      .setCompletableFuture(completableFuture);
     channel.writeAndFlush(request);
-    return completableFuture.thenApply(jsonObject -> {
-      JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, returnType, jsonb);
-      NettyResponseProcessor<R> responseProcessor = new NettyResponseProcessor<>(returnType);
-      jsonRpcResponse.processWith(responseProcessor);
-      return responseProcessor.result;
-    });
   }
 
   private static class NettyResponseProcessor<R> implements JsonRpcResponseProcessor {
