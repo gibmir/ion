@@ -11,12 +11,23 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
+import java.lang.reflect.Type;
 
 public class SerializationUtils {
   private SerializationUtils() {
   }
 
   public static JsonRpcRequest extractRequestFrom(JsonObject object, SignatureRegistry methodSignature, Jsonb jsonb) {
+    if (object instanceof JsonArray) {
+      //todo implements batch
+      return null;
+    } else {
+      return extractRequest(object, methodSignature, jsonb);
+    }
+
+  }
+
+  private static JsonRpcRequest extractRequest(JsonObject object, SignatureRegistry methodSignature, Jsonb jsonb) {
     if (object.get(SerializationProperties.PROTOCOL_KEY) == null) {
       throw new IllegalArgumentException("Protocol key is not present in :" + object);
     }
@@ -32,7 +43,7 @@ public class SerializationUtils {
     String procedureName = ((JsonString) methodValue).getString();
     Signature signature = methodSignature.getProcedureSignatureFor(procedureName);
     if (signature == null) {
-      throw new UnsupportedOperationException("Method " + methodValue + " is not supported");
+      throw new UnsupportedOperationException("Method " + methodValue + " is unsupported");
     }
     Object[] arguments = extractArguments(object, jsonb, signature);
     return RequestDto.positional(id, procedureName, arguments);
@@ -40,7 +51,7 @@ public class SerializationUtils {
 
   private static Object[] extractArguments(JsonObject object, Jsonb jsonb, Signature signature) {
     JsonValue paramsValue = object.get(SerializationProperties.PARAMS_KEY);
-    Class<?>[] argumentTypes = signature.getArgumentTypes();
+    Type[] argumentTypes = signature.getGenericTypes();
     int length = argumentTypes.length;
     Object[] arguments = new Object[length];
     if (paramsValue instanceof JsonArray) {
@@ -48,9 +59,7 @@ public class SerializationUtils {
       for (int i = 0; i < length; i++) {
         arguments[i] = jsonb.fromJson(jsonValues.get(i).toString(), argumentTypes[i]);
       }
-    } else {
-      arguments[0] = jsonb.fromJson(paramsValue.toString(), signature.getHead());
-    }
+    }//todo else named request
     return arguments;
   }
 }

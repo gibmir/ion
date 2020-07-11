@@ -17,12 +17,12 @@ public class SimpleProcedureProcessorRegistry implements ProcedureProcessorRegis
   }
 
   @Override
-  public void putProcedureProcessorFor(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor) {
+  public void register(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor) {
     processorMap.put(procedureName, jsonRpcRequestProcessor);
   }
 
   @Override
-  public void clean(String procedureName) {
+  public void unregister(String procedureName) {
     processorMap.computeIfPresent(procedureName, (k, v) -> null);
   }
 }

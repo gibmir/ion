@@ -1,18 +1,8 @@
 package com.github.gibmir.ion.api.dto.method.signature;
 
-//todo use method.returnGenericTypes
-public class Signature {
-  private final Class<?>[] argumentTypes;
+import java.lang.reflect.Type;
 
-  public Signature(Class<?>... argumentTypes) {
-    this.argumentTypes = argumentTypes;
-  }
+public interface Signature {
 
-  public Class<?>[] getArgumentTypes() {
-    return argumentTypes;
-  }
-
-  public Class<?> getHead() {
-    return argumentTypes[0];
-  }
+  Type[] getGenericTypes();
 }

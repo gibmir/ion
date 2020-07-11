@@ -17,12 +17,12 @@ public class SimpleSignatureRegistry implements SignatureRegistry {
   }
 
   @Override
-  public void putProcedureSignature(String procedureName, Signature procedureSignature) {
+  public void register(String procedureName, Signature procedureSignature) {
     signatureMap.put(procedureName, procedureSignature);
   }
 
   @Override
-  public void clean(String procedureName) {
+  public void unregister(String procedureName) {
     signatureMap.computeIfPresent(procedureName, (k, w) -> null);
   }
 }

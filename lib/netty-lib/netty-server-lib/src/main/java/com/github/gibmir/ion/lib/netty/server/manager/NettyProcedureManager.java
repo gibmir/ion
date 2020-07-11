@@ -18,8 +18,8 @@ public class NettyProcedureManager implements ProcedureManager {
 
   @Override
   public void close() {
-    signatureRegistry.clean(methodName);
-    procedureProcessorRegistry.clean(methodName);
+    signatureRegistry.unregister(methodName);
+    procedureProcessorRegistry.unregister(methodName);
   }
 
   @Override

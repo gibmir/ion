@@ -5,7 +5,7 @@ import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
 public interface ProcedureProcessorRegistry {
   JsonRpcRequestProcessor getProcedureProcessorFor(String procedureName);
 
-  void putProcedureProcessorFor(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor);
+  void register(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor);
 
-  void clean(String procedureName);
+  void unregister(String procedureName);
 }

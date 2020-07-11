@@ -24,9 +24,13 @@
         <hamcrest.version>2.2</hamcrest.version>
     </properties>
     <packaging>pom</packaging>
+    <name>ion</name>
+    <description>json-rpc 2.0 implementation</description>
+    <url>https://github.com/gibmir/ion</url>
     <developers>
         <developer>
             <name>Pavel Usachev</name>
+            <email>pavel.usachev1@gmail.com</email>
         </developer>
     </developers>
 
