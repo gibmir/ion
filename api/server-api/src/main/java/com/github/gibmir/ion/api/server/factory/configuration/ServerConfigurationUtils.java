@@ -9,7 +9,7 @@ import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUt
 
 public class ServerConfigurationUtils {
   //charset
-  public static final String REQUEST_CHARSET_PROPERTY = ROOT_PREFIX + ".client.request.charset";
+  public static final String REQUEST_CHARSET_PROPERTY = ROOT_PREFIX + ".server.request.charset";
 
   private ServerConfigurationUtils() {
   }

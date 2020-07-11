@@ -35,7 +35,6 @@ public class HttpRequestSender {
       .thenApply(httpResponse -> getResultFromHttpResponse(httpResponse, jsonb, charset, returnType));
   }
 
-  //todo change publisher to request
   public void send(HttpRequest.BodyPublisher bodyPublisher, URI uri, Duration timeout) {
     HttpRequest httpRequest = HttpRequest.newBuilder()
       .uri(uri)

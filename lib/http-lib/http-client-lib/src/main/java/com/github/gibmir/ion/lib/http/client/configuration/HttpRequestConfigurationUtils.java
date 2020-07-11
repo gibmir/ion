@@ -21,6 +21,7 @@ public class HttpRequestConfigurationUtils {
   public static final String HTTP_REQUEST_URL = ROOT_PREFIX + ".http.client.request.url";
   public static final String HTTP_CLIENT_VERSION = ROOT_PREFIX + ".http.client.version";
   public static final String HTTP_CLIENT_REDIRECT = ROOT_PREFIX + ".http.client.redirect";
+  public static final String HTTP_CLIENT_TIMEOUT_PROPERTY = ROOT_PREFIX + "http.client.request.timeout";
 
   public static URI createUriWith(Configuration configuration) {
     return configuration.getOptionalValue(HttpRequestConfigurationUtils.HTTP_REQUEST_URL, String.class)
@@ -44,5 +45,15 @@ public class HttpRequestConfigurationUtils {
       .map(HttpClient.Redirect::valueOf)
       .ifPresent(builder::followRedirects);
     return builder.build();
+  }
+
+  public static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(1);
+
+  public static Duration createTimeoutWith(Configuration configuration) {
+
+    return configuration.getOptionalValue(HttpRequestConfigurationUtils.HTTP_CLIENT_TIMEOUT_PROPERTY, String.class)
+      .map(Long::valueOf)
+      .map(Duration::ofSeconds)
+      .orElse(HttpRequestConfigurationUtils.DEFAULT_TIMEOUT);
   }
 }

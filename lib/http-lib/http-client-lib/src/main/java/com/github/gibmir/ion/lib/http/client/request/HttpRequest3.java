@@ -38,25 +38,21 @@ public class HttpRequest3<T1, T2, T3, R> extends AbstractHttpRequest<R, HttpRequ
 
   @Override
   public HttpRequest3<T1, T2, T3, R> uri(URI uri) {
-    this.uri = uri;
-    return this;
+    return new HttpRequest3<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest3<T1, T2, T3, R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new HttpRequest3<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest3<T1, T2, T3, R> timeout(Duration timeout) {
-    this.timeout = timeout;
-    return this;
+    return new HttpRequest3<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest3<T1, T2, T3, R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new HttpRequest3<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 }

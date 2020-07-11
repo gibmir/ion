@@ -20,6 +20,13 @@ public class YamlUtils {
     return configMap;
   }
 
+  public static Map<String, Object> loadAsJavaProperty(Yaml yaml, String inputStream) {
+    Map<String, Object> load = yaml.load(inputStream);
+    Map<String, Object> configMap = new TreeMap<>();
+    fillConfiguration(ConfigurationUtils.ROOT_PREFIX, configMap, load.get(ConfigurationUtils.ROOT_PREFIX));
+    return configMap;
+  }
+
   public static void fillConfiguration(String parentKey, Map<String, Object> configuration, Object yaml) {
     if (yaml instanceof Map) {
       Map<?, ?> map = (Map<?, ?>) yaml;

@@ -19,20 +19,17 @@ public class NettyRequest3<T1, T2, T3, R> extends AbstractNettyRequest<R, NettyR
 
   @Override
   public NettyRequest3<T1, T2, T3, R> socketAddress(SocketAddress socketAddress) {
-    this.defaultSocketAddress = socketAddress;
-    return this;
+    return new NettyRequest3<>(returnType, procedureName, defaultJsonRpcNettySender, socketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest3<T1, T2, T3, R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new NettyRequest3<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest3<T1, T2, T3, R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new NettyRequest3<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
   @Override

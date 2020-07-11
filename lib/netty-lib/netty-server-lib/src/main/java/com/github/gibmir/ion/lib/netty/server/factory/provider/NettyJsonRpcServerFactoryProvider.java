@@ -66,7 +66,8 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
               .addLast(new JsonRpcRequestHandler(procedureProcessorRegistry));
           }
         });
-      serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration)).sync().channel().closeFuture().sync();
+      serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration))
+        .sync().channel().closeFuture().sync();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Can't start server", e);

@@ -40,28 +40,23 @@ public class HttpRequest0<R> extends AbstractHttpRequest<R, HttpRequest0<R>>
     httpRequestSender.send(bodyPublisher, uri, timeout);
   }
 
-  //todo return new request
   @Override
   public HttpRequest0<R> uri(URI uri) {
-    this.uri = uri;
-    return this;
+    return new HttpRequest0<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest0<R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new HttpRequest0<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest0<R> timeout(Duration timeout) {
-    this.timeout = timeout;
-    return this;
+    return new HttpRequest0<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest0<R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new HttpRequest0<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 }

@@ -38,25 +38,21 @@ public class HttpRequest2<T1, T2, R> extends AbstractHttpRequest<R, HttpRequest2
 
   @Override
   public HttpRequest2<T1, T2, R> uri(URI uri) {
-    this.uri = uri;
-    return this;
+    return new HttpRequest2<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest2<T1, T2, R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new HttpRequest2<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest2<T1, T2, R> timeout(Duration timeout) {
-    this.timeout = timeout;
-    return this;
+    return new HttpRequest2<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 
   @Override
   public HttpRequest2<T1, T2, R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new HttpRequest2<>(returnType, procedureName, httpRequestSender, uri, timeout, jsonb, charset);
   }
 }

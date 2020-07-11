@@ -20,20 +20,17 @@ public class NettyRequest1<T, R> extends AbstractNettyRequest<R, NettyRequest1<T
 
   @Override
   public NettyRequest1<T, R> socketAddress(SocketAddress socketAddress) {
-    this.defaultSocketAddress = socketAddress;
-    return this;
+    return new NettyRequest1<>(returnType, procedureName, defaultJsonRpcNettySender, socketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest1<T, R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new NettyRequest1<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest1<T, R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new NettyRequest1<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
   @Override

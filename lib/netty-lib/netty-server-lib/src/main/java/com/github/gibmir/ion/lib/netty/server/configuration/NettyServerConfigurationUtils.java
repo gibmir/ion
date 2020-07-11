@@ -10,7 +10,6 @@ import io.netty.handler.logging.LogLevel;
 
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
-//todo netty configuration
 public class NettyServerConfigurationUtils {
   //int properties
   public static final String NETTY_SERVER_SOCKET_ADDRESS_PORT = ROOT_PREFIX + ".netty.server.port";

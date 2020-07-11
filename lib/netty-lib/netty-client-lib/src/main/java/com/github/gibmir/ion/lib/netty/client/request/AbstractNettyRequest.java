@@ -11,9 +11,9 @@ public abstract class AbstractNettyRequest<T, Request extends ConfigurableNettyR
   protected final Class<T> returnType;
   protected final String procedureName;
   protected final JsonRpcNettySender defaultJsonRpcNettySender;
-  protected SocketAddress defaultSocketAddress;
-  protected Jsonb jsonb;
-  protected Charset charset;
+  protected final SocketAddress defaultSocketAddress;
+  protected final Jsonb jsonb;
+  protected final Charset charset;
 
   public AbstractNettyRequest(Class<T> returnType, String procedureName, JsonRpcNettySender defaultJsonRpcNettySender,
                               SocketAddress defaultSocketAddress, Jsonb defaultJsonb, Charset defaultCharset) {

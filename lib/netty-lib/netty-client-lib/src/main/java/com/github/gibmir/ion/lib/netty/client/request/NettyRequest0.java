@@ -10,7 +10,6 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-//todo write notification request
 public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
   implements Request0<R> {
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
@@ -35,19 +34,16 @@ public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
 
   @Override
   public NettyRequest0<R> socketAddress(SocketAddress socketAddress) {
-    this.defaultSocketAddress = socketAddress;
-    return this;
+    return new NettyRequest0<>(returnType, procedureName, defaultJsonRpcNettySender, socketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest0<R> jsonb(Jsonb jsonb) {
-    this.jsonb = jsonb;
-    return this;
+    return new NettyRequest0<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
   @Override
   public NettyRequest0<R> charset(Charset charset) {
-    this.charset = charset;
-    return this;
+    return new NettyRequest0<>(returnType, procedureName, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 }

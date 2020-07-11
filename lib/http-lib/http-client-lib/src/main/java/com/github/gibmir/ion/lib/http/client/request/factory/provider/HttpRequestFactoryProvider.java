@@ -34,7 +34,7 @@ public class HttpRequestFactoryProvider implements RequestFactoryProvider {
     HttpClient httpClient = HttpRequestConfigurationUtils.createHttpClientWith(configuration);
     HttpRequestSender defaultHttpRequestSender = new HttpRequestSender(httpClient);
     return new HttpRequestFactory(defaultHttpRequestSender, HttpRequestConfigurationUtils.createUriWith(configuration),
-      RequestConfigurationUtils.createTimeoutWith(configuration),
+      HttpRequestConfigurationUtils.createTimeoutWith(configuration),
       ConfigurationUtils.createJsonbWith(configuration),
       RequestConfigurationUtils.createCharsetWith(configuration));
   }
