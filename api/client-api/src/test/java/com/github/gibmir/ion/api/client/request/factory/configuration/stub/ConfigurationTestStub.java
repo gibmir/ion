@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.client.request.factory.properties.environment.stub;
+package com.github.gibmir.ion.api.client.request.factory.configuration.stub;
 
 import com.github.gibmir.ion.api.configuration.Configuration;
 
@@ -24,6 +24,7 @@ public class ConfigurationTestStub implements Configuration {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> List<T> getValues(String propertyName, Class<T> genericType) {
     return (List<T>) configurationMap.get(propertyName);
   }

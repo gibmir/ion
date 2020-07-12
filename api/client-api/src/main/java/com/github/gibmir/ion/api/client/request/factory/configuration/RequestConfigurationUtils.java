@@ -15,9 +15,8 @@ public class RequestConfigurationUtils {
   //charset
   public static final String REQUEST_CHARSET_PROPERTY = ROOT_PREFIX + ".client.request.charset";
 
-  public static Charset createCharsetWith(Configuration configuration) {
+  public static Charset readCharsetFrom(Configuration configuration) {
     return configuration.getOptionalValue(RequestConfigurationUtils.REQUEST_CHARSET_PROPERTY, String.class)
       .map(Charset::forName).orElse(ConfigurationUtils.DEFAULT_CHARSET);
   }
-
 }

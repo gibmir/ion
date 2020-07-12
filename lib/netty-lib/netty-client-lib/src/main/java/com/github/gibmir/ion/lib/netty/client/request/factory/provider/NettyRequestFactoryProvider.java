@@ -34,6 +34,6 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
       NettyRequestConfigurationUtils.createEventLoopGroup(configuration)),
       NettyRequestConfigurationUtils.createSocketAddressWith(configuration),
       ConfigurationUtils.createJsonbWith(configuration),
-      RequestConfigurationUtils.createCharsetWith(configuration));
+      RequestConfigurationUtils.readCharsetFrom(configuration));
   }
 }
