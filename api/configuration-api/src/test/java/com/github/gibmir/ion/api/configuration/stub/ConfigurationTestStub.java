@@ -24,6 +24,7 @@ public class ConfigurationTestStub implements Configuration {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> List<T> getValues(String propertyName, Class<T> genericType) {
     return (List<T>) configurationMap.get(propertyName);
   }

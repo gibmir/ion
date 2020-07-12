@@ -40,6 +40,10 @@ public class ConfigurationUtils {
   }
 
   public static Jsonb createJsonbWith(Configuration configuration) {
+    return JsonbBuilder.newBuilder().withConfig(readJsonbConfigFrom(configuration)).build();
+  }
+
+  public static JsonbConfig readJsonbConfigFrom(Configuration configuration) {
     JsonbConfig jsonbConfig = new JsonbConfig();
     configuration.getOptionalValue(JSONB_ENCODING, String.class).ifPresent(jsonbConfig::withEncoding);
     configuration.getOptionalValue(JSONB_BINARY_DATA_STRATEGY, String.class).ifPresent(jsonbConfig::withBinaryDataStrategy);
@@ -48,7 +52,7 @@ public class ConfigurationUtils {
     setDateFormat(configuration, jsonbConfig);
     configuration.getOptionalValue(JSONB_FORMATTING, Boolean.class).ifPresent(jsonbConfig::withFormatting);
     configuration.getOptionalValue(JSONB_NULL_VALUES, Boolean.class).ifPresent(jsonbConfig::withNullValues);
-    return JsonbBuilder.newBuilder().withConfig(jsonbConfig).build();
+    return jsonbConfig;
   }
 
   private static void setDateFormat(Configuration configuration, JsonbConfig jsonbConfig) {

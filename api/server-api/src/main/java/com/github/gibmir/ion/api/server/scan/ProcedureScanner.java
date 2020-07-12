@@ -61,7 +61,7 @@ public class ProcedureScanner {
         }
       }
     }
-    throw new IllegalStateException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
   }
 
   public static <T1, T2, T3, R> Signature resolveSignature3(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedureClass) {
@@ -76,6 +76,6 @@ public class ProcedureScanner {
         }
       }
     }
-    throw new IllegalStateException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
   }
 }
