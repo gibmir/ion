@@ -15,16 +15,17 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class JsonRpcRequestProcessorFactory {
-
+  //todo type-safe generic type
   public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
                                                             T service) {
     try {
       final NamedMethodHandle[] methodHandles = resolveMethodHandlesFor(serviceInterface);
       NamedMethodHandle caller = findCaller(methodHandles);
       return new MethodHandleJsonRpcRequestProcessor<>(caller, service);
-    } catch (NoSuchMethodException | IllegalAccessException e) {
+    } catch (Exception e) {
       String message = "Exception occurred while preparing request processor for [" + serviceInterface + ']';
       throw new IllegalArgumentException(message, e);
     }
@@ -32,11 +33,12 @@ public class JsonRpcRequestProcessorFactory {
 
   public static NamedMethodHandle findCaller(NamedMethodHandle[] namedMethodHandles) {
     for (NamedMethodHandle namedMethodHandle : namedMethodHandles) {
+      //todo procedure implementation check
       if (namedMethodHandle.methodName.equals("call")) {
         return namedMethodHandle;
       }
     }
-    throw new IllegalArgumentException("There is no caller");
+    throw new IllegalArgumentException("There is no caller in " + Arrays.toString(namedMethodHandles));
   }
 
   public static NamedMethodHandle[] resolveMethodHandlesFor(Class<?> serviceInterface) throws NoSuchMethodException, IllegalAccessException {
@@ -56,11 +58,11 @@ public class JsonRpcRequestProcessorFactory {
     return methodHandles;
   }
 
-  private static class NamedMethodHandle {
+  public static class NamedMethodHandle {
     private final MethodHandle methodHandle;
     private final String methodName;
 
-    private NamedMethodHandle(MethodHandle methodHandle, String methodName) {
+    public NamedMethodHandle(MethodHandle methodHandle, String methodName) {
       this.methodHandle = methodHandle;
       this.methodName = methodName;
     }
@@ -85,21 +87,15 @@ public class JsonRpcRequestProcessorFactory {
       try {
         return invokeMethod(positionalRequest);
       } catch (Throwable throwable) {
-        final String message = String.format("Exception occurred while invoking method [%s]. Message is:%s",
-          positionalRequest.getProcedureName(), throwable.getMessage());
+        final String message = String.format("Exception [%s] occurred while invoking method [%s]. Message is:%s",
+          throwable, positionalRequest.getProcedureName(), throwable.getMessage());
         return ErrorResponse.withJsonRpcError(positionalRequest.getId(), new JsonRpcError(-32000, message));
       }
     }
 
     private JsonRpcResponse invokeMethod(RequestDto jsonRpcRequest) throws Throwable {
-//      for (final NamedMethodHandle methodHandle : namedMethodHandle) {
-//        if (methodHandle.methodName.equals("call")) {
       final Object result = namedMethodHandle.invokeWithArguments(service, jsonRpcRequest.getArgs());
       return SuccessResponse.createWithStringId(jsonRpcRequest.getId(), result);
-//        }
-//      }
-//      return ErrorResponse.withJsonRpcError(jsonRpcRequest.getId(), new JsonRpcError(-32000,
-//        "Method " + jsonRpcRequest.getProcedureName() + " is unsupported"));
     }
 
 
@@ -116,18 +112,11 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     private JsonRpcResponse invokeMethod(NotificationDto notificationRequest) throws Throwable {
-//      for (final NamedMethodHandle methodHandle : namedMethodHandle) {
-//        if (methodHandle.methodName.equals(notificationRequest.getProcedureName())) {
       final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
       if (result != null) {
         LOGGER.warn("Result isn't null for notification request:[{}]", notificationRequest);
       }
       return NotificationResponse.INSTANCE;
-//        }
-//      }
-//      LOGGER.error("Method [{}] is unsupported. Exception: ", notificationRequest.getProcedureName(),
-//        new UnsupportedOperationException());
-//      return NotificationResponse.INSTANCE;
     }
   }
 }

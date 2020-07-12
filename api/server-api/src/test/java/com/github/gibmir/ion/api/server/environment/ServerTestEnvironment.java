@@ -38,4 +38,8 @@ public class ServerTestEnvironment {
   public interface IncorrectTestProcedure3 extends TestProcedure3 {
 
   }
+
+  public static class ServerTestException extends RuntimeException {
+
+  }
 }
