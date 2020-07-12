@@ -14,6 +14,7 @@ import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
 
 public class SerializationUtils {
+
   private SerializationUtils() {
   }
 
@@ -24,7 +25,6 @@ public class SerializationUtils {
     } else {
       return extractRequest(object, methodSignature, jsonb);
     }
-
   }
 
   private static JsonRpcRequest extractRequest(JsonObject object, SignatureRegistry methodSignature, Jsonb jsonb) {

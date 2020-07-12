@@ -8,6 +8,9 @@ import com.github.gibmir.ion.api.dto.method.signature.Signature;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProcedureScanner {
 
@@ -36,46 +39,44 @@ public class ProcedureScanner {
   }
 
   public static <T, R> Signature resolveSignature1(Class<? extends JsonRemoteProcedure1<T, R>> procedureClass) {
-    Type[] genericInterfaces = procedureClass.getGenericInterfaces();
-    for (Type genericInterface : genericInterfaces) {
-      if (genericInterface instanceof ParameterizedType) {
-        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-        if (parameterizedType.getRawType() == JsonRemoteProcedure1.class) {
-          return new ParameterizedSignature(parameterizedType.getActualTypeArguments()[FIRST_PROCEDURE_PARAMETER]);
-        }
+    List<ParameterizedType> parametrizedInterfaces = findParametrizedInterfacesFor(procedureClass);
+    for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
+      if (parametrizedInterface.getRawType() == JsonRemoteProcedure1.class) {
+        return new ParameterizedSignature(parametrizedInterface.getActualTypeArguments()[FIRST_PROCEDURE_PARAMETER]);
       }
     }
-    throw new IllegalStateException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
   }
 
 
   public static <T1, T2, R> Signature resolveSignature2(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedureClass) {
-    Type[] genericInterfaces = procedureClass.getGenericInterfaces();
-    for (Type genericInterface : genericInterfaces) {
-      if (genericInterface instanceof ParameterizedType) {
-        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-        if (parameterizedType.getRawType() == JsonRemoteProcedure2.class) {
-          Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-          return new ParameterizedSignature(actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
-            actualTypeArguments[SECOND_PROCEDURE_PARAMETER]);
-        }
+    List<ParameterizedType> parametrizedInterfacesFor = findParametrizedInterfacesFor(procedureClass);
+    for (ParameterizedType parameterizedType : parametrizedInterfacesFor) {
+      if (parameterizedType.getRawType() == JsonRemoteProcedure2.class) {
+        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        return new ParameterizedSignature(actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
+          actualTypeArguments[SECOND_PROCEDURE_PARAMETER]);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
   }
 
   public static <T1, T2, T3, R> Signature resolveSignature3(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedureClass) {
-    Type[] genericInterfaces = procedureClass.getGenericInterfaces();
-    for (Type genericInterface : genericInterfaces) {
-      if (genericInterface instanceof ParameterizedType) {
-        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-        if (parameterizedType.getRawType() == JsonRemoteProcedure1.class) {
-          Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-          return new ParameterizedSignature(actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
-            actualTypeArguments[SECOND_PROCEDURE_PARAMETER], actualTypeArguments[THIRD_PROCEDURE_PARAMETER]);
-        }
+    List<ParameterizedType> parametrisedInterfaces = findParametrizedInterfacesFor(procedureClass);
+    for (ParameterizedType parameterizedType : parametrisedInterfaces) {
+      if (parameterizedType.getRawType() == JsonRemoteProcedure3.class) {
+        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        return new ParameterizedSignature(actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
+          actualTypeArguments[SECOND_PROCEDURE_PARAMETER], actualTypeArguments[THIRD_PROCEDURE_PARAMETER]);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
+  }
+
+  private static List<ParameterizedType> findParametrizedInterfacesFor(Class<?> analyzable) {
+    return Arrays.stream(analyzable.getGenericInterfaces())
+      .filter(genericInterface -> genericInterface instanceof ParameterizedType)
+      .map(ParameterizedType.class::cast)
+      .collect(Collectors.toList());
   }
 }

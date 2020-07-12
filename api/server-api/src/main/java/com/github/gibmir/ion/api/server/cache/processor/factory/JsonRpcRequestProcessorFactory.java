@@ -17,17 +17,26 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 public class JsonRpcRequestProcessorFactory {
-  //todo make friends with lambda
+
   public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
                                                             T service) {
-    final NamedMethodHandle[] methodHandles;
     try {
-      methodHandles = resolveMethodHandlesFor(serviceInterface);
+      final NamedMethodHandle[] methodHandles = resolveMethodHandlesFor(serviceInterface);
+      NamedMethodHandle caller = findCaller(methodHandles);
+      return new MethodHandleJsonRpcRequestProcessor<>(caller, service);
     } catch (NoSuchMethodException | IllegalAccessException e) {
       String message = "Exception occurred while preparing request processor for [" + serviceInterface + ']';
       throw new IllegalArgumentException(message, e);
     }
-    return new MethodHandleJsonRpcRequestProcessor<>(methodHandles, service);
+  }
+
+  public static NamedMethodHandle findCaller(NamedMethodHandle[] namedMethodHandles) {
+    for (NamedMethodHandle namedMethodHandle : namedMethodHandles) {
+      if (namedMethodHandle.methodName.equals("call")) {
+        return namedMethodHandle;
+      }
+    }
+    throw new IllegalArgumentException("There is no caller");
   }
 
   public static NamedMethodHandle[] resolveMethodHandlesFor(Class<?> serviceInterface) throws NoSuchMethodException, IllegalAccessException {
@@ -63,11 +72,11 @@ public class JsonRpcRequestProcessorFactory {
 
   private static class MethodHandleJsonRpcRequestProcessor<S> implements JsonRpcRequestProcessor {
     public static final Logger LOGGER = LoggerFactory.getLogger(MethodHandleJsonRpcRequestProcessor.class);
-    private final NamedMethodHandle[] namedMethodHandles;
+    private final NamedMethodHandle namedMethodHandle;
     private final S service;
 
-    public MethodHandleJsonRpcRequestProcessor(NamedMethodHandle[] namedMethodHandles, S service) {
-      this.namedMethodHandles = namedMethodHandles;
+    public MethodHandleJsonRpcRequestProcessor(NamedMethodHandle namedMethodHandle, S service) {
+      this.namedMethodHandle = namedMethodHandle;
       this.service = service;
     }
 
@@ -83,16 +92,16 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     private JsonRpcResponse invokeMethod(RequestDto jsonRpcRequest) throws Throwable {
-      for (final NamedMethodHandle methodHandle : namedMethodHandles) {
-        if (methodHandle.methodName.equals("call")) {
-          final Object result = methodHandle.invokeWithArguments(service, jsonRpcRequest.getArgs());
-          return SuccessResponse.createWithStringId(jsonRpcRequest.getId(), result);
-        }
-      }
-      return ErrorResponse.withJsonRpcError(jsonRpcRequest.getId(), new JsonRpcError(-32000,
-        "Method " + jsonRpcRequest.getProcedureName() + " is unsupported"));
-
+//      for (final NamedMethodHandle methodHandle : namedMethodHandle) {
+//        if (methodHandle.methodName.equals("call")) {
+      final Object result = namedMethodHandle.invokeWithArguments(service, jsonRpcRequest.getArgs());
+      return SuccessResponse.createWithStringId(jsonRpcRequest.getId(), result);
+//        }
+//      }
+//      return ErrorResponse.withJsonRpcError(jsonRpcRequest.getId(), new JsonRpcError(-32000,
+//        "Method " + jsonRpcRequest.getProcedureName() + " is unsupported"));
     }
+
 
     @Override
     public JsonRpcResponse process(NotificationDto notificationRequest) {
@@ -107,18 +116,18 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     private JsonRpcResponse invokeMethod(NotificationDto notificationRequest) throws Throwable {
-      for (final NamedMethodHandle methodHandle : namedMethodHandles) {
-        if (methodHandle.methodName.equals(notificationRequest.getProcedureName())) {
-          final Object result = methodHandle.invokeWithArguments(service, notificationRequest.getArgs());
-          if (result != null) {
-            LOGGER.warn("Result isn't null for notification request:[{}]", notificationRequest);
-          }
-          return NotificationResponse.INSTANCE;
-        }
+//      for (final NamedMethodHandle methodHandle : namedMethodHandle) {
+//        if (methodHandle.methodName.equals(notificationRequest.getProcedureName())) {
+      final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
+      if (result != null) {
+        LOGGER.warn("Result isn't null for notification request:[{}]", notificationRequest);
       }
-      LOGGER.error("Method [{}] is unsupported. Exception: ", notificationRequest.getProcedureName(),
-        new UnsupportedOperationException());
       return NotificationResponse.INSTANCE;
+//        }
+//      }
+//      LOGGER.error("Method [{}] is unsupported. Exception: ", notificationRequest.getProcedureName(),
+//        new UnsupportedOperationException());
+//      return NotificationResponse.INSTANCE;
     }
   }
 }
