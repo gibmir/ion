@@ -1,10 +1,10 @@
 package com.github.gibmir.ion.lib.netty.server;
 
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
 import com.github.gibmir.ion.api.server.cache.signature.SimpleSignatureRegistry;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
+import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
 import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
 import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.handler.JsonRpcRequestHandler;
@@ -33,7 +33,7 @@ public class Research {
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(new ConcurrentHashMap<>());
     SimpleProcedureProcessorRegistry simpleProcedureProcessorRegistry = new SimpleProcedureProcessorRegistry(new ConcurrentHashMap<>());
     NettyJsonRpcServer nettyJsonRpcServer = new NettyJsonRpcServer(signatureRegistry, simpleProcedureProcessorRegistry);
-    nettyJsonRpcServer.registerProcedureProcessor(TestProcedure.class, String::toUpperCase);
+    nettyJsonRpcServer.registerProcedureProcessor(TestProcedure.class, arg -> new RequestDto(arg.getRequestString().toUpperCase()));
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();

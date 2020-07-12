@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 public class ParameterizedSignature implements Signature {
   private final Type[] genericTypes;
 
-  public ParameterizedSignature(Type[] genericTypes) {
+  public ParameterizedSignature(Type... genericTypes) {
     this.genericTypes = genericTypes;
   }
 
