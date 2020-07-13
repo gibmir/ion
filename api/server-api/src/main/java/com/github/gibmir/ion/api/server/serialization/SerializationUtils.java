@@ -9,6 +9,7 @@ import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
+import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
@@ -18,12 +19,12 @@ public class SerializationUtils {
   private SerializationUtils() {
   }
 
-  public static JsonRpcRequest extractRequestFrom(JsonObject object, SignatureRegistry methodSignature, Jsonb jsonb) {
+  public static JsonRpcRequest extractRequestFrom(JsonStructure object, SignatureRegistry methodSignature, Jsonb jsonb) {
     if (object instanceof JsonArray) {
-      //todo implements batch
-      return null;
+      //todo implements batch and incorrect request json-rpc exception
+      throw new UnsupportedOperationException("Batch isn't implemented");
     } else {
-      return extractRequest(object, methodSignature, jsonb);
+      return extractRequest((JsonObject) object, methodSignature, jsonb);
     }
   }
 

@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 
-import javax.json.JsonObject;
+import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -27,7 +27,7 @@ public class JsonRpcRequestDecoder extends ReplayingDecoder<JsonRpcRequest> {
   protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
     byte[] bytes = new byte[in.writerIndex()];
     in.readBytes(bytes);
-    JsonObject jsonObject = jsonb.fromJson(new String(bytes, charset), JsonObject.class);
+    JsonStructure jsonObject = jsonb.fromJson(new String(bytes, charset), JsonStructure.class);
     JsonRpcRequest jsonRpcRequest = SerializationUtils.extractRequestFrom(jsonObject, signatureRegistry, jsonb);
     out.add(jsonRpcRequest);
   }
