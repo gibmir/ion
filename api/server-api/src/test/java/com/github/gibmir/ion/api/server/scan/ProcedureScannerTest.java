@@ -52,6 +52,55 @@ class ProcedureScannerTest {
     assertThat(genericTypes[2].getTypeName(), equalTo(String.class.getName()));
   }
 
+  @Test
+  void testResolveRawSignature1() {
+    assertThrows(IllegalArgumentException.class,
+      () -> {
+        Class rawTestProcedure1Class = ServerTestEnvironment.RawTestProcedure1.class;
+        ProcedureScanner.resolveSignature1(rawTestProcedure1Class)
+          .getGenericTypes();
+      });
+  }
+
+  @Test
+  void testResolveRawSignature2() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      Class rawTestProcedure2Class = ServerTestEnvironment.RawTestProcedure2.class;
+      ProcedureScanner.resolveSignature2(rawTestProcedure2Class)
+        .getGenericTypes();
+    });
+  }
+
+  @Test
+  void testResolveRawSignature3() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      Class rawTestProcedure3Class = ServerTestEnvironment.RawTestProcedure3.class;
+      ProcedureScanner.resolveSignature3(rawTestProcedure3Class)
+        .getGenericTypes();
+    });
+  }
+
+  @Test
+  void testResolveMultipleSignature1() {
+    assertDoesNotThrow(
+      () -> ProcedureScanner.resolveSignature1(ServerTestEnvironment.MultipleTestProcedure1.class)
+        .getGenericTypes());
+  }
+
+  @Test
+  void testResolveMultipleSignature2() {
+    assertDoesNotThrow(
+      () -> ProcedureScanner.resolveSignature2(ServerTestEnvironment.MultipleTestProcedure2.class)
+        .getGenericTypes());
+  }
+
+  @Test
+  void testResolveMultipleSignature3() {
+    assertDoesNotThrow(
+      () -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.MultipleTestProcedure3.class)
+        .getGenericTypes());
+  }
+
   //todo incorrect until deep scan feature
   @Test
   void testResolveIncorrectSignature1() {
@@ -71,4 +120,5 @@ class ProcedureScannerTest {
     assertThrows(IllegalArgumentException.class, () -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.IncorrectTestProcedure3.class)
       .getGenericTypes());
   }
+
 }

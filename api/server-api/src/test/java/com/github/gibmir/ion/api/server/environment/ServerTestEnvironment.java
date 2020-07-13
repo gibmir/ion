@@ -39,6 +39,31 @@ public class ServerTestEnvironment {
 
   }
 
+  public interface RawTestProcedure1 extends JsonRemoteProcedure1 {
+
+  }
+
+  public interface RawTestProcedure2 extends JsonRemoteProcedure2 {
+
+  }
+
+  public interface RawTestProcedure3 extends JsonRemoteProcedure3 {
+
+  }
+
+  public interface MultipleTestProcedure1 extends Comparable<String>, JsonRemoteProcedure1<String, String> {
+
+  }
+
+  public interface MultipleTestProcedure2 extends Comparable<String>, JsonRemoteProcedure2<String, String, String> {
+
+  }
+
+  public interface MultipleTestProcedure3 extends Comparable<String>,
+    JsonRemoteProcedure3<String, String, String, String> {
+
+  }
+
   public static class ServerTestException extends RuntimeException {
 
   }
