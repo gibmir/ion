@@ -12,11 +12,11 @@ import com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder.JsonRpcReque
 import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import javax.json.JsonObject;
 import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -42,6 +42,7 @@ public class JsonRpcNettySender {
       Channel channel = new Bootstrap()
         .group(group)
         .channel(channelClass)
+        .option(ChannelOption.SO_KEEPALIVE, true)
         .handler(new JsonRpcNettyClientInitializer(new LoggingHandler(logLevel),
           new JsonRpcRequestEncoder(jsonb, charset), new JsonRpcResponseDecoder(jsonb, charset)))
         .connect(socketAddress).sync()

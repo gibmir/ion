@@ -19,9 +19,24 @@ public class YamlConfigurationProvider implements ConfigurationProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(YamlConfigurationProvider.class);
 
   public static final String DEFAULT_RESOURCE = "application.yml";
+  private static volatile YamlConfiguration yamlConfigurationInstance;
 
   @Override
   public YamlConfiguration provide() {
+    YamlConfiguration localInstance = yamlConfigurationInstance;
+    //double-check singleton
+    if (localInstance == null) {
+      synchronized (YamlConfiguration.class) {
+        localInstance = yamlConfigurationInstance;
+        if (localInstance == null) {
+          yamlConfigurationInstance = localInstance = readYamlConfiguration();
+        }
+      }
+    }
+    return localInstance;
+  }
+
+  private YamlConfiguration readYamlConfiguration() {
     Yaml yaml = new Yaml();
     ClassLoader classLoader = YamlConfigurationProvider.class.getClassLoader();
     String configurationFilePath = System.getProperty(ConfigurationUtils.CONFIG_FILE_PATH_JAVA_PROPERTY);
