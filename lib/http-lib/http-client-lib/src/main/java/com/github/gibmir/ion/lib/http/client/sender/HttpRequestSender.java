@@ -7,7 +7,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import com.github.gibmir.ion.api.dto.serialization.SerializationUtils;
 
-import javax.json.JsonObject;
+import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -46,8 +46,8 @@ public class HttpRequestSender {
 
   private static <R> R getResultFromHttpResponse(HttpResponse<byte[]> httpResponse, Jsonb jsonb, Charset charset,
                                                  Class<R> returnType) {
-    JsonObject jsonObject = jsonb.fromJson(new String(httpResponse.body(), charset), JsonObject.class);
-    JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonObject, returnType, jsonb);
+    JsonStructure jsonStructure = jsonb.fromJson(new String(httpResponse.body(), charset), JsonStructure.class);
+    JsonRpcResponse jsonRpcResponse = SerializationUtils.extractResponseFrom(jsonStructure, returnType, jsonb);
     return getResultFromResponse(jsonRpcResponse, returnType);
   }
 

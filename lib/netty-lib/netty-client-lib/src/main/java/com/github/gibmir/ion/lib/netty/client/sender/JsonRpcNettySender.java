@@ -17,6 +17,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.JsonObject;
+import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
@@ -36,7 +37,7 @@ public class JsonRpcNettySender {
   //todo channel pool
   public <R> CompletableFuture<R> send(JsonRpcRequest request, Jsonb jsonb, Charset charset, Class<R> returnType,
                                        SocketAddress socketAddress) {
-    CompletableFuture<JsonObject> completableFuture = new CompletableFuture<>();
+    CompletableFuture<JsonStructure> completableFuture = new CompletableFuture<>();
     try {
       Channel channel = new Bootstrap()
         .group(group)
