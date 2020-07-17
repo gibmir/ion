@@ -1,8 +1,7 @@
 package com.github.gibmir.ion.lib.netty.server;
 
+import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
-import com.github.gibmir.ion.api.server.cache.signature.SimpleSignatureRegistry;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
 import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
@@ -30,9 +29,9 @@ public class Research {
 
   @Test
   void smoke() {
-    SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(new ConcurrentHashMap<>());
     SimpleProcedureProcessorRegistry simpleProcedureProcessorRegistry = new SimpleProcedureProcessorRegistry(new ConcurrentHashMap<>());
-    NettyJsonRpcServer nettyJsonRpcServer = new NettyJsonRpcServer(signatureRegistry, simpleProcedureProcessorRegistry);
+    ServerProcessor serverProcessor = new ServerProcessor(simpleProcedureProcessorRegistry);
+    NettyJsonRpcServer nettyJsonRpcServer = new NettyJsonRpcServer(simpleProcedureProcessorRegistry);
     nettyJsonRpcServer.registerProcedureProcessor(TestProcedure.class, arg -> new RequestDto(arg.getRequestString().toUpperCase()));
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -47,9 +46,9 @@ public class Research {
           @Override
           protected void initChannel(Channel channel) {
             ChannelPipeline pipeline = channel.pipeline();
-            pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset, signatureRegistry))
+            pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset))
               .addLast(new JsonRpcResponseEncoder(jsonb, charset))
-              .addLast(new JsonRpcRequestHandler(simpleProcedureProcessorRegistry));
+              .addLast(new JsonRpcRequestHandler(serverProcessor, jsonb));
           }
         });
       serverBootstrap.bind(52_222).sync().channel().closeFuture().sync();

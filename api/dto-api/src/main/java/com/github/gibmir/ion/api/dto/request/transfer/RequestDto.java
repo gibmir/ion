@@ -1,8 +1,5 @@
 package com.github.gibmir.ion.api.dto.request.transfer;
 
-import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
-import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
-
 import java.util.Map;
 
 public class RequestDto extends AbstractJsonRpcRequest {
@@ -39,10 +36,5 @@ public class RequestDto extends AbstractJsonRpcRequest {
 
   public void setId(String id) {
     this.id = id;
-  }
-
-  @Override
-  public JsonRpcResponse processWith(JsonRpcRequestProcessor jsonRpcRequestProcessor) {
-    return jsonRpcRequestProcessor.process(this);
   }
 }

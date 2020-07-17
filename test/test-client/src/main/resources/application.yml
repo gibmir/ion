@@ -1,0 +1,9 @@
+ion:
+  netty:
+    client:
+      log:
+        level: 'ERROR'
+      socket:
+        address:
+          host: 'localhost'
+          port: 52222

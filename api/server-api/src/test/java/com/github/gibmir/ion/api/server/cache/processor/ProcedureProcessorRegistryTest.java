@@ -1,9 +1,6 @@
 package com.github.gibmir.ion.api.server.cache.processor;
 
 import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
-import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
-import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
-import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -18,17 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class ProcedureProcessorRegistryTest {
 
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
-  public static final JsonRpcRequestProcessor TEST_JSON_RPC_REQUEST_PROCESSOR = new JsonRpcRequestProcessor() {
-    @Override
-    public JsonRpcResponse process(RequestDto requestDto) {
-      return null;
-    }
+  public static final JsonRpcRequestProcessor TEST_JSON_RPC_REQUEST_PROCESSOR =
+    (id, procedureName, jsonObject, jsonb, responseConsumer) -> {
 
-    @Override
-    public JsonRpcResponse process(NotificationDto notificationDto) {
-      return null;
-    }
-  };
+    };
 
   @Test
   void testGetProcedureProcessor() {

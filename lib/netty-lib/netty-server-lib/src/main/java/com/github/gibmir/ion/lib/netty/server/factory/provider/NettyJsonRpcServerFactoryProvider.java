@@ -4,9 +4,8 @@ import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
-import com.github.gibmir.ion.api.server.cache.signature.SimpleSignatureRegistry;
 import com.github.gibmir.ion.api.server.factory.JsonRpcServerFactory;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
@@ -24,7 +23,9 @@ import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryProvider {
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
@@ -45,36 +46,40 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
   }
 
   private NettyJsonRpcServerFactory createJsonRpcServerFactory() {
-    Configuration configuration = ConfigurationProvider.load().provide();
-    SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(new HashMap<>());
-    ProcedureProcessorRegistry procedureProcessorRegistry = new SimpleProcedureProcessorRegistry(new HashMap<>());
-    Charset charset = ServerConfigurationUtils.createCharsetWith(configuration);
-    Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
-    ServerBootstrap serverBootstrap = new ServerBootstrap();
-    EventLoopGroup bossGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
-    EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
-    try {
-      serverBootstrap.group(bossGroup, workerGroup)
-        .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
-        .handler(new LoggingHandler(NettyServerConfigurationUtils.resolveLogLevel(configuration)))
-        .childHandler(new ChannelInitializer<>() {
-          @Override
-          protected void initChannel(Channel channel) {
-            ChannelPipeline pipeline = channel.pipeline();
-            pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset, signatureRegistry))
-              .addLast(new JsonRpcResponseEncoder(jsonb, charset))
-              .addLast(new JsonRpcRequestHandler(procedureProcessorRegistry));
-          }
-        });
-      serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration))
-        .sync().channel().closeFuture().sync();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new IllegalStateException("Can't start server", e);
-    } finally {
-      workerGroup.shutdownGracefully();
-      bossGroup.shutdownGracefully();
-    }
-    return new NettyJsonRpcServerFactory(signatureRegistry, procedureProcessorRegistry);
+    ExecutorService serverExecutorService = Executors.newSingleThreadExecutor();
+    ProcedureProcessorRegistry procedureProcessorRegistry =
+      new SimpleProcedureProcessorRegistry(new ConcurrentHashMap<>());
+    ServerProcessor serverProcessor = new ServerProcessor(procedureProcessorRegistry);
+    serverExecutorService.submit(() -> {
+      Configuration configuration = ConfigurationProvider.load().provide();
+      Charset charset = ServerConfigurationUtils.createCharsetWith(configuration);
+      Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
+      ServerBootstrap serverBootstrap = new ServerBootstrap();
+      EventLoopGroup bossGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
+      EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
+      try {
+        serverBootstrap.group(bossGroup, workerGroup)
+          .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
+          .handler(new LoggingHandler(NettyServerConfigurationUtils.resolveLogLevel(configuration)))
+          .childHandler(new ChannelInitializer<>() {
+            @Override
+            protected void initChannel(Channel channel) {
+              ChannelPipeline pipeline = channel.pipeline();
+              pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset))
+                .addLast(new JsonRpcResponseEncoder(jsonb, charset))
+                .addLast(new JsonRpcRequestHandler(serverProcessor, jsonb));
+            }
+          });
+        serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration))
+          .sync().channel().closeFuture().sync();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new IllegalStateException("Can't start server", e);
+      } finally {
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
+      }
+    });
+    return new NettyJsonRpcServerFactory(serverExecutorService, procedureProcessorRegistry);
   }
 }

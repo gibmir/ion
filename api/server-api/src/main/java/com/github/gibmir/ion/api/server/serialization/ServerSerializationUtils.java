@@ -14,17 +14,19 @@ import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
 
-public class SerializationUtils {
+public class ServerSerializationUtils {
 
-  private SerializationUtils() {
+  private ServerSerializationUtils() {
   }
 
-  public static JsonRpcRequest extractRequestFrom(JsonStructure object, SignatureRegistry methodSignature, Jsonb jsonb) {
-    if (object instanceof JsonArray) {
+  public static JsonRpcRequest extractRequestFrom(JsonStructure jsonStructure, SignatureRegistry methodSignature,
+                                                  Jsonb jsonb) {
+
+    if (jsonStructure instanceof JsonArray) {
       //todo implements batch and incorrect request json-rpc exception
       throw new UnsupportedOperationException("Batch isn't implemented");
     } else {
-      return extractRequest((JsonObject) object, methodSignature, jsonb);
+      return extractRequest((JsonObject) jsonStructure, methodSignature, jsonb);
     }
   }
 
@@ -44,7 +46,8 @@ public class SerializationUtils {
     String procedureName = ((JsonString) methodValue).getString();
     Signature signature = methodSignature.getProcedureSignatureFor(procedureName);
     if (signature == null) {
-      throw new UnsupportedOperationException("Method " + methodValue + " is unsupported");
+      //todo exception processing
+      throw new UnsupportedOperationException("Method " + methodValue + " is unsupported. Request id " + id);
     }
     Object[] arguments = extractArguments(object, jsonb, signature);
     return RequestDto.positional(id, procedureName, arguments);

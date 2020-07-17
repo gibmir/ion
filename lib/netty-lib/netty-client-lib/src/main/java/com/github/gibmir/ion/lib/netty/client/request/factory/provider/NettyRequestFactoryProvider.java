@@ -8,6 +8,10 @@ import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.lib.netty.client.configuration.NettyRequestConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.request.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyRequestFactoryProvider implements RequestFactoryProvider {
   private static volatile NettyRequestFactory nettyRequestFactoryInstance;
@@ -29,9 +33,12 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
 
   private NettyRequestFactory createNettyRequestFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
-    return new NettyRequestFactory(new JsonRpcNettySender(NettyRequestConfigurationUtils.resolveLogLevel(configuration),
+    ResponseListenerRegistry responseListenerRegistry = new ResponseListenerRegistry(new ConcurrentHashMap<>());
+    ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(),
+      NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
       NettyRequestConfigurationUtils.resolveChannelClass(configuration),
-      NettyRequestConfigurationUtils.createEventLoopGroup(configuration)),
+      NettyRequestConfigurationUtils.resolveLogLevel(configuration), responseListenerRegistry);
+    return new NettyRequestFactory(new JsonRpcNettySender(channelPool, responseListenerRegistry),
       NettyRequestConfigurationUtils.createSocketAddressWith(configuration),
       ConfigurationUtils.createJsonbWith(configuration),
       RequestConfigurationUtils.readCharsetFrom(configuration));

@@ -22,8 +22,8 @@ public class NettyRequest0<R> extends AbstractNettyRequest<R, NettyRequest0<R>>
 
   @Override
   public CompletableFuture<R> call(String id) {
-    return defaultJsonRpcNettySender.send(RequestDto.positional(id, procedureName, EMPTY_PAYLOAD), jsonb, charset,
-      returnType, defaultSocketAddress);
+    return defaultJsonRpcNettySender.send(id, RequestDto.positional(id, procedureName, EMPTY_PAYLOAD), jsonb,
+      charset, returnType, defaultSocketAddress);
   }
 
   @Override

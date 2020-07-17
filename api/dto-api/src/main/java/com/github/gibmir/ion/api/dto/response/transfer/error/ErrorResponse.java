@@ -29,7 +29,11 @@ public class ErrorResponse extends AbstractJsonRpcResponse implements JsonRpcRes
       + throwable.getMessage()));
   }
 
-  public static ErrorResponse withJsonRpcError(String id, JsonRpcError jsonRpcError) {
+  public static ErrorResponse withNullId(JsonRpcError jsonRpcError) {
+    return new ErrorResponse(JSON_RPC_NULL_ID, jsonRpcError);
+  }
+
+  public static ErrorResponse fromJsonRpcError(String id, JsonRpcError jsonRpcError) {
     return new ErrorResponse(id, jsonRpcError);
   }
 

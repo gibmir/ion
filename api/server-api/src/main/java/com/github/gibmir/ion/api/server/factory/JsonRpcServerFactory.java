@@ -2,6 +2,8 @@ package com.github.gibmir.ion.api.server.factory;
 
 import com.github.gibmir.ion.api.server.JsonRpcServer;
 
-public interface JsonRpcServerFactory {
+import java.io.Closeable;
+
+public interface JsonRpcServerFactory extends Closeable {
   JsonRpcServer create();
 }

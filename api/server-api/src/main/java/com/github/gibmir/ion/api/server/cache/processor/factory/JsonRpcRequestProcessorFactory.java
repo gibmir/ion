@@ -1,21 +1,28 @@
 package com.github.gibmir.ion.api.server.cache.processor.factory;
 
 import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
+import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
 import com.github.gibmir.ion.api.dto.response.transfer.notification.NotificationResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+import javax.json.bind.Jsonb;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class JsonRpcRequestProcessorFactory {
   //todo type-safe generic type
@@ -53,7 +60,7 @@ public class JsonRpcRequestProcessorFactory {
       final MethodType methodType = MethodType.methodType(method.getReturnType(), method.getParameterTypes());
       final MethodHandle methodHandle = publicLookup.findVirtual(serviceInterface, name, methodType);
       methodHandles[i] = new NamedMethodHandle(methodHandle.asSpreader(Object[].class, method.getParameterCount()),
-        name);
+        name, method.getParameterTypes());
     }
     return methodHandles;
   }
@@ -61,10 +68,12 @@ public class JsonRpcRequestProcessorFactory {
   public static class NamedMethodHandle {
     private final MethodHandle methodHandle;
     private final String methodName;
+    private final Class<?>[] argumentTypes;
 
-    public NamedMethodHandle(MethodHandle methodHandle, String methodName) {
+    public NamedMethodHandle(MethodHandle methodHandle, String methodName, Class<?>... argumentTypes) {
       this.methodHandle = methodHandle;
       this.methodName = methodName;
+      this.argumentTypes = argumentTypes;
     }
 
     public Object invokeWithArguments(Object... args) throws Throwable {
@@ -83,13 +92,35 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
+    public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
+                        Consumer<JsonRpcResponse> responseConsumer) {
+      JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
+      int length = namedMethodHandle.argumentTypes.length;
+      switch (paramsValue.getValueType()) {
+        case ARRAY:
+          Object[] arguments = new Object[length];
+          JsonArray jsonParamsArray = paramsValue.asJsonArray();
+          for (int i = 0; i < length; i++) {
+            arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
+          }
+          responseConsumer.accept(process(RequestDto.positional(id, procedureName, arguments)));
+          return;
+        case OBJECT:
+          //todo named params
+        default:
+          JsonRpcError jsonRpcError = Errors.INVALID_METHOD_PARAMETERS.getError()
+            .appendMessage("Named parameters is unsupported");
+          responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, jsonRpcError));
+      }
+    }
+
     public JsonRpcResponse process(RequestDto positionalRequest) {
       try {
         return invokeMethod(positionalRequest);
       } catch (Throwable throwable) {
         final String message = String.format("Exception [%s] occurred while invoking method [%s]. Message is:%s",
           throwable, positionalRequest.getProcedureName(), throwable.getMessage());
-        return ErrorResponse.withJsonRpcError(positionalRequest.getId(), new JsonRpcError(-32000, message));
+        return ErrorResponse.fromJsonRpcError(positionalRequest.getId(), new JsonRpcError(-32000, message));
       }
     }
 
@@ -99,7 +130,6 @@ public class JsonRpcRequestProcessorFactory {
     }
 
 
-    @Override
     public JsonRpcResponse process(NotificationDto notificationRequest) {
       try {
         return invokeMethod(notificationRequest);

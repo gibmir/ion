@@ -1,26 +1,29 @@
 package com.github.gibmir.ion.lib.netty.server.handler;
 
-import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
-import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
-  private final ProcedureProcessorRegistry procedureProcessorRegistry;
+import javax.json.JsonStructure;
+import javax.json.bind.Jsonb;
 
-  public JsonRpcRequestHandler(ProcedureProcessorRegistry procedureProcessorRegistry) {
-    this.procedureProcessorRegistry = procedureProcessorRegistry;
+public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
+  private final ServerProcessor serverProcessor;
+  private final Jsonb jsonb;
+
+  public JsonRpcRequestHandler(ServerProcessor serverProcessor,
+                               Jsonb jsonb) {
+    this.serverProcessor = serverProcessor;
+    this.jsonb = jsonb;
   }
 
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    JsonRpcRequest jsonRpcRequest = (JsonRpcRequest) msg;
-    JsonRpcResponse jsonRpcResponse = jsonRpcRequest.processWith(procedureProcessorRegistry.getProcedureProcessorFor(jsonRpcRequest.getProcedureName()));
-    ctx.write(jsonRpcResponse).addListener(ChannelFutureListener.CLOSE);
+    JsonStructure jsonStructure = (JsonStructure) msg;
+    serverProcessor.process(jsonStructure, jsonb, ctx::write);
   }
 
   @Override

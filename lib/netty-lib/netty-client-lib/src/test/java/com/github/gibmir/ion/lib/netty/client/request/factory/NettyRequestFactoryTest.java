@@ -5,6 +5,8 @@ import com.github.gibmir.ion.api.client.request.factory.RequestFactory;
 import com.github.gibmir.ion.api.client.request.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
 import io.netty.channel.EventLoopGroup;
@@ -17,6 +19,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 class NettyRequestFactoryTest {
@@ -24,16 +27,21 @@ class NettyRequestFactoryTest {
   @Test
   void smoke() throws ExecutionException, InterruptedException {
     EventLoopGroup eventExecutors = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(LogLevel.TRACE, NioSocketChannel.class, eventExecutors);
+    ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
+      LogLevel.INFO, new ResponseListenerRegistry(new ConcurrentHashMap<>()));
+    ResponseListenerRegistry responseListenerRegistry = new ResponseListenerRegistry(new ConcurrentHashMap<>());
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, responseListenerRegistry);
 
     Jsonb jsonb = JsonbBuilder.create();
     NettyRequestFactory nettyRequestFactory = new NettyRequestFactory(jsonRpcNettySender,
       InetSocketAddress.createUnresolved("localhost", 52222), jsonb, StandardCharsets.UTF_8);
 
     NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class, RequestDto.class);
-    RequestDto result = request.positionalCall("someid", new RequestDto("some arg")).get();
-    System.out.println(result);
-    System.out.println(request.positionalCall("second", new RequestDto("second" + result)).get());
+    System.out.println(request.positionalCall("someId", new RequestDto("some arg"))
+      .thenApply(requestDto -> request.positionalCall("second",
+        new RequestDto("second" + requestDto.getRequestString())))
+      .whenComplete((requestDtoCompletableFuture, throwable) -> System.out.println(requestDtoCompletableFuture + ":" + throwable))
+      .get());
   }
 
   @Test

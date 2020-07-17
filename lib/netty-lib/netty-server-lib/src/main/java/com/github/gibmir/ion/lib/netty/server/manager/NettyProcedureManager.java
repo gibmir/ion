@@ -1,29 +1,25 @@
 package com.github.gibmir.ion.lib.netty.server.manager;
 
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 
 public class NettyProcedureManager implements ProcedureManager {
-  private final SignatureRegistry signatureRegistry;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
-  private final String methodName;
+  private final String procedureName;
 
 
-  public NettyProcedureManager(SignatureRegistry signatureRegistry, ProcedureProcessorRegistry procedureProcessorRegistry, String methodName) {
-    this.signatureRegistry = signatureRegistry;
+  public NettyProcedureManager(ProcedureProcessorRegistry procedureProcessorRegistry, String procedureName) {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
-    this.methodName = methodName;
+    this.procedureName = procedureName;
   }
 
   @Override
   public void close() {
-    signatureRegistry.unregister(methodName);
-    procedureProcessorRegistry.unregister(methodName);
+    procedureProcessorRegistry.unregister(procedureName);
   }
 
   @Override
   public String getProcedureName() {
-    return methodName;
+    return procedureName;
   }
 }

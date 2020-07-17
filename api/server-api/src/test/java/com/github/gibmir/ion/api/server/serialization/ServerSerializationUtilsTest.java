@@ -21,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SerializationUtilsTest {
+class ServerSerializationUtilsTest {
 
   public static final Jsonb JSONB = JsonbBuilder.create();
   public static final String ID = "12345-54321";
@@ -36,9 +36,8 @@ class SerializationUtilsTest {
     JsonStructure jsonStructure = JSONB.fromJson(JSONB.toJson(REQUEST_DTO), JsonStructure.class);
     Map<String, Signature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
-    JsonRpcRequest jsonRpcRequest = SerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
+    JsonRpcRequest jsonRpcRequest = ServerSerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
     assertTrue(jsonRpcRequest instanceof RequestDto);
-    assertThat(jsonRpcRequest.getProcedureName(), equalTo(PROCEDURE_NAME));
     assertThat(((RequestDto) jsonRpcRequest).getId(), equalTo(ID));
     assertThat(((RequestDto) jsonRpcRequest).getArgs(), equalTo(ARGS));
   }
@@ -53,9 +52,8 @@ class SerializationUtilsTest {
     JsonStructure jsonStructure = JSONB.fromJson(REQUEST_STRING, JsonStructure.class);
     Map<String, Signature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
-    JsonRpcRequest jsonRpcRequest = SerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
+    JsonRpcRequest jsonRpcRequest = ServerSerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
     assertTrue(jsonRpcRequest instanceof RequestDto);
-    assertThat(jsonRpcRequest.getProcedureName(), equalTo(PROCEDURE_NAME));
     assertThat(((RequestDto) jsonRpcRequest).getId(), equalTo(ID));
     assertThat(((RequestDto) jsonRpcRequest).getArgs(), equalTo(ARGS));
   }
@@ -66,7 +64,7 @@ class SerializationUtilsTest {
   void testExtractIncorrectRequestWithUnsupportedMethod() {
     JsonStructure jsonStructure = JSONB.fromJson(REQUEST_STRING, JsonStructure.class);
     UnsupportedOperationException unsupportedOperationException = assertThrows(UnsupportedOperationException.class,
-      () -> SerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
+      () -> ServerSerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
     assertThat(unsupportedOperationException.getMessage(), containsString(PROCEDURE_NAME));
   }
 
@@ -78,7 +76,7 @@ class SerializationUtilsTest {
   void testExtractIncorrectRequestWithoutProtocol() {
     JsonStructure jsonStructure = JSONB.fromJson(REQUEST_STRING_WITHOUT_PROTOCOL, JsonStructure.class);
     IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-      () -> SerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
+      () -> ServerSerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase("Protocol"));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase(ID));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase(PROCEDURE_NAME));
@@ -92,7 +90,7 @@ class SerializationUtilsTest {
   void testExtractIncorrectRequestWithoutId() {
     JsonStructure jsonStructure = JSONB.fromJson(REQUEST_STRING_WITHOUT_ID, JsonStructure.class);
     IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-      () -> SerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
+      () -> ServerSerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase("Id"));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase(PROCEDURE_NAME));
   }
@@ -103,7 +101,7 @@ class SerializationUtilsTest {
       "\"id\":\"" + ID + "\"," +
       "\"params\":[1,2,3]}", JsonStructure.class);
     IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-      () -> SerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
+      () -> ServerSerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase("Method"));
     assertThat(illegalArgumentException.getMessage(), containsStringIgnoringCase(ID));
   }
@@ -121,6 +119,6 @@ class SerializationUtilsTest {
   void testExtractBatch() {
     JsonStructure jsonStructure = JSONB.fromJson(BATCH, JsonStructure.class);
     assertThrows(UnsupportedOperationException.class,
-      () -> SerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
+      () -> ServerSerializationUtils.extractRequestFrom(jsonStructure, EMPTY_SIGNATURE_REGISTRY, JSONB));
   }
 }

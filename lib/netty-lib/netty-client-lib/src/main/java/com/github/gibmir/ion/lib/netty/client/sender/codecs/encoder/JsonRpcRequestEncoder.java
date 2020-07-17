@@ -1,6 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder;
 
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
+import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

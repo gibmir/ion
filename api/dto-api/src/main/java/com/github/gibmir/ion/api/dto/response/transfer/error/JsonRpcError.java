@@ -32,6 +32,11 @@ public class JsonRpcError {
     this.message = message;
   }
 
+  public JsonRpcError appendMessage(String message) {
+    this.message += message;
+    return this;
+  }
+
   @Override
   public String toString() {
     return '{' +

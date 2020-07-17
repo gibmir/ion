@@ -7,17 +7,14 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.server.JsonRpcServer;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.cache.processor.factory.JsonRpcRequestProcessorFactory;
-import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import com.github.gibmir.ion.api.server.scan.ProcedureScanner;
 import com.github.gibmir.ion.lib.netty.server.manager.NettyProcedureManager;
 
 public class NettyJsonRpcServer implements JsonRpcServer {
-  private final SignatureRegistry signatureRegistry;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
 
-  public NettyJsonRpcServer(SignatureRegistry signatureRegistry, ProcedureProcessorRegistry procedureProcessorRegistry) {
-    this.signatureRegistry = signatureRegistry;
+  public NettyJsonRpcServer(ProcedureProcessorRegistry procedureProcessorRegistry) {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
   }
 
@@ -27,8 +24,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
-    signatureRegistry.register(procedureName, ProcedureScanner.resolveSignature0());
-    return new NettyProcedureManager(signatureRegistry, procedureProcessorRegistry, procedureName);
+    return new NettyProcedureManager(procedureProcessorRegistry,procedureName);
   }
 
   @Override
@@ -37,8 +33,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
-    signatureRegistry.register(procedureName, ProcedureScanner.resolveSignature1(procedureClass));
-    return new NettyProcedureManager(signatureRegistry, procedureProcessorRegistry, procedureClass.getName());
+    return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }
 
   @Override
@@ -47,16 +42,15 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
-    signatureRegistry.register(procedureName, ProcedureScanner.resolveSignature2(procedureClass));
-    return new NettyProcedureManager(signatureRegistry, procedureProcessorRegistry, procedureClass.getName());
+    return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }
 
   @Override
   public <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> ProcedureManager registerProcedureProcessor(
     Class<P> procedureClass, P procedureImpl) {
     String procedureName = procedureClass.getName();
-    procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
-    signatureRegistry.register(procedureName, ProcedureScanner.resolveSignature3(procedureClass));
-    return new NettyProcedureManager(signatureRegistry, procedureProcessorRegistry, procedureClass.getName());
+    procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor(procedureClass,
+      procedureImpl));
+    return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }
 }
