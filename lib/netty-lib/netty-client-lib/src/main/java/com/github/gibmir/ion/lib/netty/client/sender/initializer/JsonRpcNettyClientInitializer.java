@@ -24,7 +24,7 @@ public class JsonRpcNettyClientInitializer extends ChannelInitializer<SocketChan
 
   @Override
   protected void initChannel(SocketChannel ch) {
-    ch.pipeline()/*addLast(loggingHandler)*/.addLast(jsonRpcRequestEncoder)
+    ch.pipeline().addLast(loggingHandler).addLast(jsonRpcRequestEncoder)
       .addLast(jsonRpcResponseDecoder).addLast(jsonRpcResponseHandler);
   }
 }

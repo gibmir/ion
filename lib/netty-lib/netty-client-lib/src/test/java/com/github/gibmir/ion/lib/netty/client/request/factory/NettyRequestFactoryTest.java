@@ -27,9 +27,9 @@ class NettyRequestFactoryTest {
   @Test
   void smoke() throws ExecutionException, InterruptedException {
     EventLoopGroup eventExecutors = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
-    ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
-      LogLevel.INFO, new ResponseListenerRegistry(new ConcurrentHashMap<>()));
     ResponseListenerRegistry responseListenerRegistry = new ResponseListenerRegistry(new ConcurrentHashMap<>());
+    ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
+      LogLevel.INFO, responseListenerRegistry);
     JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, responseListenerRegistry);
 
     Jsonb jsonb = JsonbBuilder.create();
@@ -38,9 +38,6 @@ class NettyRequestFactoryTest {
 
     NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class, RequestDto.class);
     System.out.println(request.positionalCall("someId", new RequestDto("some arg"))
-      .thenApply(requestDto -> request.positionalCall("second",
-        new RequestDto("second" + requestDto.getRequestString())))
-      .whenComplete((requestDtoCompletableFuture, throwable) -> System.out.println(requestDtoCompletableFuture + ":" + throwable))
       .get());
   }
 

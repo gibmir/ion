@@ -23,6 +23,6 @@ public enum Errors {
   }
 
   public JsonRpcError getError() {
-    return error;
+    return new JsonRpcError(error.getCode(), error.getMessage());
   }
 }
