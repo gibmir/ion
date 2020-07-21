@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.JsonStructure;
+import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 
 public class JsonRpcResponseHandler extends ChannelInboundHandlerAdapter {
@@ -22,7 +23,7 @@ public class JsonRpcResponseHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    responseListenerRegistry.notifyListenerWith((JsonStructure) msg, jsonb);
+    responseListenerRegistry.notifyListenerWith((JsonValue) msg, jsonb);
   }
 
   @Override

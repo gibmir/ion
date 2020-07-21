@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import javax.json.JsonString;
-import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import java.util.Map;
@@ -39,20 +38,11 @@ public class ResponseListenerRegistry {
     });
   }
 
-  public void notifyListenerWith(JsonStructure jsonStructure, Jsonb jsonb) {
+  public void notifyListenerWith(JsonValue jsonValue, Jsonb jsonb) {
     try {
-      switch (jsonStructure.getValueType()) {
+      switch (jsonValue.getValueType()) {
         case OBJECT:
-          JsonObject jsonObject = (JsonObject) jsonStructure;
-          JsonValue idValue = jsonObject.get(SerializationProperties.ID_KEY);
-          if (idValue == null) {
-            LOGGER.error("Error [{}] occurred while deserialize response. Id was not present ",
-              Errors.INVALID_RPC.getError());
-            return;
-          }
-          String id = ((JsonString) idValue).getString();
-          idPerResponseListener.compute(id,
-            (key, responseFuture) -> computeResponse(jsonb, jsonObject, key, responseFuture));
+          processRequest((JsonObject) jsonValue, jsonb);
           return;
         case ARRAY:
         default:
@@ -61,6 +51,18 @@ public class ResponseListenerRegistry {
     } catch (Exception parseException) {
       LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError());
     }
+  }
+
+  private void processRequest(JsonObject jsonObject, Jsonb jsonb) {
+    JsonValue idValue = jsonObject.get(SerializationProperties.ID_KEY);
+    if (idValue == null) {
+      LOGGER.error("Error [{}] occurred while deserialize response. Id was not present ",
+        Errors.INVALID_RPC.getError());
+      return;
+    }
+    String id = ((JsonString) idValue).getString();
+    idPerResponseListener.compute(id,
+      (key, responseFuture) -> computeResponse(jsonb, jsonObject, key, responseFuture));
   }
 
   private ResponseFuture computeResponse(Jsonb jsonb, JsonObject jsonObject, String id,

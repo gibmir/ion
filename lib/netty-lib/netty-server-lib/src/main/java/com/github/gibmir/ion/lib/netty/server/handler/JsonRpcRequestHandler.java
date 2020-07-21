@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import javax.json.JsonStructure;
+import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 
 public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
@@ -22,8 +23,8 @@ public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    JsonStructure jsonStructure = (JsonStructure) msg;
-    serverProcessor.process(jsonStructure, jsonb, ctx::write);
+    JsonValue jsonValue = (JsonValue) msg;
+    serverProcessor.process(jsonValue, jsonb, ctx::write);
   }
 
   @Override

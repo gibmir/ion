@@ -23,13 +23,13 @@ public class ServerProcessor {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
   }
 
-  public void process(JsonValue jsonStructure, Jsonb jsonb, Consumer<JsonRpcResponse> responseConsumer) {
-    switch (jsonStructure.getValueType()) {
+  public void process(JsonValue jsonValue, Jsonb jsonb, Consumer<JsonRpcResponse> responseConsumer) {
+    switch (jsonValue.getValueType()) {
       case OBJECT:
-        processObject((JsonObject) jsonStructure, jsonb, responseConsumer);
+        processObject((JsonObject) jsonValue, jsonb, responseConsumer);
         return;
       case ARRAY:
-        processBatch((JsonArray) jsonStructure, jsonb, responseConsumer);
+        processBatch((JsonArray) jsonValue, jsonb, responseConsumer);
         return;
       default:
         responseConsumer.accept(ErrorResponse.withNullId(Errors.INVALID_RPC.getError()));
