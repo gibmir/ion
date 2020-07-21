@@ -1,8 +1,9 @@
 package com.github.gibmir.ion.lib.netty.client.request.factory;
 
 import com.github.gibmir.ion.api.client.request.Request1;
-import com.github.gibmir.ion.api.client.request.factory.RequestFactory;
-import com.github.gibmir.ion.api.client.request.factory.provider.RequestFactoryProvider;
+import com.github.gibmir.ion.api.client.factory.RequestFactory;
+import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
+import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;

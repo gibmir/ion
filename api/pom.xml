@@ -18,6 +18,8 @@
         <module>discovery-api</module>
         <module>configuration-api</module>
         <module>server-api</module>
+        <module>client-request-api</module>
+        <module>client-batch-api</module>
     </modules>
 
     <dependencies>

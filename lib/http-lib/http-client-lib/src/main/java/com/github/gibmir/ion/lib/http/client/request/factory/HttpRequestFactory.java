@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.http.client.request.factory;
 
-import com.github.gibmir.ion.api.client.request.factory.RequestFactory;
+import com.github.gibmir.ion.api.client.factory.RequestFactory;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;

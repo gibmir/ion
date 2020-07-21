@@ -1,7 +1,8 @@
 package com.github.gibmir.ion.lib.http.client.request.batch.request;
 
-import com.github.gibmir.ion.api.client.request.batch.request.BatchRequest;
-import com.github.gibmir.ion.api.client.request.batch.response.BatchResponse;
+import com.github.gibmir.ion.api.client.batch.request.BatchRequest;
+import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
+import com.github.gibmir.ion.api.client.batch.request.builder.BatchRequestBuilder;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
@@ -47,7 +48,7 @@ public class HttpBatchRequest implements BatchRequest {
     return httpRequestSender.sendBatch(bodyPublisher, uri, duration, jsonb, charset, responseTypes);
   }
 
-  public static class HttpBatchBuilder implements Builder<HttpBatchBuilder> {
+  public static class HttpBatchBuilder implements BatchRequestBuilder<HttpBatchBuilder> {
     private final List<RequestDto> batchRequests = new ArrayList<>();
     //todo class per id
     private final List<Class<?>> responseTypes = new ArrayList<>();

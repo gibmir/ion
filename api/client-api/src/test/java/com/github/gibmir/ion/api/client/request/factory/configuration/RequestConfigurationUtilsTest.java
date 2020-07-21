@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.api.client.request.factory.configuration;
 
+import com.github.gibmir.ion.api.client.factory.configuration.RequestConfigurationUtils;
 import com.github.gibmir.ion.api.client.request.factory.configuration.stub.ConfigurationTestStub;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import org.junit.jupiter.api.Test;

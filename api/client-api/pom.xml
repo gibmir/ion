@@ -14,6 +14,16 @@
     <dependencies>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>client-batch-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>client-request-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
             <artifactId>dto-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

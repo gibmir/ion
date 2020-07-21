@@ -1,9 +1,9 @@
 package com.github.gibmir.ion.lib.http.client.sender;
 
-import com.github.gibmir.ion.api.client.request.batch.response.BatchResponse;
-import com.github.gibmir.ion.api.client.request.batch.response.element.BatchElement;
-import com.github.gibmir.ion.api.client.request.batch.response.element.error.ErrorBatchElement;
-import com.github.gibmir.ion.api.client.request.batch.response.element.success.SuccessBatchElement;
+import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
+import com.github.gibmir.ion.api.client.batch.response.element.BatchElement;
+import com.github.gibmir.ion.api.client.batch.response.element.error.ErrorBatchElement;
+import com.github.gibmir.ion.api.client.batch.response.element.success.SuccessBatchElement;
 import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
