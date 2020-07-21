@@ -4,6 +4,7 @@ import com.github.gibmir.ion.api.client.request.Request0;
 import com.github.gibmir.ion.api.client.request.Request1;
 import com.github.gibmir.ion.api.client.request.Request2;
 import com.github.gibmir.ion.api.client.request.Request3;
+import com.github.gibmir.ion.api.client.request.batch.request.BatchRequest;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
@@ -20,4 +21,6 @@ public interface RequestFactory {
 
   <T1, T2, T3, R> Request3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure,
                                                    Class<R> returnType);
+
+  BatchRequest.Builder<?> batch();
 }

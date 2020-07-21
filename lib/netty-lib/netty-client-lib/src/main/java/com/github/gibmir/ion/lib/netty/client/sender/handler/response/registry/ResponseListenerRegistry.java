@@ -3,6 +3,7 @@ package com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry;
 import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
+import com.github.gibmir.ion.api.dto.response.transfer.batch.BatchResponseDto;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
@@ -113,6 +114,11 @@ public class ResponseListenerRegistry {
     @Override
     public void process(SuccessResponse successResponse) {
       resultFuture.complete(successResponse.getResult());
+    }
+
+    @Override
+    public void process(BatchResponseDto batchResponseDto) {
+
     }
   }
 }

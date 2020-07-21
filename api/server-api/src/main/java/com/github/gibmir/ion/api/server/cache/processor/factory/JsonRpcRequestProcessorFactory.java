@@ -2,7 +2,7 @@ package com.github.gibmir.ion.api.server.cache.processor.factory;
 
 import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
-import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
+import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;

@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.http.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request0;
-import com.github.gibmir.ion.api.dto.request.transfer.NotificationDto;
+import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
 

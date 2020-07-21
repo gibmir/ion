@@ -9,6 +9,7 @@ import com.github.gibmir.ion.lib.http.client.request.HttpRequest0;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest1;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest2;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest3;
+import com.github.gibmir.ion.lib.http.client.request.batch.request.HttpBatchRequest;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
 
 import javax.json.bind.Jsonb;
@@ -56,5 +57,10 @@ public class HttpRequestFactory implements RequestFactory {
                                                               Class<R> returnType) {
     return new HttpRequest3<>(returnType, procedure.getName(), defaultHttpRequestSender, defaultUri, defaultTimeout,
       defaultJsonb, defaultCharset);
+  }
+
+  @Override
+  public HttpBatchRequest.HttpBatchBuilder batch() {
+    return null;
   }
 }
