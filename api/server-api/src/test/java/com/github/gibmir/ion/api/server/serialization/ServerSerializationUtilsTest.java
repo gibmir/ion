@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.server.serialization;
 
-import com.github.gibmir.ion.api.dto.method.signature.ParameterizedSignature;
-import com.github.gibmir.ion.api.dto.method.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedSignature;
+import com.github.gibmir.ion.api.core.procedure.signature.Signature;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;

@@ -9,5 +9,4 @@ public class NotificationDto extends AbstractJsonRpcRequest {
   public NotificationDto(String procedureName, Object[] args) {
     super(procedureName, args);
   }
-
 }

@@ -1,8 +1,8 @@
 package com.github.gibmir.ion.lib.netty.client.request;
 
 import com.github.gibmir.ion.api.client.request.Request3;
-import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
+import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
 import javax.json.bind.Jsonb;
@@ -40,7 +40,7 @@ public class NettyRequest3<T1, T2, T3, R> extends AbstractNettyRequest<R, NettyR
 
   @Override
   public void notificationCall(T1 arg1, T2 arg2, T3 arg3) {
-    defaultJsonRpcNettySender.sendNotification(new NotificationDto(procedureName, new Object[]{arg1, arg2, arg3}),
+    defaultJsonRpcNettySender.send(new NotificationDto(procedureName, new Object[]{arg1, arg2, arg3}),
       jsonb, charset, defaultSocketAddress);
   }
 }

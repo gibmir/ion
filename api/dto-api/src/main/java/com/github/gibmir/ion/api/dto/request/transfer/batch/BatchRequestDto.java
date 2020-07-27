@@ -2,13 +2,13 @@ package com.github.gibmir.ion.api.dto.request.transfer.batch;
 
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 
-public class BatchRequest implements JsonRpcRequest {
+public class BatchRequestDto implements JsonRpcRequest {
   private JsonRpcRequest[] jsonRpcRequests;
 
-  public BatchRequest() {
+  public BatchRequestDto() {
   }
 
-  public BatchRequest(JsonRpcRequest[] jsonRpcRequests) {
+  public BatchRequestDto(JsonRpcRequest[] jsonRpcRequests) {
     this.jsonRpcRequests = jsonRpcRequests;
   }
 

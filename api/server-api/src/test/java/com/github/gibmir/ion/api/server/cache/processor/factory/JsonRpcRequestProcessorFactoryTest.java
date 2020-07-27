@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.api.server.cache.processor.factory;
 
-import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.server.environment.ServerTestEnvironment;

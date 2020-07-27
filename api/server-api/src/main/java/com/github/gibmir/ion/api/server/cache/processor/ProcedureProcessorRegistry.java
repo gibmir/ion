@@ -1,10 +1,10 @@
 package com.github.gibmir.ion.api.server.cache.processor;
 
-import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 
 import javax.json.JsonObject;
 import javax.json.bind.Jsonb;
+import java.nio.charset.Charset;
 import java.util.function.Consumer;
 
 public interface ProcedureProcessorRegistry {

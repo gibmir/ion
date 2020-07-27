@@ -1,6 +1,7 @@
 package com.github.gibmir.ion.api.server.scan;
 
-import com.github.gibmir.ion.api.dto.method.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.api.core.procedure.signature.Signature;
 import com.github.gibmir.ion.api.server.environment.ServerTestEnvironment;
 import org.junit.jupiter.api.Test;
 

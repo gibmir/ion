@@ -44,7 +44,7 @@ public class ChannelPool {
           .channel(channelClass)
           .option(ChannelOption.SO_KEEPALIVE, true)
           .handler(new JsonRpcNettyClientInitializer(new LoggingHandler(logLevel),
-            new JsonRpcRequestEncoder(jsonb, charset), new JsonRpcResponseDecoder(jsonb, charset),
+            new JsonRpcRequestEncoder(), new JsonRpcResponseDecoder(jsonb, charset),
             new JsonRpcResponseHandler(jsonb, responseListenerRegistry)))
           .connect(address)
           .sync()

@@ -18,6 +18,7 @@ import javax.json.bind.Jsonb;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+//todo caffeine cache
 public class ResponseListenerRegistry {
   private static final Logger LOGGER = LoggerFactory.getLogger(ResponseListenerRegistry.class);
   private final Map<String, ResponseFuture> idPerResponseListener;
@@ -26,7 +27,8 @@ public class ResponseListenerRegistry {
     this.idPerResponseListener = idPerResponseListener;
   }
 
-  public void register(String id, ResponseFuture responseFuture) {
+  public void register(ResponseFuture responseFuture) {
+    String id = responseFuture.getId();
     idPerResponseListener.compute(id, (key, completableFuture) -> {
       if (completableFuture != null) {
         String message = "Response with id [" + id + "] already registered.";
@@ -45,6 +47,11 @@ public class ResponseListenerRegistry {
           processRequest((JsonObject) jsonValue, jsonb);
           return;
         case ARRAY:
+          //todo make a correct batch
+          for (JsonValue batchJsonObject : jsonValue.asJsonArray()) {
+            processRequest((JsonObject) batchJsonObject, jsonb);
+          }
+          return;
         default:
           LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError());
       }
@@ -68,7 +75,7 @@ public class ResponseListenerRegistry {
   private ResponseFuture computeResponse(Jsonb jsonb, JsonObject jsonObject, String id,
                                          ResponseFuture responseFuture) {
     if (responseFuture != null) {
-      RegistryResponseProcessor responseProcessor = new RegistryResponseProcessor(responseFuture.getResponseFuture());
+      RegistryResponseProcessor responseProcessor = new RegistryResponseProcessor(responseFuture.getFuture());
       try {
         compute(jsonb, jsonObject, id, responseFuture, responseProcessor);
       } catch (Exception e) {

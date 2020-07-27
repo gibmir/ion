@@ -9,7 +9,7 @@ import com.github.gibmir.ion.lib.http.client.request.HttpRequest0;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest1;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest2;
 import com.github.gibmir.ion.lib.http.client.request.HttpRequest3;
-import com.github.gibmir.ion.lib.http.client.request.batch.request.HttpBatchRequest;
+import com.github.gibmir.ion.lib.http.client.batch.HttpBatchRequest;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
 
 import javax.json.bind.Jsonb;

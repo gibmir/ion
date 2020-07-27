@@ -8,7 +8,6 @@ import com.github.gibmir.ion.api.server.JsonRpcServer;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.cache.processor.factory.JsonRpcRequestProcessorFactory;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
-import com.github.gibmir.ion.api.server.scan.ProcedureScanner;
 import com.github.gibmir.ion.lib.netty.server.manager.NettyProcedureManager;
 
 public class NettyJsonRpcServer implements JsonRpcServer {

@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.dto.method.signature;
+package com.github.gibmir.ion.api.core.procedure.signature;
 
 import java.lang.reflect.Type;
 

@@ -10,6 +10,7 @@ import com.github.gibmir.ion.lib.netty.client.request.NettyRequest0;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest2;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest3;
+import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatchRequest;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
 import javax.json.bind.Jsonb;
@@ -58,6 +59,7 @@ public class NettyRequestFactory implements RequestFactory {
 
   @Override
   public BatchRequestBuilder<?> batch() {
-    return null;
+    return new NettyBatchRequest.NettyBatchRequestBuilder(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb,
+      defaultCharset);
   }
 }

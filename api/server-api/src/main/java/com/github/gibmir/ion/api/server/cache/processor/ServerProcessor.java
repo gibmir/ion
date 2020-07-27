@@ -2,7 +2,6 @@ package com.github.gibmir.ion.api.server.cache.processor;
 
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
-import com.github.gibmir.ion.api.dto.response.transfer.batch.BatchResponseDto;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
@@ -12,6 +11,7 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -23,20 +23,21 @@ public class ServerProcessor {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
   }
 
-  public void process(JsonValue jsonValue, Jsonb jsonb, Consumer<JsonRpcResponse> responseConsumer) {
+  public void process(JsonValue jsonValue, Jsonb jsonb, Charset charset, Consumer<byte[]> responseConsumer) {
     switch (jsonValue.getValueType()) {
       case OBJECT:
-        processObject((JsonObject) jsonValue, jsonb, responseConsumer);
+        processObject((JsonObject) jsonValue, jsonb,
+          jsonRpcResponse -> responseConsumer.accept(jsonb.toJson(jsonRpcResponse).getBytes(charset)));
         return;
       case ARRAY:
-        processBatch((JsonArray) jsonValue, jsonb, responseConsumer);
+        processBatch((JsonArray) jsonValue, jsonb, charset, responseConsumer);
         return;
       default:
-        responseConsumer.accept(ErrorResponse.withNullId(Errors.INVALID_RPC.getError()));
+        responseConsumer.accept(jsonb.toJson(ErrorResponse.withNullId(Errors.INVALID_RPC.getError())).getBytes(charset));
     }
   }
 
-  public void processBatch(JsonArray jsonArray, Jsonb jsonb, Consumer<JsonRpcResponse> responseConsumer) {
+  public void processBatch(JsonArray jsonArray, Jsonb jsonb, Charset charset, Consumer<byte[]> responseConsumer) {
     int batchSize = jsonArray.size();
     List<JsonRpcResponse> jsonRpcResponseList = new ArrayList<>(batchSize);
     for (JsonValue jsonValue : jsonArray) {
@@ -46,7 +47,7 @@ public class ServerProcessor {
         jsonRpcResponseList.add(ErrorResponse.withNullId(e));
       }
     }
-    responseConsumer.accept(new BatchResponseDto(jsonRpcResponseList.toArray(new JsonRpcResponse[batchSize])));
+    responseConsumer.accept(jsonb.toJson(jsonRpcResponseList).getBytes(charset));
   }
 
   public void processObject(JsonObject jsonObject, Jsonb jsonb, Consumer<JsonRpcResponse> responseConsumer) {

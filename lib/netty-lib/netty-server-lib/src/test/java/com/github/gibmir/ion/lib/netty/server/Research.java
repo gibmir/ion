@@ -47,8 +47,8 @@ public class Research {
           protected void initChannel(Channel channel) {
             ChannelPipeline pipeline = channel.pipeline();
             pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset))
-              .addLast(new JsonRpcResponseEncoder(jsonb, charset))
-              .addLast(new JsonRpcRequestHandler(serverProcessor, jsonb));
+              .addLast(new JsonRpcResponseEncoder())
+              .addLast(new JsonRpcRequestHandler(serverProcessor, jsonb, charset));
           }
         });
       serverBootstrap.bind(52_222).sync().channel().closeFuture().sync();

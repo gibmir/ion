@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.api.server.cache.processor;
 
-import com.github.gibmir.ion.api.dto.processor.JsonRpcRequestProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

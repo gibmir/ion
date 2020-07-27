@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.api.server.cache.signature;
 
-import com.github.gibmir.ion.api.dto.method.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.Signature;
 
 import java.util.Map;
 

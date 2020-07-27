@@ -1,10 +1,11 @@
-package com.github.gibmir.ion.api.server.scan;
+package com.github.gibmir.ion.api.core.procedure.scan;
 
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
-import com.github.gibmir.ion.api.dto.method.signature.ParameterizedSignature;
-import com.github.gibmir.ion.api.dto.method.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedSignature;
+import com.github.gibmir.ion.api.core.procedure.signature.Signature;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

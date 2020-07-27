@@ -1,8 +1,8 @@
-package com.github.gibmir.ion.lib.http.client.request.batch.request;
+package com.github.gibmir.ion.lib.http.client.batch;
 
 import com.github.gibmir.ion.api.client.batch.request.BatchRequest;
-import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
 import com.github.gibmir.ion.api.client.batch.request.builder.BatchRequestBuilder;
+import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
@@ -49,6 +49,7 @@ public class HttpBatchRequest implements BatchRequest {
   }
 
   public static class HttpBatchBuilder implements BatchRequestBuilder<HttpBatchBuilder> {
+    //todo JsonRpcRequest
     private final List<RequestDto> batchRequests = new ArrayList<>();
     //todo class per id
     private final List<Class<?>> responseTypes = new ArrayList<>();
@@ -68,14 +69,16 @@ public class HttpBatchRequest implements BatchRequest {
     }
 
     @Override
-    public <R> HttpBatchBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
+    public <R> HttpBatchBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
+                                    Class<R> returnType) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure0.getName(), new Object[0]));
       return this;
     }
 
     @Override
     public <T, R> HttpBatchBuilder addPositional(String id,
-                                                 Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
+                                                 Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg,
+                                                 Class<R> returnType) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure1.getName(), new Object[]{arg}));
       return this;
     }
@@ -83,7 +86,7 @@ public class HttpBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, R> HttpBatchBuilder addPositional(String id,
                                                       Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                      T1 arg1, T2 arg2) {
+                                                      T1 arg1, T2 arg2, Class<R> returnType) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure2.getName(), new Object[]{arg1, arg2}));
       return this;
     }
@@ -91,7 +94,7 @@ public class HttpBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, T3, R> HttpBatchBuilder addPositional(String id,
                                                           Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                          T1 arg1, T2 arg2, T3 arg3) {
+                                                          T1 arg1, T2 arg2, T3 arg3, Class<R> returnType) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure3.getName(), new Object[]{arg1, arg2, arg3}));
       return this;
     }

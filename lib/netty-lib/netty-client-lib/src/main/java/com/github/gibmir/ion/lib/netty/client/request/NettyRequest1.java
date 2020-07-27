@@ -41,7 +41,7 @@ public class NettyRequest1<T, R> extends AbstractNettyRequest<R, NettyRequest1<T
 
   @Override
   public void notificationCall(T arg) {
-    defaultJsonRpcNettySender.sendNotification(new NotificationDto(procedureName, new Object[]{arg}), jsonb, charset,
+    defaultJsonRpcNettySender.send(new NotificationDto(procedureName, new Object[]{arg}), jsonb, charset,
       defaultSocketAddress);
   }
 }

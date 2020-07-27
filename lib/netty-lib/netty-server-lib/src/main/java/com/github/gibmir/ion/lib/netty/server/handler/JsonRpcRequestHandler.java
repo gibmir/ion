@@ -6,25 +6,27 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
+import java.nio.charset.Charset;
 
 public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
   private final ServerProcessor serverProcessor;
   private final Jsonb jsonb;
+  private final Charset charset;
 
   public JsonRpcRequestHandler(ServerProcessor serverProcessor,
-                               Jsonb jsonb) {
+                               Jsonb jsonb, Charset charset) {
     this.serverProcessor = serverProcessor;
     this.jsonb = jsonb;
+    this.charset = charset;
   }
 
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
     JsonValue jsonValue = (JsonValue) msg;
-    serverProcessor.process(jsonValue, jsonb, ctx::write);
+    serverProcessor.process(jsonValue, jsonb, charset, ctx::write);
   }
 
   @Override
