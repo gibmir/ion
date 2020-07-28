@@ -38,7 +38,7 @@ public class NettyBatchRequest implements BatchRequest {
   }
 
   @Override
-  public CompletableFuture<BatchResponse> batchCall() {
+  public CompletableFuture<BatchResponse> call() {
     return defaultJsonRpcNettySender.send(nettyBatch, jsonb, charset, defaultSocketAddress);
   }
 

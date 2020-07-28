@@ -40,7 +40,7 @@ public class ClientRunner {
       .addPositional("third-batch", TestStringProcedure.class, "thirdArgument", String.class)
       .addNotification(TestStringProcedure.class, "notification argument")
       .build();
-    BatchResponse batchResponse = batchRequest.batchCall().get();
+    BatchResponse batchResponse = batchRequest.call().get();
     System.out.println(batchResponse.getBatchResponseElements());
   }
 }

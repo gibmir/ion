@@ -41,7 +41,7 @@ public class HttpBatchRequest implements BatchRequest {
   }
 
   @Override
-  public CompletableFuture<BatchResponse> batchCall() {
+  public CompletableFuture<BatchResponse> call() {
     HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers
       .ofByteArray(jsonb.toJson(batchRequests).getBytes(charset));
 

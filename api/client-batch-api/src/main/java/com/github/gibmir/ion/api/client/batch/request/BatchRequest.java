@@ -6,5 +6,5 @@ import java.util.concurrent.CompletableFuture;
 
 public interface BatchRequest {
 
-  CompletableFuture<BatchResponse> batchCall();
+  CompletableFuture<BatchResponse> call();
 }
