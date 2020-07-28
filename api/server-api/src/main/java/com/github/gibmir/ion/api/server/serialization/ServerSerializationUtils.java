@@ -23,7 +23,7 @@ public class ServerSerializationUtils {
                                                   Jsonb jsonb) {
 
     if (jsonStructure instanceof JsonArray) {
-      //todo implements batch and incorrect request json-rpc exception
+      //todo used only for testing
       throw new UnsupportedOperationException("Batch isn't implemented");
     } else {
       return extractRequest((JsonObject) jsonStructure, methodSignature, jsonb);

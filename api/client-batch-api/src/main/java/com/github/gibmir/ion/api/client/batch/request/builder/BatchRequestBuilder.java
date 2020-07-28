@@ -18,5 +18,15 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
                                   Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
                                   T1 arg1, T2 arg2, T3 arg3, Class<R> returnType);
 
+  <R> B addNotification(Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0);
+
+  <T, R> B addNotification(Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg);
+
+  <T1, T2, R> B addNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                T1 arg1, T2 arg2);
+
+  <T1, T2, T3, R> B addNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                    T1 arg1, T2 arg2, T3 arg3);
+
   BatchRequest build();
 }

@@ -13,11 +13,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class ClientRunner {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
-//    sendBatch(requestFactory);
-    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class, String.class);
-    request.notificationCall("pog");
+    sendBatch(requestFactory);
+//    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class, String.class);
+//    request.notificationCall("pog");
 //    send1000Request(request);
   }
 
@@ -38,6 +38,7 @@ public class ClientRunner {
       .addPositional("first-batch", TestStringProcedure.class, "argument", String.class)
       .addPositional("second-batch", TestStringProcedure.class, "secondArgument", String.class)
       .addPositional("third-batch", TestStringProcedure.class, "thirdArgument", String.class)
+      .addNotification(TestStringProcedure.class, "notification argument")
       .build();
     BatchResponse batchResponse = batchRequest.batchCall().get();
     System.out.println(batchResponse.getBatchResponseElements());

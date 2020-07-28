@@ -9,7 +9,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
-import com.github.gibmir.ion.api.dto.request.transfer.batch.BatchRequestDto;
+import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest0;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
@@ -135,6 +135,30 @@ public class NettyBatchRequest implements BatchRequest {
       requests.add(requestDto);
       responseCompletableFutures.add(completableFuture);
       responseFutures.add(responseFuture);
+      return this;
+    }
+
+    @Override
+    public <R> NettyBatchRequestBuilder addNotification(Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
+      requests.add(new NotificationDto(jsonRemoteProcedure0.getName(), NettyRequest0.EMPTY_PAYLOAD));
+      return this;
+    }
+
+    @Override
+    public <T, R> NettyBatchRequestBuilder addNotification(Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
+      requests.add(new NotificationDto(jsonRemoteProcedure1.getName(), new Object[]{arg}));
+      return this;
+    }
+
+    @Override
+    public <T1, T2, R> NettyBatchRequestBuilder addNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2, T1 arg1, T2 arg2) {
+      requests.add(new NotificationDto(jsonRemoteProcedure2.getName(), new Object[]{arg1, arg2}));
+      return this;
+    }
+
+    @Override
+    public <T1, T2, T3, R> NettyBatchRequestBuilder addNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3, T1 arg1, T2 arg2, T3 arg3) {
+      requests.add(new NotificationDto(jsonRemoteProcedure3.getName(), new Object[]{arg1, arg2, arg3}));
       return this;
     }
 

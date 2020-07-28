@@ -99,6 +99,27 @@ public class HttpBatchRequest implements BatchRequest {
       return this;
     }
 
+    //todo implement http notifications
+    @Override
+    public <R> HttpBatchBuilder addNotification(Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
+      return null;
+    }
+
+    @Override
+    public <T, R> HttpBatchBuilder addNotification(Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
+      return null;
+    }
+
+    @Override
+    public <T1, T2, R> HttpBatchBuilder addNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2, T1 arg1, T2 arg2) {
+      return null;
+    }
+
+    @Override
+    public <T1, T2, T3, R> HttpBatchBuilder addNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3, T1 arg1, T2 arg2, T3 arg3) {
+      return null;
+    }
+
     @Override
     public HttpBatchRequest build() {
       return new HttpBatchRequest(batchRequests, responseTypes, httpRequestSender, jsonb, charset, uri, duration);
