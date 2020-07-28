@@ -47,7 +47,6 @@ public class ResponseListenerRegistry {
           processRequest((JsonObject) jsonValue, jsonb);
           return;
         case ARRAY:
-          //todo make a correct batch
           for (JsonValue batchJsonObject : jsonValue.asJsonArray()) {
             processRequest((JsonObject) batchJsonObject, jsonb);
           }

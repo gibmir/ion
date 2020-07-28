@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.api.core.procedure.scan;
 
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;

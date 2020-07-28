@@ -7,7 +7,6 @@ import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
-import com.github.gibmir.ion.api.dto.response.transfer.notification.NotificationResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
 import org.slf4j.Logger;
@@ -25,6 +24,8 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class JsonRpcRequestProcessorFactory {
+  private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
+
   //todo type-safe generic type
   public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
                                                             T service) {
@@ -114,6 +115,27 @@ public class JsonRpcRequestProcessorFactory {
       }
     }
 
+    @Override
+    public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
+      JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
+      int length = namedMethodHandle.argumentTypes.length;
+      switch (paramsValue.getValueType()) {
+        case ARRAY:
+          Object[] arguments = new Object[length];
+          JsonArray jsonParamsArray = paramsValue.asJsonArray();
+          for (int i = 0; i < length; i++) {
+            arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
+          }
+          process(new NotificationDto(procedureName, arguments));
+          return;
+        case OBJECT:
+          //todo named params
+        default:
+          LOGGER.error("Exception [{}] occurred while processing notification",
+            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Named parameters is unsupported"));
+      }
+    }
+
     public JsonRpcResponse process(RequestDto positionalRequest) {
       try {
         return invokeMethod(positionalRequest);
@@ -130,23 +152,21 @@ public class JsonRpcRequestProcessorFactory {
     }
 
 
-    public JsonRpcResponse process(NotificationDto notificationRequest) {
+    public void process(NotificationDto notificationRequest) {
       try {
-        return invokeMethod(notificationRequest);
+        invokeMethod(notificationRequest);
       } catch (Throwable throwable) {
         String procedureName = notificationRequest.getProcedureName();
         LOGGER.error("Exception occurred while invoking method [{}]. Message is:{}",
           procedureName, throwable.getMessage());
-        return NotificationResponse.INSTANCE;
       }
     }
 
-    private JsonRpcResponse invokeMethod(NotificationDto notificationRequest) throws Throwable {
+    private void invokeMethod(NotificationDto notificationRequest) throws Throwable {
       final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
       if (result != null) {
         LOGGER.warn("Result isn't null for notification request:[{}]", notificationRequest);
       }
-      return NotificationResponse.INSTANCE;
     }
   }
 }

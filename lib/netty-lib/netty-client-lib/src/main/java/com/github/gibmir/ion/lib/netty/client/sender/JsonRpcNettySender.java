@@ -11,6 +11,8 @@ import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.Res
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class JsonRpcNettySender {
+  private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcNettySender.class);
   private final ChannelPool channelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
 
@@ -87,13 +90,13 @@ public class JsonRpcNettySender {
 
   public void send(NotificationDto request, Jsonb jsonb, Charset charset,
                    SocketAddress socketAddress) {
-    CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
     try {
       channel.writeAndFlush(jsonb.toJson(request).getBytes(charset)).sync();
     } catch (InterruptedException e) {
-      responseFuture.completeExceptionally(e);
       Thread.currentThread().interrupt();
+    } catch (Exception e) {
+      LOGGER.error("Exception occurred while sending notification");
     }
   }
 }

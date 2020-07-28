@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-//todo batch with notifications doesn't have response future
 public class NettyBatchRequest implements BatchRequest {
   protected final NettyBatch nettyBatch;
   protected final JsonRpcNettySender defaultJsonRpcNettySender;

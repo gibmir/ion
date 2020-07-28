@@ -10,4 +10,5 @@ public interface JsonRpcRequestProcessor {
 
   void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
                Consumer<JsonRpcResponse> responseConsumer);
+  void process(String procedureName, JsonObject jsonObject, Jsonb jsonb);
 }
