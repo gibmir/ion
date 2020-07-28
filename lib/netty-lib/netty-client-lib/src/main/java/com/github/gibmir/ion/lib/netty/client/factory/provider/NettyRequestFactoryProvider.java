@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.factory.provider;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.gibmir.ion.api.client.factory.configuration.RequestConfigurationUtils;
 import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.configuration.Configuration;
@@ -8,7 +9,9 @@ import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.lib.netty.client.configuration.NettyRequestConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,7 +36,8 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
 
   private NettyRequestFactory createNettyRequestFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
-    ResponseListenerRegistry responseListenerRegistry = new ResponseListenerRegistry(new ConcurrentHashMap<>());
+    Cache<String, ResponseFuture> responseFuturesCache = NettyRequestConfigurationUtils.createResponseFuturesCache(configuration);
+    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
     ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(),
       NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
       NettyRequestConfigurationUtils.resolveChannelClass(configuration),

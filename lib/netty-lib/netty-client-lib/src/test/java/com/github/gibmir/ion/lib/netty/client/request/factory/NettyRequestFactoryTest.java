@@ -7,6 +7,7 @@ import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
@@ -28,7 +29,7 @@ class NettyRequestFactoryTest {
   @Test
   void smoke() throws ExecutionException, InterruptedException {
     EventLoopGroup eventExecutors = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
-    ResponseListenerRegistry responseListenerRegistry = new ResponseListenerRegistry(new ConcurrentHashMap<>());
+    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(new ConcurrentHashMap<>());
     ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
       LogLevel.INFO, responseListenerRegistry);
     JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, responseListenerRegistry);

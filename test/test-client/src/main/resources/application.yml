@@ -1,6 +1,21 @@
 ion:
   netty:
     client:
+      response:
+        listener:
+          cache:
+            record:
+              stats:
+                enabled: true
+            weak:
+              reference:
+                enabled: true
+            soft:
+              values:
+                enabled: false
+            eviction:
+              timeout: 60000
+              size: 1000
       log:
         level: 'ERROR'
       socket:

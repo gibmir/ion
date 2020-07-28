@@ -11,17 +11,18 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ClientRunner {
-  public static void main(String[] args) throws ExecutionException, InterruptedException {
+  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
-    sendBatch(requestFactory);
-//    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class, String.class);
+//    sendBatch(requestFactory);
+    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class, String.class);
 //    request.notificationCall("pog");
-//    send1000Request(request);
+    send1000Request(request);
   }
 
-  private static void send1000Request(Request1<String, String> request) throws InterruptedException, ExecutionException, java.util.concurrent.TimeoutException {
+  private static void send1000Request(Request1<String, String> request) throws InterruptedException, ExecutionException, TimeoutException {
     LocalTime start = LocalTime.now();
     int counter = 0;
     for (int i = 0; i < 1000; i++) {
