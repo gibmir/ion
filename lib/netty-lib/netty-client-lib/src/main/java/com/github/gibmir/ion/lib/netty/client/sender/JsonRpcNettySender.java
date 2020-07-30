@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
+import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class JsonRpcNettySender {
   }
 
   public <R> CompletableFuture<R> send(String id, RequestDto request, Jsonb jsonb, Charset charset,
-                                       Class<R> returnType, SocketAddress socketAddress) {
+                                       Type returnType, SocketAddress socketAddress) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture));
     Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
@@ -42,7 +43,7 @@ public class JsonRpcNettySender {
       responseFuture.completeExceptionally(e);
       Thread.currentThread().interrupt();
     }
-    return responseFuture.thenApply(returnType::cast);
+    return responseFuture.thenApply(response -> (R) response);
   }
 
   /**

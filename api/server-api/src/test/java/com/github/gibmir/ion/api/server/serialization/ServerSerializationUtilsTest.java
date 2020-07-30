@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.server.serialization;
 
-import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedSignature;
-import com.github.gibmir.ion.api.core.procedure.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedJsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.server.cache.signature.SignatureRegistry;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 
@@ -28,13 +29,13 @@ class ServerSerializationUtilsTest {
   public static final String PROCEDURE_NAME = "testProcedureName";
   public static final Object[] ARGS = {1, 2, 3};
   public static final RequestDto REQUEST_DTO = RequestDto.positional(ID, PROCEDURE_NAME, ARGS);
-  public static final ParameterizedSignature PARAMETERIZED_SIGNATURE = new ParameterizedSignature(int.class, int.class,
-    int.class);
+  public static final ParameterizedJsonRemoteProcedureSignature PARAMETERIZED_SIGNATURE =
+    new ParameterizedJsonRemoteProcedureSignature("some", new String[]{"asd"}, new Type[]{int.class}, int.class);
 
   @Test
   void testExtractCorrectRequest() {
     JsonStructure jsonStructure = JSONB.fromJson(JSONB.toJson(REQUEST_DTO), JsonStructure.class);
-    Map<String, Signature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
+    Map<String, JsonRemoteProcedureSignature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
     JsonRpcRequest jsonRpcRequest = ServerSerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
     assertTrue(jsonRpcRequest instanceof RequestDto);
@@ -50,7 +51,7 @@ class ServerSerializationUtilsTest {
   @Test
   void testExtractCorrectRequestFromString() {
     JsonStructure jsonStructure = JSONB.fromJson(REQUEST_STRING, JsonStructure.class);
-    Map<String, Signature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
+    Map<String, JsonRemoteProcedureSignature> signatureMap = Collections.singletonMap(PROCEDURE_NAME, PARAMETERIZED_SIGNATURE);
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
     JsonRpcRequest jsonRpcRequest = ServerSerializationUtils.extractRequestFrom(jsonStructure, signatureRegistry, JSONB);
     assertTrue(jsonRpcRequest instanceof RequestDto);

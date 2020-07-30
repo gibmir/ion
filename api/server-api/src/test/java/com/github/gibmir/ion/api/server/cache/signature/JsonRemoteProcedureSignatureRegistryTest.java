@@ -1,9 +1,10 @@
 package com.github.gibmir.ion.api.server.cache.signature;
 
-import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedSignature;
-import com.github.gibmir.ion.api.core.procedure.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedJsonRemoteProcedureSignature;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -12,14 +13,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class SignatureRegistryTest {
+class JsonRemoteProcedureSignatureRegistryTest {
 
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
-  public static final ParameterizedSignature PROCEDURE_SIGNATURE = new ParameterizedSignature();
+  public static final ParameterizedJsonRemoteProcedureSignature PROCEDURE_SIGNATURE =
+    new ParameterizedJsonRemoteProcedureSignature("", new String[0], new Type[0], String.class);
 
   @Test
   void testGetProcedureSignature() {
-    HashMap<String, Signature> signatureMap = new HashMap<>();
+    HashMap<String, JsonRemoteProcedureSignature> signatureMap = new HashMap<>();
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
 
     assertThat(signatureRegistry.getProcedureSignatureFor(TEST_PROCEDURE_NAME), is(nullValue()));
@@ -30,7 +32,7 @@ class SignatureRegistryTest {
 
   @Test
   void testRegister() {
-    HashMap<String, Signature> signatureMap = new HashMap<>();
+    HashMap<String, JsonRemoteProcedureSignature> signatureMap = new HashMap<>();
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
     signatureRegistry.register(TEST_PROCEDURE_NAME, PROCEDURE_SIGNATURE);
 
@@ -42,7 +44,7 @@ class SignatureRegistryTest {
 
   @Test
   void testUnregister() {
-    HashMap<String, Signature> signatureMap = new HashMap<>();
+    HashMap<String, JsonRemoteProcedureSignature> signatureMap = new HashMap<>();
     SignatureRegistry signatureRegistry = new SimpleSignatureRegistry(signatureMap);
     assertDoesNotThrow(() -> signatureRegistry.unregister(TEST_PROCEDURE_NAME));
     signatureRegistry.register(TEST_PROCEDURE_NAME, PROCEDURE_SIGNATURE);

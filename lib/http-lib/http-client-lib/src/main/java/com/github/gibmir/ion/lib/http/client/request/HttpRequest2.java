@@ -29,6 +29,11 @@ public class HttpRequest2<T1, T2, R> extends AbstractHttpRequest<R, HttpRequest2
   }
 
   @Override
+  public CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2) {
+    return null;
+  }
+
+  @Override
   public void notificationCall(T1 arg1, T2 arg2) {
     NotificationDto notificationDto = new NotificationDto(procedureName, new Object[]{arg1, arg2});
     String json = jsonb.toJson(notificationDto);

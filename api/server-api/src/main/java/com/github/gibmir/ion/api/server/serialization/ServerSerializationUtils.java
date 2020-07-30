@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.api.server.serialization;
 
-import com.github.gibmir.ion.api.core.procedure.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
@@ -44,18 +44,18 @@ public class ServerSerializationUtils {
       throw new IllegalArgumentException("Method key is not present in:" + object);
     }
     String procedureName = ((JsonString) methodValue).getString();
-    Signature signature = methodSignature.getProcedureSignatureFor(procedureName);
-    if (signature == null) {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature = methodSignature.getProcedureSignatureFor(procedureName);
+    if (jsonRemoteProcedureSignature == null) {
       //todo exception processing
       throw new UnsupportedOperationException("Method " + methodValue + " is unsupported. Request id " + id);
     }
-    Object[] arguments = extractArguments(object, jsonb, signature);
+    Object[] arguments = extractArguments(object, jsonb, jsonRemoteProcedureSignature);
     return RequestDto.positional(id, procedureName, arguments);
   }
 
-  private static Object[] extractArguments(JsonObject object, Jsonb jsonb, Signature signature) {
+  private static Object[] extractArguments(JsonObject object, Jsonb jsonb, JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     JsonValue paramsValue = object.get(SerializationProperties.PARAMS_KEY);
-    Type[] argumentTypes = signature.getGenericTypes();
+    Type[] argumentTypes = jsonRemoteProcedureSignature.getGenericTypes();
     int length = argumentTypes.length;
     Object[] arguments = new Object[length];
     if (paramsValue instanceof JsonArray) {

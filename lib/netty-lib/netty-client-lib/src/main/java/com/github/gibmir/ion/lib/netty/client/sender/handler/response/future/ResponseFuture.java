@@ -1,19 +1,20 @@
 package com.github.gibmir.ion.lib.netty.client.sender.handler.response.future;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
 public class ResponseFuture {
   private final String id;
-  private final Class<?> returnType;
+  private final Type returnType;
   private final CompletableFuture<Object> responseFuture;
 
-  public ResponseFuture(String id, Class<?> returnType, CompletableFuture<Object> responseFuture) {
+  public ResponseFuture(String id, Type returnType, CompletableFuture<Object> responseFuture) {
     this.id = id;
     this.returnType = returnType;
     this.responseFuture = responseFuture;
   }
 
-  public Class<?> getReturnType() {
+  public Type getReturnType() {
     return returnType;
   }
 

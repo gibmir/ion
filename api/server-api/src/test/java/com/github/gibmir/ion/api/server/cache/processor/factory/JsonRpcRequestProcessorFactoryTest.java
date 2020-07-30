@@ -1,5 +1,7 @@
 package com.github.gibmir.ion.api.server.cache.processor.factory;
 
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
@@ -72,6 +74,7 @@ class JsonRpcRequestProcessorFactoryTest {
 
   @Test
   void testCorrectRequestProcessor1() {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(ServerTestEnvironment.TestProcedure1.class);
     JsonRpcRequestProcessor processor = assertDoesNotThrow(() -> JsonRpcRequestProcessorFactory
       .createProcessor(ServerTestEnvironment.TestProcedure1.class, TEST_PROCEDURE_1));
 //    JsonRpcResponse response = processor.process(ONE_ARG_REQUEST);

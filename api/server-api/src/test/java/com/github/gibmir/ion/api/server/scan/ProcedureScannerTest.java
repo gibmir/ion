@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.server.scan;
 
 import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
-import com.github.gibmir.ion.api.core.procedure.signature.Signature;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.server.environment.ServerTestEnvironment;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ class ProcedureScannerTest {
 
   @Test
   void testResolveCorrectSignature0() {
-    Signature signature = assertDoesNotThrow(ProcedureScanner::resolveSignature0);
-    assertThat(signature.getGenericTypes().length, is(0));
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature = assertDoesNotThrow(() -> ProcedureScanner.resolveSignature0(ServerTestEnvironment.TestProcedure0.class));
+    assertThat(jsonRemoteProcedureSignature.getGenericTypes().length, is(0));
   }
 
   @Test

@@ -30,6 +30,7 @@ public class JsonRpcRequestProcessorFactory {
   public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
                                                             T service) {
     try {
+      //todo resolve method names
       final NamedMethodHandle[] methodHandles = resolveMethodHandlesFor(serviceInterface);
       NamedMethodHandle caller = findCaller(methodHandles);
       return new MethodHandleJsonRpcRequestProcessor<>(caller, service);
@@ -99,11 +100,7 @@ public class JsonRpcRequestProcessorFactory {
       int length = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          Object[] arguments = new Object[length];
-          JsonArray jsonParamsArray = paramsValue.asJsonArray();
-          for (int i = 0; i < length; i++) {
-            arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
-          }
+          Object[] arguments = getArgumentsFromArray(jsonb, paramsValue, length);
           responseConsumer.accept(process(RequestDto.positional(id, procedureName, arguments)));
           return;
         case OBJECT:
@@ -121,19 +118,25 @@ public class JsonRpcRequestProcessorFactory {
       int length = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          Object[] arguments = new Object[length];
-          JsonArray jsonParamsArray = paramsValue.asJsonArray();
-          for (int i = 0; i < length; i++) {
-            arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
-          }
+          Object[] arguments = getArgumentsFromArray(jsonb, paramsValue, length);
           process(new NotificationDto(procedureName, arguments));
           return;
         case OBJECT:
+          JsonObject namedParamsObject = paramsValue.asJsonObject();
           //todo named params
         default:
           LOGGER.error("Exception [{}] occurred while processing notification",
             Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Named parameters is unsupported"));
       }
+    }
+
+    private Object[] getArgumentsFromArray(Jsonb jsonb, JsonValue paramsValue, int length) {
+      Object[] arguments = new Object[length];
+      JsonArray jsonParamsArray = paramsValue.asJsonArray();
+      for (int i = 0; i < length; i++) {
+        arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
+      }
+      return arguments;
     }
 
     public JsonRpcResponse process(RequestDto positionalRequest) {

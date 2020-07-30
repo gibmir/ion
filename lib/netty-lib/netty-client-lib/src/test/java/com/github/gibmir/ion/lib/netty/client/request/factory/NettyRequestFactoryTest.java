@@ -38,7 +38,7 @@ class NettyRequestFactoryTest {
     NettyRequestFactory nettyRequestFactory = new NettyRequestFactory(jsonRpcNettySender,
       InetSocketAddress.createUnresolved("localhost", 52222), jsonb, StandardCharsets.UTF_8);
 
-    NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class, RequestDto.class);
+    NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class);
     System.out.println(request.positionalCall("someId", new RequestDto("some arg"))
       .get());
   }
@@ -46,7 +46,7 @@ class NettyRequestFactoryTest {
   @Test
   void demoProvider() {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
-    Request1<RequestDto, RequestDto> testProcedure = requestFactory.singleArg(TestProcedure.class, RequestDto.class);
+    Request1<RequestDto, RequestDto> testProcedure = requestFactory.singleArg(TestProcedure.class);
     testProcedure.positionalCall("123213-321323-434", new RequestDto("argument"));
 
   }

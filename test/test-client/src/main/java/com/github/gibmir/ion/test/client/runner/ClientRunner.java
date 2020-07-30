@@ -17,9 +17,10 @@ public class ClientRunner {
   public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 //    sendBatch(requestFactory);
-    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class, String.class);
+    Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
+    request.namedCall("id-1","named");
 //    request.notificationCall("pog");
-    send1000Request(request);
+//    send1000Request(request);
   }
 
   private static void send1000Request(Request1<String, String> request) throws InterruptedException, ExecutionException, TimeoutException {

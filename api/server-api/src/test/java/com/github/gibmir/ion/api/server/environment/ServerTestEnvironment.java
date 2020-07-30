@@ -4,6 +4,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.api.core.procedure.named.Named;
 
 public class ServerTestEnvironment {
 
@@ -12,7 +13,8 @@ public class ServerTestEnvironment {
   }
 
   public interface TestProcedure1 extends JsonRemoteProcedure1<String, String> {
-
+    @Override
+    String call(@Named(name = "some") String arg);
   }
 
   public interface TestProcedure2 extends JsonRemoteProcedure2<String, String, String> {

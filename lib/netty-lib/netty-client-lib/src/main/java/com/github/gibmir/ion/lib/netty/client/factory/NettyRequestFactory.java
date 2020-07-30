@@ -6,6 +6,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest0;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest2;
@@ -32,29 +33,27 @@ public class NettyRequestFactory implements RequestFactory {
   }
 
   @Override
-  public <R> NettyRequest0<R> noArg(Class<? extends JsonRemoteProcedure0<R>> procedure, Class<R> returnType) {
-    return new NettyRequest0<>(returnType, procedure.getName(), defaultJsonRpcNettySender, defaultSocketAddress,
-      defaultJsonb, defaultCharset);
+  public <R> NettyRequest0<R> noArg(Class<? extends JsonRemoteProcedure0<R>> procedure) {
+    return new NettyRequest0<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
+      ProcedureScanner.resolveSignature0(procedure));
   }
 
   @Override
-  public <T, R> NettyRequest1<T, R> singleArg(Class<? extends JsonRemoteProcedure1<T, R>> procedure, Class<R> returnType) {
-    return new NettyRequest1<>(returnType, procedure.getName(), defaultJsonRpcNettySender, defaultSocketAddress,
-      defaultJsonb, defaultCharset);
+  public <T, R> NettyRequest1<T, R> singleArg(Class<? extends JsonRemoteProcedure1<T, R>> procedure) {
+    return new NettyRequest1<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
+      ProcedureScanner.resolveSignature1(procedure));
   }
 
   @Override
-  public <T1, T2, R> NettyRequest2<T1, T2, R> twoArg(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure,
-                                                     Class<R> returnType) {
-    return new NettyRequest2<>(returnType, procedure.getName(), defaultJsonRpcNettySender, defaultSocketAddress,
-      defaultJsonb, defaultCharset);
+  public <T1, T2, R> NettyRequest2<T1, T2, R> twoArg(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure) {
+    return new NettyRequest2<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
+      ProcedureScanner.resolveSignature2(procedure));
   }
 
   @Override
-  public <T1, T2, T3, R> NettyRequest3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure,
-                                                               Class<R> returnType) {
-    return new NettyRequest3<>(returnType, procedure.getName(), defaultJsonRpcNettySender, defaultSocketAddress,
-      defaultJsonb, defaultCharset);
+  public <T1, T2, T3, R> NettyRequest3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure) {
+    return new NettyRequest3<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
+      ProcedureScanner.resolveSignature3(procedure));
   }
 
   @Override
