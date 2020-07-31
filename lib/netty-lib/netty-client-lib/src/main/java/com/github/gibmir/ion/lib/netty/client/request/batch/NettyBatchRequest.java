@@ -7,6 +7,8 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
@@ -84,11 +86,11 @@ public class NettyBatchRequest implements BatchRequest {
     }
 
     @Override
-    public <R> NettyBatchRequestBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
-                                            Class<R> returnType) {
+    public <R> NettyBatchRequestBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
       CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-      ResponseFuture responseFuture = new ResponseFuture(id, returnType, completableFuture);
-      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedure0.getName(),
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(jsonRemoteProcedure0);
+      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(), completableFuture);
+      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         NettyRequest0.EMPTY_PAYLOAD);
       requests.add(requestDto);
       responseCompletableFutures.add(completableFuture);
@@ -99,10 +101,12 @@ public class NettyBatchRequest implements BatchRequest {
     @Override
     public <T, R> NettyBatchRequestBuilder addPositional(String id,
                                                          Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
-                                                         T arg, Class<R> returnType) {
+                                                         T arg) {
       CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-      ResponseFuture responseFuture = new ResponseFuture(id, returnType, completableFuture);
-      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedure1.getName(),
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
+      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
+        completableFuture);
+      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg});
       requests.add(requestDto);
       responseCompletableFutures.add(completableFuture);
@@ -113,10 +117,12 @@ public class NettyBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, R> NettyBatchRequestBuilder addPositional(String id,
                                                               Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                              T1 arg1, T2 arg2, Class<R> returnType) {
+                                                              T1 arg1, T2 arg2) {
       CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-      ResponseFuture responseFuture = new ResponseFuture(id, returnType, completableFuture);
-      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedure2.getName(),
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
+      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
+        completableFuture);
+      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg1, arg2});
       requests.add(requestDto);
       responseCompletableFutures.add(completableFuture);
@@ -127,10 +133,12 @@ public class NettyBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, T3, R> NettyBatchRequestBuilder addPositional(String id,
                                                                   Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                                  T1 arg1, T2 arg2, T3 arg3, Class<R> returnType) {
+                                                                  T1 arg1, T2 arg2, T3 arg3) {
       CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-      ResponseFuture responseFuture = new ResponseFuture(id, returnType, completableFuture);
-      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedure3.getName(),
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
+      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
+        completableFuture);
+      RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg1, arg2, arg3});
       requests.add(requestDto);
       responseCompletableFutures.add(completableFuture);

@@ -69,16 +69,14 @@ public class HttpBatchRequest implements BatchRequest {
     }
 
     @Override
-    public <R> HttpBatchBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
-                                    Class<R> returnType) {
+    public <R> HttpBatchBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure0.getName(), new Object[0]));
       return this;
     }
 
     @Override
     public <T, R> HttpBatchBuilder addPositional(String id,
-                                                 Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg,
-                                                 Class<R> returnType) {
+                                                 Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure1.getName(), new Object[]{arg}));
       return this;
     }
@@ -86,7 +84,7 @@ public class HttpBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, R> HttpBatchBuilder addPositional(String id,
                                                       Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                      T1 arg1, T2 arg2, Class<R> returnType) {
+                                                      T1 arg1, T2 arg2) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure2.getName(), new Object[]{arg1, arg2}));
       return this;
     }
@@ -94,7 +92,7 @@ public class HttpBatchRequest implements BatchRequest {
     @Override
     public <T1, T2, T3, R> HttpBatchBuilder addPositional(String id,
                                                           Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                          T1 arg1, T2 arg2, T3 arg3, Class<R> returnType) {
+                                                          T1 arg1, T2 arg2, T3 arg3) {
       batchRequests.add(RequestDto.positional(id, jsonRemoteProcedure3.getName(), new Object[]{arg1, arg2, arg3}));
       return this;
     }

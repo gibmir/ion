@@ -18,7 +18,7 @@ public class ClientRunner {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 //    sendBatch(requestFactory);
     Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
-    request.namedCall("id-1","named");
+    System.out.println(request.namedCall("id-1", "named").get());
 //    request.notificationCall("pog");
 //    send1000Request(request);
   }
@@ -37,9 +37,9 @@ public class ClientRunner {
 
   private static void sendBatch(RequestFactory requestFactory) throws InterruptedException, ExecutionException {
     BatchRequest batchRequest = requestFactory.batch()
-      .addPositional("first-batch", TestStringProcedure.class, "argument", String.class)
-      .addPositional("second-batch", TestStringProcedure.class, "secondArgument", String.class)
-      .addPositional("third-batch", TestStringProcedure.class, "thirdArgument", String.class)
+      .addPositional("first-batch", TestStringProcedure.class, "argument")
+      .addPositional("second-batch", TestStringProcedure.class, "secondArgument")
+      .addPositional("third-batch", TestStringProcedure.class, "thirdArgument")
       .addNotification(TestStringProcedure.class, "notification argument")
       .build();
     BatchResponse batchResponse = batchRequest.call().get();

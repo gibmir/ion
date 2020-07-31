@@ -22,6 +22,7 @@
         <javax.json-api.version>1.1.4</javax.json-api.version>
         <mockito-core.version>3.3.3</mockito-core.version>
         <hamcrest.version>2.2</hamcrest.version>
+        <reflections.version>0.9.12</reflections.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>
@@ -50,6 +51,11 @@
     </build>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
