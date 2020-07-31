@@ -22,8 +22,8 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     Class<P> procedureClass, P procedureImpl) {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
-      JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
-    return new NettyProcedureManager(procedureProcessorRegistry,procedureName);
+      JsonRpcRequestProcessorFactory.createProcessor0(procedureClass, procedureImpl));
+    return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
   }
 
   @Override
@@ -31,7 +31,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     Class<P> procedureClass, P procedureImpl) {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
-      JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
+      JsonRpcRequestProcessorFactory.createProcessor1(procedureClass, procedureImpl));
     return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }
 
@@ -40,7 +40,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     Class<P> procedureClass, P procedureImpl) {
     String procedureName = procedureClass.getName();
     procedureProcessorRegistry.register(procedureName,
-      JsonRpcRequestProcessorFactory.createProcessor(procedureClass, procedureImpl));
+      JsonRpcRequestProcessorFactory.createProcessor2(procedureClass, procedureImpl));
     return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }
 
@@ -48,7 +48,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
   public <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> ProcedureManager registerProcedureProcessor(
     Class<P> procedureClass, P procedureImpl) {
     String procedureName = procedureClass.getName();
-    procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor(procedureClass,
+    procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor3(procedureClass,
       procedureImpl));
     return new NettyProcedureManager(procedureProcessorRegistry, procedureClass.getName());
   }

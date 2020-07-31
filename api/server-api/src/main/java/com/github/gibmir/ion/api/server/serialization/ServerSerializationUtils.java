@@ -46,7 +46,6 @@ public class ServerSerializationUtils {
     String procedureName = ((JsonString) methodValue).getString();
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = methodSignature.getProcedureSignatureFor(procedureName);
     if (jsonRemoteProcedureSignature == null) {
-      //todo exception processing
       throw new UnsupportedOperationException("Method " + methodValue + " is unsupported. Request id " + id);
     }
     Object[] arguments = extractArguments(object, jsonb, jsonRemoteProcedureSignature);
@@ -63,7 +62,7 @@ public class ServerSerializationUtils {
       for (int i = 0; i < length; i++) {
         arguments[i] = jsonb.fromJson(jsonValues.get(i).toString(), argumentTypes[i]);
       }
-    }//todo else named request
+    }
     return arguments;
   }
 }

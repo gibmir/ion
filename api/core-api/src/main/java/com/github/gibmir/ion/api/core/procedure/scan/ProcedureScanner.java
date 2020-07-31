@@ -9,6 +9,7 @@ import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSig
 import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedJsonRemoteProcedureSignature;
 import org.reflections.ReflectionUtils;
 
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -44,7 +45,12 @@ public class ProcedureScanner {
   private ProcedureScanner() {
   }
 
+  @SuppressWarnings("unchecked")
   public static <R> JsonRemoteProcedureSignature resolveSignature0(Class<? extends JsonRemoteProcedure0<R>> procedureClass) {
+    int parametersCount = 0;
+    //unchecked array
+    Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(CALL_METHOD_NAME),
+      ReflectionUtils.withParametersCount(parametersCount)).iterator().next();
     List<ParameterizedType> parametrizedInterfaces = findParametrizedInterfacesFor(procedureClass);
     for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
       if (parametrizedInterface.getRawType() == JsonRemoteProcedure1.class) {
@@ -52,7 +58,8 @@ public class ProcedureScanner {
 
         return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), EMPTY_ARGUMENT_NAMES,
           EMPTY_ARGUMENT_TYPES,
-          getReturnType(actualTypeArguments));
+          getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
+          callMethod.getParameterTypes()), parametersCount);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
@@ -73,7 +80,8 @@ public class ProcedureScanner {
         Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
         return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER]},
-          getReturnType(actualTypeArguments));
+          getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
+          callMethod.getParameterTypes()), parametersCount);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
@@ -96,7 +104,8 @@ public class ProcedureScanner {
         return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
             actualTypeArguments[SECOND_PROCEDURE_PARAMETER]},
-          getReturnType(actualTypeArguments));
+          getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
+          callMethod.getParameterTypes()), parametersCount);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
@@ -119,7 +128,8 @@ public class ProcedureScanner {
         return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
             actualTypeArguments[SECOND_PROCEDURE_PARAMETER], actualTypeArguments[THIRD_PROCEDURE_PARAMETER]},
-          getReturnType(actualTypeArguments));
+          getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
+          callMethod.getParameterTypes()), parametersCount);
       }
     }
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());

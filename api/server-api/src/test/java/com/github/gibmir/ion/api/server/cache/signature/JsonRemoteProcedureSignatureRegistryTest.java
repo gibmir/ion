@@ -4,6 +4,7 @@ import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSig
 import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedJsonRemoteProcedureSignature;
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
@@ -17,7 +18,8 @@ class JsonRemoteProcedureSignatureRegistryTest {
 
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
   public static final ParameterizedJsonRemoteProcedureSignature PROCEDURE_SIGNATURE =
-    new ParameterizedJsonRemoteProcedureSignature("", new String[0], new Type[0], String.class);
+    new ParameterizedJsonRemoteProcedureSignature("", new String[0], new Type[0], String.class,
+      MethodType.methodType(String.class), 1);
 
   @Test
   void testGetProcedureSignature() {

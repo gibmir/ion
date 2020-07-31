@@ -23,6 +23,7 @@
         <mockito-core.version>3.3.3</mockito-core.version>
         <hamcrest.version>2.2</hamcrest.version>
         <reflections.version>0.9.12</reflections.version>
+        <caffeine.version>2.8.5</caffeine.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>
@@ -51,6 +52,11 @@
     </build>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
@@ -89,6 +95,7 @@
                 <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

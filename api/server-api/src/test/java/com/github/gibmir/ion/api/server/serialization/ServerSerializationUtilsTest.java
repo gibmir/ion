@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import javax.json.JsonStructure;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
@@ -30,7 +31,8 @@ class ServerSerializationUtilsTest {
   public static final Object[] ARGS = {1, 2, 3};
   public static final RequestDto REQUEST_DTO = RequestDto.positional(ID, PROCEDURE_NAME, ARGS);
   public static final ParameterizedJsonRemoteProcedureSignature PARAMETERIZED_SIGNATURE =
-    new ParameterizedJsonRemoteProcedureSignature("some", new String[]{"asd"}, new Type[]{int.class}, int.class);
+    new ParameterizedJsonRemoteProcedureSignature("some", new String[]{"asd"}, new Type[]{int.class}, int.class,
+      MethodType.methodType(int.class), 1);
 
   @Test
   void testExtractCorrectRequest() {

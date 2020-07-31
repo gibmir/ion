@@ -1,5 +1,11 @@
 package com.github.gibmir.ion.api.server.cache.processor.factory;
 
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
@@ -20,61 +26,77 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
 
-  //todo type-safe generic type
-  public static <T> JsonRpcRequestProcessor createProcessor(Class<? extends T> serviceInterface,
-                                                            T service) {
+ public static <R, P extends JsonRemoteProcedure0<R>> JsonRpcRequestProcessor createProcessor0(Class<P> procedure,
+                                                                                               P service) {
     try {
-      //todo resolve method names
-      final NamedMethodHandle[] methodHandles = resolveMethodHandlesFor(serviceInterface);
-      NamedMethodHandle caller = findCaller(methodHandles);
-      return new MethodHandleJsonRpcRequestProcessor<>(caller, service);
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(procedure);
+      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
     } catch (Exception e) {
-      String message = "Exception occurred while preparing request processor for [" + serviceInterface + ']';
-      throw new IllegalArgumentException(message, e);
+      throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
+        e);
     }
   }
 
-  public static NamedMethodHandle findCaller(NamedMethodHandle[] namedMethodHandles) {
-    for (NamedMethodHandle namedMethodHandle : namedMethodHandles) {
-      //todo procedure implementation check
-      if (namedMethodHandle.methodName.equals("call")) {
-        return namedMethodHandle;
-      }
+  public static <T, R, P extends JsonRemoteProcedure1<T, R>> JsonRpcRequestProcessor createProcessor1(
+    Class<P> procedure, P service) {
+    try {
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(procedure);
+      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
+        e);
     }
-    throw new IllegalArgumentException("There is no caller in " + Arrays.toString(namedMethodHandles));
   }
 
-  public static NamedMethodHandle[] resolveMethodHandlesFor(Class<?> serviceInterface) throws NoSuchMethodException, IllegalAccessException {
-    final MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
-
-    final Method[] methods = serviceInterface.getMethods();
-
-    NamedMethodHandle[] methodHandles = new NamedMethodHandle[methods.length];
-    for (int i = 0; i < methods.length; i++) {
-      final Method method = methods[i];
-      final String name = method.getName();
-      final MethodType methodType = MethodType.methodType(method.getReturnType(), method.getParameterTypes());
-      final MethodHandle methodHandle = publicLookup.findVirtual(serviceInterface, name, methodType);
-      methodHandles[i] = new NamedMethodHandle(methodHandle.asSpreader(Object[].class, method.getParameterCount()),
-        name, method.getParameterTypes());
+  public static <T1, T2, R, P extends JsonRemoteProcedure2<T1, T2, R>> JsonRpcRequestProcessor createProcessor2(
+    Class<P> procedure, P service) {
+    try {
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(procedure);
+      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
+        e);
     }
-    return methodHandles;
+  }
+
+  public static <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> JsonRpcRequestProcessor createProcessor3(
+    Class<P> procedure, P service) {
+    try {
+      JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(procedure);
+      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
+        e);
+    }
+  }
+
+  private static <T> JsonRpcRequestProcessor getProcessor(
+    Class<T> procedure, T service, JsonRemoteProcedureSignature jsonRemoteProcedureSignature)
+    throws NoSuchMethodException, IllegalAccessException {
+    MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
+    final MethodHandle methodHandle = publicLookup.findVirtual(procedure, ProcedureScanner.CALL_METHOD_NAME,
+      jsonRemoteProcedureSignature.getMethodType());
+    NamedMethodHandle namedMethodHandle = new NamedMethodHandle(methodHandle.asSpreader(Object[].class,
+      jsonRemoteProcedureSignature.getParametersCount()), jsonRemoteProcedureSignature.getParameterNames(),
+      jsonRemoteProcedureSignature.getGenericTypes());
+    return new MethodHandleJsonRpcRequestProcessor<>(namedMethodHandle, service);
   }
 
   public static class NamedMethodHandle {
     private final MethodHandle methodHandle;
-    private final String methodName;
-    private final Class<?>[] argumentTypes;
+    private final String[] parameterNames;
+    private final Type[] argumentTypes;
 
-    public NamedMethodHandle(MethodHandle methodHandle, String methodName, Class<?>... argumentTypes) {
+    public NamedMethodHandle(MethodHandle methodHandle, String[] parameterNames, Type[] argumentTypes) {
       this.methodHandle = methodHandle;
-      this.methodName = methodName;
+      this.parameterNames = parameterNames;
       this.argumentTypes = argumentTypes;
     }
 
@@ -97,47 +119,59 @@ public class JsonRpcRequestProcessorFactory {
     public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
                         Consumer<JsonRpcResponse> responseConsumer) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
-      int length = namedMethodHandle.argumentTypes.length;
+      int argumentsCount = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          Object[] arguments = getArgumentsFromArray(jsonb, paramsValue, length);
-          responseConsumer.accept(process(RequestDto.positional(id, procedureName, arguments)));
+          responseConsumer.accept(process(RequestDto.positional(id, procedureName,
+            getArgumentsFromArray(jsonb, paramsValue, argumentsCount))));
           return;
         case OBJECT:
-          //todo named params
+          responseConsumer.accept(process(RequestDto.positional(id, procedureName,
+            getArgumentsFromMap(jsonb, paramsValue))));
+          return;
         default:
-          JsonRpcError jsonRpcError = Errors.INVALID_METHOD_PARAMETERS.getError()
-            .appendMessage("Named parameters is unsupported");
-          responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, jsonRpcError));
+          responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, Errors.INVALID_METHOD_PARAMETERS.getError()
+            .appendMessage("Unsupported request Type")));
       }
     }
 
     @Override
     public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
-      int length = namedMethodHandle.argumentTypes.length;
+      int argumentsCount = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          Object[] arguments = getArgumentsFromArray(jsonb, paramsValue, length);
-          process(new NotificationDto(procedureName, arguments));
+          process(new NotificationDto(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
           return;
         case OBJECT:
-          JsonObject namedParamsObject = paramsValue.asJsonObject();
-          //todo named params
+          process(new NotificationDto(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
+          return;
         default:
           LOGGER.error("Exception [{}] occurred while processing notification",
-            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Named parameters is unsupported"));
+            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Unsupported request Type"));
       }
     }
 
-    private Object[] getArgumentsFromArray(Jsonb jsonb, JsonValue paramsValue, int length) {
-      Object[] arguments = new Object[length];
+    private Object[] getArgumentsFromArray(Jsonb jsonb, JsonValue paramsValue, int argumentsCount) {
+      Object[] arguments = new Object[argumentsCount];
       JsonArray jsonParamsArray = paramsValue.asJsonArray();
-      for (int i = 0; i < length; i++) {
+      for (int i = 0; i < argumentsCount; i++) {
         arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
       }
       return arguments;
     }
+
+    private Object[] getArgumentsFromMap(Jsonb jsonb, JsonValue paramsValue) {
+      JsonObject jsonObject = paramsValue.asJsonObject();
+      int argumentsCount = namedMethodHandle.parameterNames.length;
+      Object[] arguments = new Object[argumentsCount];
+      for (int i = 0; i < argumentsCount; i++) {
+        arguments[i] = jsonb.fromJson(jsonObject.get(namedMethodHandle.parameterNames[i]).toString(),
+          namedMethodHandle.argumentTypes[i]);
+      }
+      return arguments;
+    }
+
 
     public JsonRpcResponse process(RequestDto positionalRequest) {
       try {
