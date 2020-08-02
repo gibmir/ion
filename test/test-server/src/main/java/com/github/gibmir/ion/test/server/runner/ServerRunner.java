@@ -10,8 +10,5 @@ public class ServerRunner {
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
     jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class, String::toUpperCase);
-    while (true) {
-
-    }
   }
 }

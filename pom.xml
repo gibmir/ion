@@ -35,7 +35,6 @@
             <email>pavel.usachev1@gmail.com</email>
         </developer>
     </developers>
-
     <build>
         <plugins>
             <plugin>
@@ -95,10 +94,8 @@
                 <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

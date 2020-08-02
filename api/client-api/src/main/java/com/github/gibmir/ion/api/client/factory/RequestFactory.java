@@ -10,7 +10,9 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 
-public interface RequestFactory {
+import java.io.Closeable;
+
+public interface RequestFactory extends Closeable {
 
   <R> Request0<R> noArg(Class<? extends JsonRemoteProcedure0<R>> procedure);
 

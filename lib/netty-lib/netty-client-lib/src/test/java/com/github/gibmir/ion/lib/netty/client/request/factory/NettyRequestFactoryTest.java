@@ -9,8 +9,6 @@ import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
-import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
-import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -38,16 +36,16 @@ class NettyRequestFactoryTest {
     NettyRequestFactory nettyRequestFactory = new NettyRequestFactory(jsonRpcNettySender,
       InetSocketAddress.createUnresolved("localhost", 52222), jsonb, StandardCharsets.UTF_8);
 
-    NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class);
-    System.out.println(request.positionalCall("someId", new RequestDto("some arg"))
-      .get());
+//    NettyRequest1<RequestDto, RequestDto> request = nettyRequestFactory.singleArg(TestProcedure.class);
+//    System.out.println(request.positionalCall("someId", new RequestDto("some arg"))
+//      .get());
   }
 
   @Test
   void demoProvider() {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
-    Request1<RequestDto, RequestDto> testProcedure = requestFactory.singleArg(TestProcedure.class);
-    testProcedure.positionalCall("123213-321323-434", new RequestDto("argument"));
+//    Request1<RequestDto, RequestDto> testProcedure = requestFactory.singleArg(TestProcedure.class);
+//    testProcedure.positionalCall("123213-321323-434", new RequestDto("argument"));
 
   }
 }

@@ -13,6 +13,7 @@ import com.github.gibmir.ion.lib.http.client.request.HttpRequest3;
 import com.github.gibmir.ion.lib.http.client.sender.HttpRequestSender;
 
 import javax.json.bind.Jsonb;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -61,5 +62,10 @@ public class HttpRequestFactory implements RequestFactory {
   @Override
   public HttpBatchRequest.HttpBatchBuilder batch() {
     return null;
+  }
+
+  @Override
+  public void close() throws IOException {
+
   }
 }

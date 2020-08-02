@@ -25,8 +25,7 @@ public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    JsonValue jsonValue = (JsonValue) msg;
-    serverProcessor.process(jsonValue, jsonb, charset, ctx::write);
+    serverProcessor.process((JsonValue) msg, jsonb, charset, ctx::write);
   }
 
   @Override
@@ -36,7 +35,6 @@ public class JsonRpcRequestHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-    ErrorResponse errorResponse = ErrorResponse.withNullId(cause);
-    ctx.write(errorResponse).addListener(ChannelFutureListener.CLOSE);
+    ctx.write(ErrorResponse.withNullId(cause)).addListener(ChannelFutureListener.CLOSE);
   }
 }

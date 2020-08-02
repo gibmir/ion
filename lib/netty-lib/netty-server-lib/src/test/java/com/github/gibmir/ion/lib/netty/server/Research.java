@@ -2,8 +2,6 @@ package com.github.gibmir.ion.lib.netty.server;
 
 import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
-import com.github.gibmir.ion.lib.netty.common.configuration.group.TestProcedure;
-import com.github.gibmir.ion.lib.netty.common.configuration.group.dto.RequestDto;
 import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
 import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.handler.JsonRpcRequestHandler;
@@ -32,7 +30,7 @@ public class Research {
     SimpleProcedureProcessorRegistry simpleProcedureProcessorRegistry = new SimpleProcedureProcessorRegistry(new ConcurrentHashMap<>());
     ServerProcessor serverProcessor = new ServerProcessor(simpleProcedureProcessorRegistry);
     NettyJsonRpcServer nettyJsonRpcServer = new NettyJsonRpcServer(simpleProcedureProcessorRegistry);
-    nettyJsonRpcServer.registerProcedureProcessor(TestProcedure.class, arg -> new RequestDto(arg.getRequestString().toUpperCase()));
+//    nettyJsonRpcServer.registerProcedureProcessor(TestProcedure.class, arg -> new RequestDto(arg.getRequestString().toUpperCase()));
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();

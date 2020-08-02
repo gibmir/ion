@@ -17,9 +17,9 @@ public class ClientRunner {
   public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
     sendBatch(requestFactory);
-    send5Request(requestFactory);
-    send5NamedRequest(requestFactory);
-    sendNotification(requestFactory);
+//    send5Request(requestFactory);
+//    send5NamedRequest(requestFactory);
+//    sendNotification(requestFactory);
   }
 
   private static void send5Request(RequestFactory requestFactory) throws InterruptedException, ExecutionException, TimeoutException {
