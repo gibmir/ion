@@ -24,17 +24,14 @@ import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
 
- public static <R, P extends JsonRemoteProcedure0<R>> JsonRpcRequestProcessor createProcessor0(Class<P> procedure,
-                                                                                               P service) {
+  public static <R, P extends JsonRemoteProcedure0<R>> JsonRpcRequestProcessor createProcessor0(Class<P> procedure,
+                                                                                                P service) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(procedure);
       return getProcessor(procedure, service, jsonRemoteProcedureSignature);
@@ -106,6 +103,7 @@ public class JsonRpcRequestProcessorFactory {
   }
 
   private static class MethodHandleJsonRpcRequestProcessor<S> implements JsonRpcRequestProcessor {
+    private static final Object[] EMPTY_ARGS = new Object[0];
     public static final Logger LOGGER = LoggerFactory.getLogger(MethodHandleJsonRpcRequestProcessor.class);
     private final NamedMethodHandle namedMethodHandle;
     private final S service;
@@ -119,11 +117,14 @@ public class JsonRpcRequestProcessorFactory {
     public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
                         Consumer<JsonRpcResponse> responseConsumer) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
-      int argumentsCount = namedMethodHandle.argumentTypes.length;
+      if (paramsValue == null) {
+        responseConsumer.accept(process(RequestDto.positional(id, procedureName, EMPTY_ARGS)));
+        return;
+      }
       switch (paramsValue.getValueType()) {
         case ARRAY:
           responseConsumer.accept(process(RequestDto.positional(id, procedureName,
-            getArgumentsFromArray(jsonb, paramsValue, argumentsCount))));
+            getArgumentsFromArray(jsonb, paramsValue, namedMethodHandle.argumentTypes.length))));
           return;
         case OBJECT:
           responseConsumer.accept(process(RequestDto.positional(id, procedureName,
@@ -138,6 +139,10 @@ public class JsonRpcRequestProcessorFactory {
     @Override
     public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
+      if (paramsValue == null) {
+        process(new NotificationDto(procedureName, EMPTY_ARGS));
+        return;
+      }
       int argumentsCount = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
