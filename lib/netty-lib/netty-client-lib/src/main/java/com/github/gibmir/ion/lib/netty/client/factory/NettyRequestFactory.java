@@ -65,6 +65,6 @@ public class NettyRequestFactory implements RequestFactory {
 
   @Override
   public void close() throws IOException {
-
+    defaultJsonRpcNettySender.close();
   }
 }

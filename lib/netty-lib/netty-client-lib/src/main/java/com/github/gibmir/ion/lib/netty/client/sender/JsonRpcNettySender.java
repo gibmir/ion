@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class JsonRpcNettySender {
+public class JsonRpcNettySender implements Closeable {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcNettySender.class);
   private final ChannelPool channelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
@@ -32,6 +34,7 @@ public class JsonRpcNettySender {
     this.responseListenerRegistry = responseListenerRegistry;
   }
 
+  @SuppressWarnings("unchecked")
   public <R> CompletableFuture<R> send(String id, RequestDto request, Jsonb jsonb, Charset charset,
                                        Type returnType, SocketAddress socketAddress) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
@@ -99,5 +102,10 @@ public class JsonRpcNettySender {
     } catch (Exception e) {
       LOGGER.error("Exception occurred while sending notification");
     }
+  }
+
+  @Override
+  public void close() throws IOException {
+    channelPool.close();
   }
 }

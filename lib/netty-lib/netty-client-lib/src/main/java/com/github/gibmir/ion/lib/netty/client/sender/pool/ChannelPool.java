@@ -14,11 +14,13 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.bind.Jsonb;
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public class ChannelPool {
+public class ChannelPool implements Closeable {
   private final Map<SocketAddress, Channel> channelsPool;
   private final EventLoopGroup group;
   private final Class<? extends Channel> channelClass;
@@ -54,5 +56,10 @@ public class ChannelPool {
         throw new ChannelException("Can't create channel for address:" + socketAddress, e);
       }
     });
+  }
+
+  @Override
+  public void close() throws IOException {
+    group.shutdownGracefully();
   }
 }

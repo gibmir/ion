@@ -7,6 +7,7 @@ import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.client.request.Request1;
 import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
@@ -14,12 +15,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ClientRunner {
-  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
+  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException, IOException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
     sendBatch(requestFactory);
-//    send5Request(requestFactory);
-//    send5NamedRequest(requestFactory);
-//    sendNotification(requestFactory);
+    send5Request(requestFactory);
+    send5NamedRequest(requestFactory);
+    sendNotification(requestFactory);
   }
 
   private static void send5Request(RequestFactory requestFactory) throws InterruptedException, ExecutionException, TimeoutException {
