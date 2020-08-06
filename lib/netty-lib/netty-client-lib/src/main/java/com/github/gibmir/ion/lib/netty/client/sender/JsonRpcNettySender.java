@@ -38,13 +38,12 @@ public class JsonRpcNettySender implements Closeable {
   public <R> CompletableFuture<R> send(String id, RequestDto request, Jsonb jsonb, Charset charset,
                                        Type returnType, SocketAddress socketAddress) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
-    responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture));
-    Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
     try {
-      channel.writeAndFlush(jsonb.toJson(request).getBytes(charset)).sync();
-    } catch (InterruptedException e) {
+      responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture));
+      Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
+      channel.writeAndFlush(jsonb.toJson(request).getBytes(charset));
+    } catch (Exception e) {
       responseFuture.completeExceptionally(e);
-      Thread.currentThread().interrupt();
     }
     return responseFuture.thenApply(response -> (R) response);
   }
@@ -64,12 +63,7 @@ public class JsonRpcNettySender implements Closeable {
     }
     CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(nettyBatch.getResponseCompletableFutures());
     Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
-    try {
-      channel.writeAndFlush(jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset)).sync();
-    } catch (InterruptedException e) {
-      batchAwaitFuture.completeExceptionally(e);
-      Thread.currentThread().interrupt();
-    }
+    channel.writeAndFlush(jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
     return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(nettyBatch.getResponseFutures()));
   }
 
@@ -94,11 +88,10 @@ public class JsonRpcNettySender implements Closeable {
 
   public void send(NotificationDto request, Jsonb jsonb, Charset charset,
                    SocketAddress socketAddress) {
-    Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
     try {
-      channel.writeAndFlush(jsonb.toJson(request).getBytes(charset)).sync();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+      Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
+      byte[] bytes = jsonb.toJson(request).getBytes(charset);
+      channel.writeAndFlush(bytes);
     } catch (Exception e) {
       LOGGER.error("Exception occurred while sending notification");
     }
@@ -106,6 +99,8 @@ public class JsonRpcNettySender implements Closeable {
 
   @Override
   public void close() throws IOException {
-    channelPool.close();
+    if (channelPool != null) {
+      channelPool.close();
+    }
   }
 }

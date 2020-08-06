@@ -3,11 +3,11 @@ package com.github.gibmir.ion.lib.netty.client.sender.initializer;
 import com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder.JsonRpcResponseDecoder;
 import com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder.JsonRpcRequestEncoder;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.JsonRpcResponseHandler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class JsonRpcNettyClientInitializer extends ChannelInitializer<SocketChannel> {
+public class JsonRpcNettyClientInitializer extends ChannelInitializer<Channel> {
   private final LoggingHandler loggingHandler;
   private final JsonRpcRequestEncoder jsonRpcRequestEncoder;
   private final JsonRpcResponseDecoder jsonRpcResponseDecoder;
@@ -23,7 +23,7 @@ public class JsonRpcNettyClientInitializer extends ChannelInitializer<SocketChan
   }
 
   @Override
-  protected void initChannel(SocketChannel ch) {
+  protected void initChannel(Channel ch) {
     ch.pipeline().addLast(loggingHandler).addLast(jsonRpcRequestEncoder)
       .addLast(jsonRpcResponseDecoder).addLast(jsonRpcResponseHandler);
   }
