@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 class NettyRequestFactoryTest {
 
   @Test
-  void smoke() throws ExecutionException, InterruptedException {
+  void smoke() {
     EventLoopGroup eventExecutors = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(new ConcurrentHashMap<>());
     ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
@@ -43,7 +43,6 @@ class NettyRequestFactoryTest {
 
   @Test
   void demoProvider() {
-    RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 //    Request1<RequestDto, RequestDto> testProcedure = requestFactory.singleArg(TestProcedure.class);
 //    testProcedure.positionalCall("123213-321323-434", new RequestDto("argument"));
 

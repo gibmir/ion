@@ -10,11 +10,14 @@ import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyCli
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class NettyClientTestEnvironment {
+  public static final Jsonb TEST_REAL_JSONB = JsonbBuilder.create();
   public static final JsonRpcRequestEncoder TEST_REQUEST_ENCODER = new JsonRpcRequestEncoder();
 
   public static final String TEST_JSON = "test-json";

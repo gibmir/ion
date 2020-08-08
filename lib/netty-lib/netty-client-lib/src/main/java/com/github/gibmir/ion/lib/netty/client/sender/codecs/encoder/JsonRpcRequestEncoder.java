@@ -6,9 +6,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class JsonRpcRequestEncoder extends MessageToByteEncoder<byte[]> {
 
-  public JsonRpcRequestEncoder() {
-  }
-
   @Override
   protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) {
     out.writeBytes(msg);
