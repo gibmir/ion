@@ -4,7 +4,11 @@ import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Represents a batch requests.
+ */
 public interface BatchRequest {
+
   /**
    * Makes a batch call.
    * <p>
