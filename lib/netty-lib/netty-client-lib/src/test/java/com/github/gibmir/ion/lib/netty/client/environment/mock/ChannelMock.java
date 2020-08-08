@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 
 public class ChannelMock {
 
-  public static Channel newMock() {
+  public static Channel emptyMock() {
     return mock(Channel.class);
   }
 }

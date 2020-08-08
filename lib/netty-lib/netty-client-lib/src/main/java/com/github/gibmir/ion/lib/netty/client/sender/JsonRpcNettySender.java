@@ -50,40 +50,43 @@ public class JsonRpcNettySender implements Closeable {
 
   /**
    * @implNote <ol>
+   * <li>create future to await batch response</li>
    * <li>register futures to await result</li>
    * <li>send request dto</li>
-   * <li>write response processing</li>
-   * <li>create future to await batch response</li>
+   * <li>process response</li>
    * </ol>
    */
+  @SuppressWarnings("unchecked")
   public CompletableFuture<BatchResponse> send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
                                                SocketAddress socketAddress) {
-    for (ResponseFuture responseFuture : nettyBatch.getResponseFutures()) {
+    ResponseFuture[] responseFutures = nettyBatch.getResponseFutures();
+    CompletableFuture<BatchElement>[] futureBatchElements = new CompletableFuture[responseFutures.length];
+    for (int i = 0; i < responseFutures.length; i++) {
+      ResponseFuture responseFuture = responseFutures[i];
       responseListenerRegistry.register(responseFuture);
+      futureBatchElements[i] = responseFuture.getFuture()
+        .handle((response, throwable) -> JsonRpcNettySender.toBatchElement(responseFuture, response, throwable));
     }
-    CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(nettyBatch.getResponseCompletableFutures());
+    CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(futureBatchElements);
     Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
     channel.writeAndFlush(jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
-    return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(nettyBatch.getResponseFutures()));
+    return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(futureBatchElements));
   }
 
-  private static BatchResponse handleResult(ResponseFuture[] responseFutures) {
-    List<BatchElement> batchElements = new ArrayList<>(responseFutures.length);
-    for (ResponseFuture responseFuture : responseFutures) {
-      responseFuture.getFuture().whenComplete((response, throwable) -> {
-        String id = responseFuture.getId();
-        BatchElement batchElement;
-        if (response != null) {
-          batchElement = new SuccessBatchElement(id, response);
-        } else if (throwable != null) {
-          batchElement = new ErrorBatchElement(id, throwable);
-        } else {
-          batchElement = new ErrorBatchElement(id, new IllegalStateException("Result and exception are null"));
-        }
-        batchElements.add(batchElement);
-      });
+  private static BatchResponse handleResult(CompletableFuture<BatchElement>[] futureBatchElements) {
+    List<BatchElement> batchElements = new ArrayList<>(futureBatchElements.length);
+    for (CompletableFuture<BatchElement> futureBatchElement : futureBatchElements) {
+      batchElements.add(/*already completed*/futureBatchElement.join());
     }
     return new BatchResponse(batchElements);
+  }
+
+  private static BatchElement toBatchElement(ResponseFuture responseFuture, Object response, Throwable throwable) {
+    String id = responseFuture.getId();
+    if (throwable != null) {
+      return new ErrorBatchElement(id, throwable);
+    }
+    return new SuccessBatchElement(id, response);
   }
 
   public void send(NotificationDto request, Jsonb jsonb, Charset charset,

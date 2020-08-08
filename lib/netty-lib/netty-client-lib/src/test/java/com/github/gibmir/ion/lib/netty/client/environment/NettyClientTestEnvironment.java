@@ -18,7 +18,7 @@ public class NettyClientTestEnvironment {
   public static final JsonRpcRequestEncoder TEST_REQUEST_ENCODER = new JsonRpcRequestEncoder();
 
   public static final String TEST_JSON = "test-json";
-  public static final ResponseListenerRegistry TEST_RESPONSE_LISTENER_REGISTRY = ResponseListenerRegistryMock.newMock();
+  public static final ResponseListenerRegistry TEST_RESPONSE_LISTENER_REGISTRY = ResponseListenerRegistryMock.emptyMock();
   public static final JsonRpcResponseHandler TEST_RESPONSE_HANDLER = new JsonRpcResponseHandler(JsonbMock.newMock(TEST_JSON),
     TEST_RESPONSE_LISTENER_REGISTRY);
   public static final Charset TEST_CHARSET = StandardCharsets.UTF_8;
