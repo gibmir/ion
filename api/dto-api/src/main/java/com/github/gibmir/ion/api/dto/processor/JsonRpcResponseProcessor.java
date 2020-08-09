@@ -5,9 +5,15 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 
 public interface JsonRpcResponseProcessor {
-  void process(ErrorResponse errorResponse);
+  default void process(ErrorResponse errorResponse) {
+    //do nothing
+  }
 
-  void process(SuccessResponse successResponse);
+  default void process(SuccessResponse successResponse) {
+    //do nothing
+  }
 
-  void process(BatchResponseDto batchResponseDto);
+  default void process(BatchResponseDto batchResponseDto) {
+    //do nothing
+  }
 }

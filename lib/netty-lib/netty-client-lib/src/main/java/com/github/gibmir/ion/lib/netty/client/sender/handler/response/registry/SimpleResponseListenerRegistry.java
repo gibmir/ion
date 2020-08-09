@@ -56,7 +56,8 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
           LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError());
       }
     } catch (Exception parseException) {
-      LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError());
+      LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError()
+        .appendMessage(parseException.getMessage()));
     }
   }
 
@@ -75,7 +76,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
   private ResponseFuture computeResponse(Jsonb jsonb, JsonObject jsonObject, String id,
                                          ResponseFuture responseFuture) {
     if (responseFuture != null) {
-      RegistryResponseProcessor responseProcessor = new RegistryResponseProcessor(responseFuture.getFuture());
+      JsonRpcResponseProcessor responseProcessor = new RegistryResponseProcessor(responseFuture.getFuture());
       try {
         compute(jsonb, jsonObject, id, responseFuture, responseProcessor);
       } catch (Exception e) {
@@ -88,7 +89,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
   }
 
   private void compute(Jsonb jsonb, JsonObject jsonObject, String id, ResponseFuture responseFuture,
-                       RegistryResponseProcessor responseProcessor) {
+                       JsonRpcResponseProcessor responseProcessor) {
     if (jsonObject.get(SerializationProperties.PROTOCOL_KEY) == null) {
       ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("Protocol was not present"))
         .processWith(responseProcessor);
@@ -123,11 +124,6 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
     @Override
     public void process(SuccessResponse successResponse) {
       resultFuture.complete(successResponse.getResult());
-    }
-
-    @Override
-    public void process(BatchResponseDto batchResponseDto) {
-
     }
   }
 }
