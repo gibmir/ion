@@ -1,10 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.request.factory;
 
-import com.github.gibmir.ion.api.client.request.Request1;
-import com.github.gibmir.ion.api.client.factory.RequestFactory;
-import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
-import com.github.gibmir.ion.lib.netty.client.request.NettyRequest1;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
@@ -20,7 +16,9 @@ import javax.json.bind.JsonbBuilder;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
+
+import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_CHARSET;
+import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
 
 class NettyRequestFactoryTest {
 
@@ -29,7 +27,7 @@ class NettyRequestFactoryTest {
     EventLoopGroup eventExecutors = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(new ConcurrentHashMap<>());
     ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(), eventExecutors, NioSocketChannel.class,
-      LogLevel.INFO, responseListenerRegistry);
+      LogLevel.INFO, responseListenerRegistry, TEST_REAL_JSONB, TEST_CHARSET);
     JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, responseListenerRegistry);
 
     Jsonb jsonb = JsonbBuilder.create();

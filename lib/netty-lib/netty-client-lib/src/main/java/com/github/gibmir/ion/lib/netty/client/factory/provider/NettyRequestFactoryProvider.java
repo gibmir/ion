@@ -14,6 +14,8 @@ import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.R
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 
+import javax.json.bind.Jsonb;
+import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyRequestFactoryProvider implements RequestFactoryProvider {
@@ -38,13 +40,13 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
     Configuration configuration = ConfigurationProvider.load().provide();
     Cache<String, ResponseFuture> responseFuturesCache = NettyRequestConfigurationUtils.createResponseFuturesCache(configuration);
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
+    Charset charset = RequestConfigurationUtils.readCharsetFrom(configuration);
+    Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(),
       NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
       NettyRequestConfigurationUtils.resolveChannelClass(configuration),
-      NettyRequestConfigurationUtils.resolveLogLevel(configuration), responseListenerRegistry);
+      NettyRequestConfigurationUtils.resolveLogLevel(configuration), responseListenerRegistry, jsonb, charset);
     return new NettyRequestFactory(new JsonRpcNettySender(channelPool, responseListenerRegistry),
-      NettyRequestConfigurationUtils.createSocketAddressWith(configuration),
-      ConfigurationUtils.createJsonbWith(configuration),
-      RequestConfigurationUtils.readCharsetFrom(configuration));
+      NettyRequestConfigurationUtils.createSocketAddressWith(configuration), jsonb, charset);
   }
 }

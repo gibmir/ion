@@ -1,31 +1,42 @@
 package com.github.gibmir.ion.lib.netty.client.request.batch;
 
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 
-import java.util.concurrent.CompletableFuture;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class NettyBatch {
-  private final JsonRpcRequest[] batchRequestDto;
-  private final ResponseFuture[] responseFutures;
-  private final CompletableFuture<?>[] responseCompletableFutures;
+  private final List<JsonRpcRequest> batchRequestDto;
+  private final List<AwaitBatchPart> awaitBatchParts;
 
-  public NettyBatch(JsonRpcRequest[] batchRequestDto, ResponseFuture[] responseFutures,
-                    CompletableFuture<?>[] responseCompletableFutures) {
+  public NettyBatch(List<JsonRpcRequest> batchRequestDto, List<AwaitBatchPart> awaitBatchParts) {
     this.batchRequestDto = batchRequestDto;
-    this.responseFutures = responseFutures;
-    this.responseCompletableFutures = responseCompletableFutures;
+    this.awaitBatchParts = awaitBatchParts;
   }
 
-  public JsonRpcRequest[] getBatchRequestDto() {
+  public List<JsonRpcRequest> getBatchRequestDto() {
     return batchRequestDto;
   }
 
-  public ResponseFuture[] getResponseFutures() {
-    return responseFutures;
+  public List<AwaitBatchPart> getAwaitBatchParts() {
+    return awaitBatchParts;
   }
 
-  public CompletableFuture<?>[] getResponseCompletableFutures() {
-    return responseCompletableFutures;
+  public static class AwaitBatchPart {
+    private final String id;
+    private final Type returnType;
+
+    public AwaitBatchPart(String id, Type returnType) {
+      this.id = id;
+      this.returnType = returnType;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public Type getReturnType() {
+      return returnType;
+    }
   }
 }

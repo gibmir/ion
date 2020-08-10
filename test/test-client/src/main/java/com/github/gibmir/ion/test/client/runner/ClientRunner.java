@@ -15,12 +15,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ClientRunner {
-  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException, IOException {
+  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
     sendBatch(requestFactory);
+    sendNotification(requestFactory);
     sendRequest(requestFactory, 1);
     sendNamedRequest(requestFactory, 1);
-    sendNotification(requestFactory);
   }
 
   private static void sendRequest(RequestFactory requestFactory, int times) throws InterruptedException, ExecutionException, TimeoutException {

@@ -12,22 +12,24 @@ import com.github.gibmir.ion.lib.netty.client.environment.mock.JsonbMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ResponseListenerRegistryMock;
 import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatch;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
 import io.netty.channel.Channel;
 import org.junit.jupiter.api.Test;
 
 import javax.json.bind.Jsonb;
-import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ARGS;
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_CHARSET;
+import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY;
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ID;
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_PROCEDURE_NAME;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_RESPONSE_LISTENER_REGISTRY;
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_SOCKET_ADDRESS;
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TestException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -50,7 +52,7 @@ class JsonRpcNettySenderTest {
   void testSendNotificationSuccessfully() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     NotificationDto notificationDto = new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(notificationDto);
     jsonRpcNettySender.send(notificationDto, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
@@ -63,10 +65,10 @@ class JsonRpcNettySenderTest {
    * @implNote if exception occurred while notification sending - do nothing
    */
   @Test
-  void testSendNotificationExceptionally() throws IOException {
+  void testSendNotificationExceptionally() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(TestException.class);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     NotificationDto notificationDto = new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(notificationDto);
     jsonRpcNettySender.send(notificationDto, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
@@ -80,7 +82,7 @@ class JsonRpcNettySenderTest {
   void testSendPositionalRequestSuccessfully() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     RequestDto requestDto = RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(requestDto);
     CompletableFuture<Object> futureResult = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb,
@@ -92,10 +94,10 @@ class JsonRpcNettySenderTest {
   }
 
   @Test
-  void testSendPositionalRequestExceptionally() throws IOException {
+  void testSendPositionalRequestExceptionally() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(TestException.class);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     RequestDto requestDto = RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(requestDto);
     CompletableFuture<Object> futureResult = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb,
@@ -112,7 +114,7 @@ class JsonRpcNettySenderTest {
   void testSendNamedRequestSuccessfully() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     RequestDto requestDto = RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap());
     Jsonb jsonb = JsonbMock.newMock(requestDto);
     CompletableFuture<Object> futureResult = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET,
@@ -124,10 +126,10 @@ class JsonRpcNettySenderTest {
   }
 
   @Test
-  void testSendNamedRequestExceptionally() throws IOException {
+  void testSendNamedRequestExceptionally() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(TestException.class);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
     RequestDto requestDto = RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap());
     Jsonb jsonb = JsonbMock.newMock(requestDto);
     CompletableFuture<Object> futureResult = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET,
@@ -144,13 +146,13 @@ class JsonRpcNettySenderTest {
   void testSendBatchSuccessfully() {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
-    JsonRpcRequest[] batchRequests = {
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
+    List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
-    };
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, new ResponseFuture[0], new CompletableFuture[0]);
+    );
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, Collections.emptyList());
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
     CompletableFuture<BatchResponse> futureResult = jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
       TEST_SOCKET_ADDRESS);
@@ -161,15 +163,15 @@ class JsonRpcNettySenderTest {
   }
 
   @Test
-  void testSendBatchExceptionallyBecauseChannelPoolThrewException() throws IOException {
+  void testSendBatchExceptionallyBecauseChannelPoolThrewException() {
     ChannelPool channelPool = ChannelPoolMock.newMock(TestException.class);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
-    JsonRpcRequest[] batchRequests = {
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
+    List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
-    };
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, new ResponseFuture[0], new CompletableFuture[0]);
+    );
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, Collections.emptyList());
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
 
     assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
@@ -182,13 +184,13 @@ class JsonRpcNettySenderTest {
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
     JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool,
       ResponseListenerRegistryMock.newMock(TestException.class));
-    JsonRpcRequest[] batchRequests = {
+    List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
-    };
-    ResponseFuture[] responseFutures = {/*used with mock*/new ResponseFuture(null, null, null)};
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, responseFutures, new CompletableFuture[0]);
+    );
+    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(null, null));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
 
     assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
@@ -199,21 +201,21 @@ class JsonRpcNettySenderTest {
   void testSendBatchWithSuccessResponseFutureCorrectProcessing() throws ExecutionException, InterruptedException {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
-    JsonRpcRequest[] batchRequests = {
+    Map<String, ResponseFuture> responseCache = new HashMap<>();
+    ResponseListenerRegistry testResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responseCache);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, testResponseListenerRegistry);
+    List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
-    };
-    CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-    ResponseFuture[] responseFutures = {/*used with mock*/new ResponseFuture(TEST_ID, Object.class,
-      completableFuture)};
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, responseFutures, new CompletableFuture[]{completableFuture});
+    );
+    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
     CompletableFuture<BatchResponse> batchResponseCompletableFuture = jsonRpcNettySender.send(nettyBatch, jsonb,
       TEST_CHARSET, TEST_SOCKET_ADDRESS);
     String expectedResult = "object";
-    completableFuture.complete(expectedResult);
+    responseCache.get(TEST_ID).complete(expectedResult);
     BatchResponse batchResponse = batchResponseCompletableFuture.get();
     List<BatchElement> batchResponseElements = batchResponse.getBatchResponseElements();
     BatchElement batchElement = batchResponseElements.get(0);
@@ -227,23 +229,24 @@ class JsonRpcNettySenderTest {
   void testSendBatchWithErrorResponseFutureCorrectProcessing() throws ExecutionException, InterruptedException {
     Channel channel = ChannelMock.emptyMock();
     ChannelPool channelPool = ChannelPoolMock.newMock(channel);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
-    JsonRpcRequest[] batchRequests = {
+    Map<String, ResponseFuture> responsesCache = new HashMap<>();
+    ResponseListenerRegistry testEmptyResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responsesCache);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, testEmptyResponseListenerRegistry);
+    List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
-    };
-    CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-    CompletableFuture<Object> secondFuture = new CompletableFuture<>();
-    ResponseFuture[] responseFutures = {/*used with mock*/new ResponseFuture(TEST_ID, Object.class,
-      completableFuture), new ResponseFuture(TEST_ID + 2, Object.class, secondFuture)};
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, responseFutures, new CompletableFuture[]{completableFuture});
+    );
+    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(
+      /*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class),
+      new NettyBatch.AwaitBatchPart(TEST_ID + 2, Object.class));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
     CompletableFuture<BatchResponse> batchResponseCompletableFuture = jsonRpcNettySender.send(nettyBatch, jsonb,
       TEST_CHARSET, TEST_SOCKET_ADDRESS);
-    completableFuture.completeExceptionally(new TestException());
+    responsesCache.get(TEST_ID).completeExceptionally(new TestException());
     String expectedSecondFutureResult = "pog";
-    secondFuture.complete(expectedSecondFutureResult);
+    responsesCache.get(TEST_ID + 2).complete(expectedSecondFutureResult);
     BatchResponse batchResponse = batchResponseCompletableFuture.get();
     List<BatchElement> batchResponseElements = batchResponse.getBatchResponseElements();
 
@@ -260,18 +263,18 @@ class JsonRpcNettySenderTest {
 
   /*CLOSE*/
   @Test
-  void testCloseSuccessfully() throws IOException {
+  void testCloseSuccessfully() {
     ChannelPool channelPool = ChannelPoolMock.emptyMock();
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
 
     assertDoesNotThrow(jsonRpcNettySender::close);
     verify(channelPool, times(1)).close();
   }
 
   @Test
-  void testCloseExceptionally() throws IOException {
+  void testCloseExceptionally() {
     ChannelPool channelPool = ChannelPoolMock.newMock(TestException.class);
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(channelPool, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
 
     assertThrows(TestException.class, jsonRpcNettySender::close);
     verify(channelPool, times(1)).close();
@@ -279,7 +282,7 @@ class JsonRpcNettySenderTest {
 
   @Test
   void testCloseNull() {
-    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(null, TEST_RESPONSE_LISTENER_REGISTRY);
+    JsonRpcNettySender jsonRpcNettySender = new JsonRpcNettySender(null, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
 
     assertDoesNotThrow(jsonRpcNettySender::close);
   }

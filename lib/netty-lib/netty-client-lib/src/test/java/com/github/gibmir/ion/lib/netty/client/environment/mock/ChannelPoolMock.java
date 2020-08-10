@@ -16,13 +16,13 @@ import static org.mockito.Mockito.mock;
 public class ChannelPoolMock {
   public static ChannelPool newMock(Channel channel) {
     ChannelPool channelPool = mock(ChannelPool.class);
-    doAnswer(__ -> channel).when(channelPool).getOrCreate(any(Jsonb.class), any(Charset.class), any(SocketAddress.class));
+    doAnswer(__ -> channel).when(channelPool).getOrCreate(any(SocketAddress.class));
     return channelPool;
   }
 
-  public static ChannelPool newMock(Class<? extends RuntimeException> throwableClass) throws IOException {
+  public static ChannelPool newMock(Class<? extends RuntimeException> throwableClass) {
     ChannelPool channelPool = mock(ChannelPool.class);
-    doThrow(throwableClass).when(channelPool).getOrCreate(any(Jsonb.class), any(Charset.class), any(SocketAddress.class));
+    doThrow(throwableClass).when(channelPool).getOrCreate(any(SocketAddress.class));
     doThrow(throwableClass).when(channelPool).close();
     return channelPool;
   }

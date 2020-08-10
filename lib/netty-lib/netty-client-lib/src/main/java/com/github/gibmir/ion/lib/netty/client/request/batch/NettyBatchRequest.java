@@ -70,7 +70,7 @@ public class NettyBatchRequest implements BatchRequest {
 
   public static class NettyBatchRequestBuilder implements BatchRequestBuilder<NettyBatchRequestBuilder> {
     private final List<JsonRpcRequest> requests = new ArrayList<>();
-    private final List<CompletableFuture<?>> responseCompletableFutures = new ArrayList<>();
+    private final List<NettyBatch.AwaitBatchPart> awaitBatchParts = new ArrayList<>();
     private final List<ResponseFuture> responseFutures = new ArrayList<>();
     private final JsonRpcNettySender defaultJsonRpcNettySender;
     private final SocketAddress defaultSocketAddress;
@@ -87,14 +87,11 @@ public class NettyBatchRequest implements BatchRequest {
 
     @Override
     public <R> NettyBatchRequestBuilder add(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
-      CompletableFuture<Object> completableFuture = new CompletableFuture<>();
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(jsonRemoteProcedure0);
-      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(), completableFuture);
       RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         NettyRequest0.EMPTY_PAYLOAD);
       requests.add(requestDto);
-      responseCompletableFutures.add(completableFuture);
-      responseFutures.add(responseFuture);
+      awaitBatchParts.add(new NettyBatch.AwaitBatchPart(id, jsonRemoteProcedureSignature.getReturnType()));
       return this;
     }
 
@@ -102,15 +99,11 @@ public class NettyBatchRequest implements BatchRequest {
     public <T, R> NettyBatchRequestBuilder addPositional(String id,
                                                          Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
                                                          T arg) {
-      CompletableFuture<Object> completableFuture = new CompletableFuture<>();
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
-      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
-        completableFuture);
       RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg});
       requests.add(requestDto);
-      responseCompletableFutures.add(completableFuture);
-      responseFutures.add(responseFuture);
+      awaitBatchParts.add(new NettyBatch.AwaitBatchPart(id, jsonRemoteProcedureSignature.getReturnType()));
       return this;
     }
 
@@ -118,15 +111,11 @@ public class NettyBatchRequest implements BatchRequest {
     public <T1, T2, R> NettyBatchRequestBuilder addPositional(String id,
                                                               Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
                                                               T1 arg1, T2 arg2) {
-      CompletableFuture<Object> completableFuture = new CompletableFuture<>();
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
-      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
-        completableFuture);
       RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg1, arg2});
       requests.add(requestDto);
-      responseCompletableFutures.add(completableFuture);
-      responseFutures.add(responseFuture);
+      awaitBatchParts.add(new NettyBatch.AwaitBatchPart(id, jsonRemoteProcedureSignature.getReturnType()));
       return this;
     }
 
@@ -134,15 +123,11 @@ public class NettyBatchRequest implements BatchRequest {
     public <T1, T2, T3, R> NettyBatchRequestBuilder addPositional(String id,
                                                                   Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
                                                                   T1 arg1, T2 arg2, T3 arg3) {
-      CompletableFuture<Object> completableFuture = new CompletableFuture<>();
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
-      ResponseFuture responseFuture = new ResponseFuture(id, jsonRemoteProcedureSignature.getReturnType(),
-        completableFuture);
       RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
         new Object[]{arg1, arg2, arg3});
       requests.add(requestDto);
-      responseCompletableFutures.add(completableFuture);
-      responseFutures.add(responseFuture);
+      awaitBatchParts.add(new NettyBatch.AwaitBatchPart(id, jsonRemoteProcedureSignature.getReturnType()));
       return this;
     }
 
@@ -172,11 +157,8 @@ public class NettyBatchRequest implements BatchRequest {
 
     @Override
     public NettyBatchRequest build() {
-      JsonRpcRequest[] jsonRpcRequests = new JsonRpcRequest[requests.size()];
-      ResponseFuture[] responses = new ResponseFuture[responseFutures.size()];
-      CompletableFuture<?>[] completableFutures = new CompletableFuture[responseCompletableFutures.size()];
-      NettyBatch nettyBatch = new NettyBatch(requests.toArray(jsonRpcRequests), responseFutures.toArray(responses),
-        responseCompletableFutures.toArray(completableFutures));
+      NettyBatch nettyBatch = new NettyBatch(requests,
+        awaitBatchParts);
       return new NettyBatchRequest(nettyBatch, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
     }
   }

@@ -26,7 +26,7 @@ class SimpleResponseListenerRegistryTest {
   void testCorrectRegister() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     assertDoesNotThrow(() -> registry.register(responseFuture));
 
     assertTrue(idPerResponseListener.containsKey(TEST_ID));
@@ -37,8 +37,8 @@ class SimpleResponseListenerRegistryTest {
   void testRegisterWithSameId() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
-    ResponseFuture firstResponseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
-    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture firstResponseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
+    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     assertDoesNotThrow(() -> registry.register(firstResponseFuture));
     assertDoesNotThrow(() -> registry.register(secondResponseFuture));
 
@@ -51,7 +51,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithCorrectJsonValue() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
     String correctResponse = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}";
@@ -68,7 +68,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyIncorrectListenerWithCorrectJsonValue() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, null, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, null, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
     String correctResponse = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}";
@@ -98,7 +98,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithJsonValueWithoutProtocol() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
     String response = "{\"id\":\"test-id\",\"result\":1}";
@@ -119,7 +119,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithJsonValueWithoutId() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
     String response = "{\"jsonrpc\":\"2.0\",\"result\":1}";
@@ -131,7 +131,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithJsonValueWithoutResult() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
     String response = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\"}";
@@ -149,7 +149,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithJsonValueNotObjectOrArray() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
 
@@ -163,7 +163,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithNullJsonValue() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
 
@@ -177,8 +177,8 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithJsonValueArray() throws ExecutionException, InterruptedException {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
-    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
+    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
@@ -200,10 +200,10 @@ class SimpleResponseListenerRegistryTest {
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>()
       .handle((o, throwable) -> {
         throw new TestException();
-      }));
+      }), TEST_REAL_JSONB);
 
 
-    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>());
+    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
@@ -222,8 +222,8 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithIncorrectJsonValueArray() throws ExecutionException, InterruptedException {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
-    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
+    ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
     ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);

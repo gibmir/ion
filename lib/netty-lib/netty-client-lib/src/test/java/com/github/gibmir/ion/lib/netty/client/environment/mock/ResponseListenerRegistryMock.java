@@ -2,6 +2,9 @@ package com.github.gibmir.ion.lib.netty.client.environment.mock;
 
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
+
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -10,6 +13,14 @@ import static org.mockito.Mockito.mock;
 public class ResponseListenerRegistryMock {
   public static ResponseListenerRegistry emptyMock() {
     return mock(ResponseListenerRegistry.class);
+  }
+
+  /**
+   * @param map response cache
+   * @return listener registry
+   */
+  public static ResponseListenerRegistry newStub(Map<String, ResponseFuture> map) {
+    return new SimpleResponseListenerRegistry(map);
   }
 
   public static ResponseListenerRegistry newMock(Class<? extends RuntimeException> throwableClass) {

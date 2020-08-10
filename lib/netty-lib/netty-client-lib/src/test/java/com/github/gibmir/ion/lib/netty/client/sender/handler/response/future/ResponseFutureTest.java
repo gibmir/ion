@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletableFuture;
 
 import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ID;
+import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,7 +15,7 @@ class ResponseFutureTest {
   @Test
   void testGetReturnType() {
     Class<Integer> expectedType = int.class;
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, expectedType, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, expectedType, new CompletableFuture<>(), TEST_REAL_JSONB);
 
     assertEquals(expectedType, responseFuture.getReturnType());
   }
@@ -22,7 +23,7 @@ class ResponseFutureTest {
   @Test
   void testGetFuture() {
     CompletableFuture<Object> future = new CompletableFuture<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, future);
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, future, TEST_REAL_JSONB);
 
     assertEquals(future, responseFuture.getFuture());
   }
@@ -30,7 +31,7 @@ class ResponseFutureTest {
   @Test
   void testCompleteExceptionally() {
     CompletableFuture<Object> future = new CompletableFuture<>();
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, future);
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, future, TEST_REAL_JSONB);
     responseFuture.completeExceptionally(new TestException());
     assertEquals(future, responseFuture.getFuture());
     assertTrue(responseFuture.getFuture().isCompletedExceptionally());
@@ -38,7 +39,7 @@ class ResponseFutureTest {
 
   @Test
   void testGetId() {
-    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>());
+    ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, new CompletableFuture<>(), TEST_REAL_JSONB);
 
     assertEquals(TEST_ID, responseFuture.getId());
   }

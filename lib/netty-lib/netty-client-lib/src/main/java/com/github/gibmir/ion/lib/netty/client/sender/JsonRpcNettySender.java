@@ -39,8 +39,8 @@ public class JsonRpcNettySender implements Closeable {
                                        Type returnType, SocketAddress socketAddress) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     try {
-      responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture));
-      Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
+      responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture, jsonb));
+      Channel channel = channelPool.getOrCreate(socketAddress);
       channel.writeAndFlush(jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
       responseFuture.completeExceptionally(e);
@@ -59,16 +59,21 @@ public class JsonRpcNettySender implements Closeable {
   @SuppressWarnings("unchecked")
   public CompletableFuture<BatchResponse> send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
                                                SocketAddress socketAddress) {
-    ResponseFuture[] responseFutures = nettyBatch.getResponseFutures();
-    CompletableFuture<BatchElement>[] futureBatchElements = new CompletableFuture[responseFutures.length];
-    for (int i = 0; i < responseFutures.length; i++) {
-      ResponseFuture responseFuture = responseFutures[i];
+    List<NettyBatch.AwaitBatchPart> awaitBatchParts = nettyBatch.getAwaitBatchParts();
+    int size = awaitBatchParts.size();
+    CompletableFuture<BatchElement>[] futureBatchElements = new CompletableFuture[size];
+    for (int i = 0; i < size; i++) {
+      CompletableFuture<Object> futureBatchElement = new CompletableFuture<>();
+      NettyBatch.AwaitBatchPart awaitBatchPart = awaitBatchParts.get(i);
+      ResponseFuture responseFuture = new ResponseFuture(awaitBatchPart.getId(), awaitBatchPart.getReturnType(),
+        futureBatchElement, jsonb);
       responseListenerRegistry.register(responseFuture);
-      futureBatchElements[i] = responseFuture.getFuture()
+      futureBatchElements[i] = futureBatchElement
         .handle((response, throwable) -> JsonRpcNettySender.toBatchElement(responseFuture, response, throwable));
     }
+
     CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(futureBatchElements);
-    Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
+    Channel channel = channelPool.getOrCreate(socketAddress);
     channel.writeAndFlush(jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
     return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(futureBatchElements));
   }
@@ -92,7 +97,7 @@ public class JsonRpcNettySender implements Closeable {
   public void send(NotificationDto request, Jsonb jsonb, Charset charset,
                    SocketAddress socketAddress) {
     try {
-      Channel channel = channelPool.getOrCreate(jsonb, charset, socketAddress);
+      Channel channel = channelPool.getOrCreate(socketAddress);
       byte[] bytes = jsonb.toJson(request).getBytes(charset);
       channel.writeAndFlush(bytes);
     } catch (Exception e) {
@@ -101,7 +106,7 @@ public class JsonRpcNettySender implements Closeable {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     if (channelPool != null) {
       channelPool.close();
     }

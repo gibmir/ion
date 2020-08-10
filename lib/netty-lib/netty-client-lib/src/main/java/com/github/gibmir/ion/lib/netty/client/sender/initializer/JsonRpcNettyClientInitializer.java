@@ -13,9 +13,10 @@ public class JsonRpcNettyClientInitializer extends ChannelInitializer<Channel> {
   private final JsonRpcResponseDecoder jsonRpcResponseDecoder;
   private final JsonRpcResponseHandler jsonRpcResponseHandler;
 
-  public JsonRpcNettyClientInitializer(LoggingHandler loggingHandler, JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                                       JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                                       JsonRpcResponseHandler jsonRpcResponseHandler) {
+  public JsonRpcNettyClientInitializer(/*todo logging decorator*/LoggingHandler loggingHandler,
+                                                                 JsonRpcRequestEncoder jsonRpcRequestEncoder,
+                                                                 JsonRpcResponseDecoder jsonRpcResponseDecoder,
+                                                                 JsonRpcResponseHandler jsonRpcResponseHandler) {
     this.loggingHandler = loggingHandler;
     this.jsonRpcRequestEncoder = jsonRpcRequestEncoder;
     this.jsonRpcResponseDecoder = jsonRpcResponseDecoder;
