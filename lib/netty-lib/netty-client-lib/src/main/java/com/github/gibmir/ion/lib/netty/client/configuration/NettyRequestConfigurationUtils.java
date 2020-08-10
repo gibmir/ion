@@ -5,11 +5,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
+import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.handler.logging.LogLevel;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -81,10 +81,10 @@ public class NettyRequestConfigurationUtils {
   //string properties
   public static final String NETTY_CLIENT_LOG_LEVEL = ROOT_PREFIX + ".netty.client.log.level";
 
-  public static LogLevel resolveLogLevel(Configuration configuration) {
+  public static NettyLogLevel resolveLogLevel(Configuration configuration) {
     return configuration.getOptionalValue(NETTY_CLIENT_LOG_LEVEL, String.class)
-      .map(LogLevel::valueOf)
-      .orElse(LogLevel.ERROR);
+      .map(NettyLogLevel::valueOf)
+      .orElse(NettyLogLevel.DISABLED);
   }
 
   /*caffeine*/
@@ -117,7 +117,7 @@ public class NettyRequestConfigurationUtils {
       .orElse(false)) {
       caffeine.softValues();
     }
-    if (configuration.getOptionalValue(NETTY_CLIENT_RESPONSE_LISTENER_CACHE_RECORD_STATS_ENABLED,Boolean.class)
+    if (configuration.getOptionalValue(NETTY_CLIENT_RESPONSE_LISTENER_CACHE_RECORD_STATS_ENABLED, Boolean.class)
       .orElse(false)) {
       caffeine.softValues();
     }

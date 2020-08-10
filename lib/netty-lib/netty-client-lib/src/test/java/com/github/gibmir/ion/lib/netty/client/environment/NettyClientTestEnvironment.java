@@ -6,7 +6,7 @@ import com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder.JsonRpcRespo
 import com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder.JsonRpcRequestEncoder;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.JsonRpcResponseHandler;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyClientInitializer;
+import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyChannelInitializer;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
@@ -27,8 +27,8 @@ public class NettyClientTestEnvironment {
   public static final Charset TEST_CHARSET = StandardCharsets.UTF_8;
   public static final JsonRpcResponseDecoder TEST_RESPONSE_DECODER = new JsonRpcResponseDecoder(JsonbMock.newMock(TEST_JSON), TEST_CHARSET);
   public static final LoggingHandler TEST_LOGGING_HANDLER = new LoggingHandler(LogLevel.ERROR);
-  public static final JsonRpcNettyClientInitializer TEST_NETTY_CLIENT_INITIALIZER =
-    new JsonRpcNettyClientInitializer(TEST_LOGGING_HANDLER, TEST_REQUEST_ENCODER, TEST_RESPONSE_DECODER,
+  public static final JsonRpcNettyChannelInitializer TEST_NETTY_CLIENT_INITIALIZER =
+     JsonRpcNettyChannelInitializer.withLogging(TEST_LOGGING_HANDLER, TEST_REQUEST_ENCODER, TEST_RESPONSE_DECODER,
       TEST_RESPONSE_HANDLER);
   public static final String TEST_PROCEDURE_NAME = "test-procedure";
   public static final InetSocketAddress TEST_SOCKET_ADDRESS = InetSocketAddress.createUnresolved("localhost", 55_555);
