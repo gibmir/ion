@@ -26,6 +26,11 @@ public class ChannelPool implements Closeable {
     this.handler = handler;
   }
 
+  /**
+   * @param socketAddress address
+   * @return configured channel
+   * @throws ChannelException if exception occurred while preparing channel
+   */
   public Channel getOrCreate(SocketAddress socketAddress) {
 
     return channelsPool.computeIfAbsent(socketAddress, address -> {
@@ -33,6 +38,7 @@ public class ChannelPool implements Closeable {
         return new Bootstrap()
           .group(group)
           .channel(channelClass)
+          //todo channel options configuration
           .option(ChannelOption.SO_KEEPALIVE, true)
           .handler(handler)
           .connect(address)

@@ -10,13 +10,11 @@ import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatch;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
-import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
@@ -40,8 +38,7 @@ public class JsonRpcNettySender implements Closeable {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     try {
       responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture, jsonb));
-      Channel channel = channelPool.getOrCreate(socketAddress);
-      channel.writeAndFlush(jsonb.toJson(request).getBytes(charset));
+      sendTo(socketAddress, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
       responseFuture.completeExceptionally(e);
     }
@@ -73,8 +70,12 @@ public class JsonRpcNettySender implements Closeable {
     }
 
     CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(futureBatchElements);
-    Channel channel = channelPool.getOrCreate(socketAddress);
-    channel.writeAndFlush(jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
+    try {
+      sendTo(socketAddress, jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
+    } catch (Exception e) {
+      LOGGER.error("Exception occurred white sending a request", e);
+      batchAwaitFuture.completeExceptionally(e);
+    }
     return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(futureBatchElements));
   }
 
@@ -97,12 +98,14 @@ public class JsonRpcNettySender implements Closeable {
   public void send(NotificationDto request, Jsonb jsonb, Charset charset,
                    SocketAddress socketAddress) {
     try {
-      Channel channel = channelPool.getOrCreate(socketAddress);
-      byte[] bytes = jsonb.toJson(request).getBytes(charset);
-      channel.writeAndFlush(bytes);
+      sendTo(socketAddress, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
       LOGGER.error("Exception occurred while sending notification");
     }
+  }
+
+  private void sendTo(SocketAddress socketAddress, byte[] payload) {
+    channelPool.getOrCreate(socketAddress).writeAndFlush(payload);
   }
 
   @Override
