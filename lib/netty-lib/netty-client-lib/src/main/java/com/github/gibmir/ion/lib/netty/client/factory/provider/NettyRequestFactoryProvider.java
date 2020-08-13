@@ -16,13 +16,15 @@ import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.Res
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyChannelInitializer;
-import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
+import com.github.gibmir.ion.lib.netty.client.sender.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
+import io.netty.channel.pool.ChannelPoolMap;
+import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.handler.logging.LoggingHandler;
 
 import javax.json.bind.Jsonb;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyRequestFactoryProvider implements RequestFactoryProvider {
   private static volatile NettyRequestFactory nettyRequestFactoryInstance;
@@ -49,11 +51,10 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
     Charset charset = RequestConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     JsonRpcNettyChannelInitializer channelInitializer = createJsonRpcNettyChannelInitializer(configuration, responseListenerRegistry, charset, jsonb);
-    ChannelPool channelPool = new ChannelPool(new ConcurrentHashMap<>(),
-      NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
-      NettyRequestConfigurationUtils.resolveChannelClass(configuration),
-      channelInitializer);
-    return new NettyRequestFactory(new JsonRpcNettySender(channelPool, responseListenerRegistry),
+    ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool =
+      new NettyChannelPool(NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
+        NettyRequestConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
+    return new NettyRequestFactory(new JsonRpcNettySender(nettyChannelPool, responseListenerRegistry),
       NettyRequestConfigurationUtils.createSocketAddressWith(configuration), jsonb, charset);
   }
 

@@ -11,6 +11,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 public class ResponseListenerRegistryMock {
+
+  private ResponseListenerRegistryMock() {
+  }
+
   public static ResponseListenerRegistry emptyMock() {
     return mock(ResponseListenerRegistry.class);
   }

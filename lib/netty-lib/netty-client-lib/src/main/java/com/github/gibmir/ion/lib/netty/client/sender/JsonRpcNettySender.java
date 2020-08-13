@@ -4,12 +4,17 @@ import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
 import com.github.gibmir.ion.api.client.batch.response.element.BatchElement;
 import com.github.gibmir.ion.api.client.batch.response.element.error.ErrorBatchElement;
 import com.github.gibmir.ion.api.client.batch.response.element.success.SuccessBatchElement;
+import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatch;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.sender.pool.ChannelPool;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.pool.ChannelPool;
+import io.netty.channel.pool.ChannelPoolMap;
+import io.netty.util.concurrent.FutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +29,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class JsonRpcNettySender implements Closeable {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcNettySender.class);
-  private final ChannelPool channelPool;
+  private final ChannelPoolMap<SocketAddress, ? extends ChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
 
-  public JsonRpcNettySender(ChannelPool channelPool, ResponseListenerRegistry responseListenerRegistry) {
-    this.channelPool = channelPool;
+  public JsonRpcNettySender(ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap,
+                            ResponseListenerRegistry responseListenerRegistry) {
+    this.nettyChannelPool = channelPoolMap;
     this.responseListenerRegistry = responseListenerRegistry;
   }
 
@@ -46,6 +52,7 @@ public class JsonRpcNettySender implements Closeable {
   }
 
   /**
+   * @throws JsonRpcProcessingException if exception occurred while sending request(on client side)
    * @implNote <ol>
    * <li>create future to await batch response</li>
    * <li>register futures to await result</li>
@@ -105,13 +112,19 @@ public class JsonRpcNettySender implements Closeable {
   }
 
   private void sendTo(SocketAddress socketAddress, byte[] payload) {
-    channelPool.getOrCreate(socketAddress).writeAndFlush(payload);
+    ChannelPool simpleChannelPool = nettyChannelPool.get(socketAddress);
+    simpleChannelPool.acquire().addListener((FutureListener<Channel>) acquiredFuture -> {
+      if (acquiredFuture.isSuccess()) {
+        Channel channel = acquiredFuture.getNow();
+        channel.writeAndFlush(payload).addListener(writeFinished -> simpleChannelPool.release(channel));
+      } else {
+        throw new ChannelException("Can't acquire the channel for address " + socketAddress);
+      }
+    });
   }
 
   @Override
   public void close() {
-    if (channelPool != null) {
-      channelPool.close();
-    }
+
   }
 }

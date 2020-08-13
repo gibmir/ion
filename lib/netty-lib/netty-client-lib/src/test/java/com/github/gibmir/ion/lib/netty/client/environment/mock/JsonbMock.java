@@ -9,6 +9,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 public class JsonbMock {
+
+  private JsonbMock() {
+  }
+
   public static Jsonb newMock(@NonNull Object object) {
     Jsonb jsonb = mock(Jsonb.class);
     doAnswer(__ -> object.toString()).when(jsonb).toJson(any());

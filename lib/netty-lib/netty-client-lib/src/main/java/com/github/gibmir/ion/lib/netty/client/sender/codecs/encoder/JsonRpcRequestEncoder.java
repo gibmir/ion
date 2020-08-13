@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-@ChannelHandler.Sharable
 public class JsonRpcRequestEncoder extends MessageToByteEncoder<byte[]> {
 
   @Override

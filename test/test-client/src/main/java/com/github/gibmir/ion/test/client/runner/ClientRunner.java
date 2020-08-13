@@ -19,7 +19,11 @@ public class ClientRunner {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
     sendBatch(requestFactory);
     sendNotification(requestFactory);
-    sendRequest(requestFactory, 5);
+    sendRequest(requestFactory, 1000);
+    sendRequest(requestFactory, 1000);
+    sendRequest(requestFactory, 1000);
+    sendRequest(requestFactory, 1000);
+    sendRequest(requestFactory, 1000);
     sendNamedRequest(requestFactory, 1);
   }
 

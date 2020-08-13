@@ -7,6 +7,7 @@ import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
 
 public class ServerRunner {
   public static void main(String[] args) {
+    //todo Unexpected char -1 at (line no=1, column no=243, offset=242)
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
     jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class, String::toUpperCase);
