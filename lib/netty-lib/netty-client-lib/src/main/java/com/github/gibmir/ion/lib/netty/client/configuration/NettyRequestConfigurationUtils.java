@@ -90,16 +90,16 @@ public class NettyRequestConfigurationUtils {
   /*caffeine*/
   //int properties
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_EVICTION_TIMEOUT =
-    ROOT_PREFIX + "netty.client.response.listener.cache.eviction.timeout";
+    ROOT_PREFIX + ".netty.client.response.listener.cache.eviction.timeout";
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_EVICTION_SIZE =
-    ROOT_PREFIX + "netty.client.response.listener.cache.eviction.size";
+    ROOT_PREFIX + ".netty.client.response.listener.cache.eviction.size";
   //boolean properties
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_WEAK_REFERENCE_ENABLED =
-    ROOT_PREFIX + "netty.client.response.listener.cache.weak.reference.enabled";
+    ROOT_PREFIX + ".netty.client.response.listener.cache.weak.reference.enabled";
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_SOFT_VALUES_ENABLED =
-    ROOT_PREFIX + "netty.client.response.listener.cache.soft.values.enabled";
+    ROOT_PREFIX + ".netty.client.response.listener.cache.soft.values.enabled";
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_RECORD_STATS_ENABLED =
-    ROOT_PREFIX + "netty.client.response.listener.cache.record.stats.enabled";
+    ROOT_PREFIX + ".netty.client.response.listener.cache.record.stats.enabled";
 
   public static Cache<String, ResponseFuture> createResponseFuturesCache(Configuration configuration) {
     Caffeine<Object, Object> caffeine = Caffeine.newBuilder();

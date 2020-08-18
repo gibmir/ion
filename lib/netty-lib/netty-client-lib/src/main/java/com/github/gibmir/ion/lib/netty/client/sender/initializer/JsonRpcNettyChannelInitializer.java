@@ -20,7 +20,6 @@ public class JsonRpcNettyChannelInitializer extends ChannelInitializer<Channel> 
                                                            JsonRpcRequestEncoder jsonRpcRequestEncoder,
                                                            JsonRpcResponseDecoder jsonRpcResponseDecoder,
                                                            JsonRpcResponseHandler jsonRpcResponseHandler) {
-
     return new JsonRpcNettyChannelInitializer(loggingHandler, jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
   }
 

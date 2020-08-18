@@ -6,18 +6,18 @@ ion:
           cache:
             record:
               stats:
-                enabled: true
+                enabled: false
             weak:
               reference:
-                enabled: true
+                enabled: false
             soft:
               values:
                 enabled: false
             eviction:
-              timeout: 60000
+              timeout: 6000
               size: 1000
       log:
-        level: 'TRACE'
+        level: 'INFO'
       socket:
         address:
           host: 'localhost'
