@@ -9,4 +9,4 @@ ion:
         type:
           'NIO'
       log:
-        level: 'ERROR'
+        level: 'DISABLED'

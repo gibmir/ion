@@ -2,6 +2,7 @@ package com.github.gibmir.ion.lib.netty.server.configuration;
 
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
+import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -43,9 +44,9 @@ public class NettyServerConfigurationUtils {
     return createNettyGroup(nettyGroupType, threadsCount);
   }
 
-  public static LogLevel resolveLogLevel(Configuration configuration) {
+  public static NettyLogLevel resolveLogLevel(Configuration configuration) {
     return configuration.getOptionalValue(NETTY_SERVER_LOG_LEVEL, String.class)
-      .map(LogLevel::valueOf).orElse(LogLevel.ERROR);
+      .map(NettyLogLevel::valueOf).orElse(NettyLogLevel.DISABLED);
   }
 
   private static EventLoopGroup createNettyGroup(NettyGroupType nettyGroupType, Integer threadsCount) {

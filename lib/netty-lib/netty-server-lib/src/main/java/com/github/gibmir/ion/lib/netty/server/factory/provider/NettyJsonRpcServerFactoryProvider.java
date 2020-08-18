@@ -9,6 +9,7 @@ import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessor
 import com.github.gibmir.ion.api.server.factory.JsonRpcServerFactory;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
+import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
 import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.configuration.NettyServerConfigurationUtils;
@@ -54,9 +55,12 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     EventLoopGroup bossGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
+    NettyLogLevel nettyLogLevel = NettyServerConfigurationUtils.resolveLogLevel(configuration);
+    if (/*if log is not disabled*/!NettyLogLevel.DISABLED.equals(nettyLogLevel)) {
+      serverBootstrap.handler(new LoggingHandler(nettyLogLevel.get()));
+    }
     serverBootstrap.group(bossGroup, workerGroup)
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
-      .handler(new LoggingHandler(NettyServerConfigurationUtils.resolveLogLevel(configuration)))
       .childHandler(new ChannelInitializer<>() {
         @Override
         protected void initChannel(Channel channel) {
