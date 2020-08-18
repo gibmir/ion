@@ -6,7 +6,10 @@ import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.BootstrapConfig;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -123,4 +126,5 @@ public class NettyRequestConfigurationUtils {
     }
     return caffeine.build();
   }
+
 }

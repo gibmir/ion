@@ -53,7 +53,7 @@ public class ProcedureScanner {
       ReflectionUtils.withParametersCount(parametersCount)).iterator().next();
     List<ParameterizedType> parametrizedInterfaces = findParametrizedInterfacesFor(procedureClass);
     for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
-      if (parametrizedInterface.getRawType() == JsonRemoteProcedure1.class) {
+      if (parametrizedInterface.getRawType() == JsonRemoteProcedure0.class) {
         Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
 
         return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), EMPTY_ARGUMENT_NAMES,

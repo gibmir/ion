@@ -34,7 +34,7 @@ public class JsonRpcRequestProcessorFactory {
                                                                                                 P service) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(procedure);
-      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
@@ -45,7 +45,7 @@ public class JsonRpcRequestProcessorFactory {
     Class<P> procedure, P service) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(procedure);
-      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
@@ -56,7 +56,7 @@ public class JsonRpcRequestProcessorFactory {
     Class<P> procedure, P service) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(procedure);
-      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
@@ -67,14 +67,14 @@ public class JsonRpcRequestProcessorFactory {
     Class<P> procedure, P service) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(procedure);
-      return getProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
     }
   }
 
-  private static <T> JsonRpcRequestProcessor getProcessor(
+  private static <T> JsonRpcRequestProcessor createProcessor(
     Class<T> procedure, T service, JsonRemoteProcedureSignature jsonRemoteProcedureSignature)
     throws NoSuchMethodException, IllegalAccessException {
     MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
