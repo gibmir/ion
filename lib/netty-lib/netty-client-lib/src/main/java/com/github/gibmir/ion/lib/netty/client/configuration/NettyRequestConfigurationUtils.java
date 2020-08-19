@@ -6,13 +6,12 @@ import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.BootstrapConfig;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -21,9 +20,7 @@ import java.time.Duration;
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
 public class NettyRequestConfigurationUtils {
-
-
-  public static final int DEFAULT_EVICTION_TIMEOUT = 60_000;
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyRequestConfigurationUtils.class);
 
   private NettyRequestConfigurationUtils() {
   }
@@ -38,7 +35,7 @@ public class NettyRequestConfigurationUtils {
     String socketAddressHost = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_HOST, String.class);
 
     Integer socketAddressPort = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_PORT, Integer.class);
-
+    LOGGER.info("Socket address was received. Host:port [{}:{}]", socketAddressHost, socketAddressPort);
     return new InetSocketAddress(socketAddressHost, socketAddressPort);
   }
 
@@ -47,10 +44,12 @@ public class NettyRequestConfigurationUtils {
   public static final String NETTY_CLIENT_CHANNEL_TYPE = ROOT_PREFIX + ".netty.client.channel.type";
 
   public static Class<? extends Channel> resolveChannelClass(Configuration configuration) {
-    return configuration.getOptionalValue(NETTY_CLIENT_CHANNEL_TYPE, String.class)
+    Class<? extends Channel> channelClass = configuration.getOptionalValue(NETTY_CLIENT_CHANNEL_TYPE, String.class)
       .map(NettyClientChannelType::valueOf)
       .orElse(NettyClientChannelType.NIO)
       .resolveChannelClass();
+    LOGGER.info("Channel class was resolved [{}]", channelClass);
+    return channelClass;
   }
 
   /*event loop group*/
@@ -67,6 +66,7 @@ public class NettyRequestConfigurationUtils {
       .orElse(NettyGroupType.NIO);
     Integer threadsCount = configuration.getOptionalValue(NETTY_CLIENT_GROUP_THREADS_COUNT, Integer.class)
       .orElse(DEFAULT_NETTY_CLIENT_GROUP_THREADS_COUNT);
+    LOGGER.info("Netty event loop group was received. Type [{}], threads count [{}]", nettyGroupType, threadsCount);
     return createGroup(nettyGroupType, threadsCount);
   }
 
@@ -85,9 +85,11 @@ public class NettyRequestConfigurationUtils {
   public static final String NETTY_CLIENT_LOG_LEVEL = ROOT_PREFIX + ".netty.client.log.level";
 
   public static NettyLogLevel resolveLogLevel(Configuration configuration) {
-    return configuration.getOptionalValue(NETTY_CLIENT_LOG_LEVEL, String.class)
+    NettyLogLevel nettyLogLevel = configuration.getOptionalValue(NETTY_CLIENT_LOG_LEVEL, String.class)
       .map(NettyLogLevel::valueOf)
       .orElse(NettyLogLevel.DISABLED);
+    LOGGER.info("Netty log level was received [{}]", nettyLogLevel);
+    return nettyLogLevel;
   }
 
   /*caffeine*/
@@ -103,6 +105,8 @@ public class NettyRequestConfigurationUtils {
     ROOT_PREFIX + ".netty.client.response.listener.cache.soft.values.enabled";
   public static final String NETTY_CLIENT_RESPONSE_LISTENER_CACHE_RECORD_STATS_ENABLED =
     ROOT_PREFIX + ".netty.client.response.listener.cache.record.stats.enabled";
+  //defaults
+  public static final int DEFAULT_EVICTION_TIMEOUT = 60_000;
 
   public static Cache<String, ResponseFuture> createResponseFuturesCache(Configuration configuration) {
     Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
@@ -124,7 +128,7 @@ public class NettyRequestConfigurationUtils {
       .orElse(false)) {
       caffeine.softValues();
     }
+    LOGGER.info("Caffeine response futures cache was received [{}]", caffeine);
     return caffeine.build();
   }
-
 }

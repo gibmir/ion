@@ -3,6 +3,7 @@ package com.github.gibmir.ion.lib.netty.common.configuration.logging;
 import io.netty.handler.logging.LogLevel;
 
 import java.util.function.Supplier;
+
 //todo there is a possibility to remove loghandler
 public enum NettyLogLevel implements Supplier<LogLevel> {
   TRACE(LogLevel.TRACE),
