@@ -3,10 +3,8 @@ ion:
     server:
       port: 52222
       channel:
-        type:
-          'NIO'
+        type: 'NIO'
       group:
-        type:
-          'NIO'
+        type: 'NIO'
       log:
         level: 'DISABLED'

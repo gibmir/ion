@@ -1,6 +1,8 @@
 ion:
   netty:
     client:
+      channel:
+        type: 'NIO'
       response:
         listener:
           cache:
@@ -17,7 +19,7 @@ ion:
               timeout: 6000
               size: 1000
       log:
-        level: 'INFO'
+        level: 'DISABLED'
       socket:
         address:
           host: 'localhost'

@@ -7,7 +7,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public enum NettyClientChannelType {
 
-  NIO(NioSocketChannel.class), EPOLL(EpollSocketChannel.class), EMBEDDED(EmbeddedChannel.class);
+  NIO(NioSocketChannel.class), EPOLL(EpollSocketChannel.class);
 
   private final Class<? extends Channel> channelClass;
 
