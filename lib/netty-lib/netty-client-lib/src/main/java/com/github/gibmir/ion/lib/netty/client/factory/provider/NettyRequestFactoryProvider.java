@@ -18,11 +18,16 @@ import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.S
 import com.github.gibmir.ion.lib.netty.client.sender.initializer.JsonRpcNettyChannelInitializer;
 import com.github.gibmir.ion.lib.netty.client.sender.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
+import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.pool.ChannelPoolMap;
 import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 
 import javax.json.bind.Jsonb;
+import javax.net.ssl.SSLException;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
@@ -50,7 +55,8 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
     Charset charset = RequestConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
-    JsonRpcNettyChannelInitializer channelInitializer = createJsonRpcNettyChannelInitializer(configuration, responseListenerRegistry, charset, jsonb);
+    JsonRpcNettyChannelInitializer channelInitializer = createJsonRpcNettyChannelInitializer(configuration,
+      responseListenerRegistry, charset, jsonb);
     ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool =
       new NettyChannelPool(NettyRequestConfigurationUtils.createEventLoopGroup(configuration),
         NettyRequestConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
@@ -58,18 +64,43 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
       NettyRequestConfigurationUtils.createSocketAddressWith(configuration), jsonb, charset);
   }
 
-  private JsonRpcNettyChannelInitializer createJsonRpcNettyChannelInitializer(Configuration configuration,
-                                                                              ResponseListenerRegistry responseListenerRegistry,
-                                                                              Charset charset, Jsonb jsonb) {
+  private static JsonRpcNettyChannelInitializer createJsonRpcNettyChannelInitializer(Configuration configuration,
+                                                                                     ResponseListenerRegistry responseListenerRegistry,
+                                                                                     Charset charset, Jsonb jsonb) {
     JsonRpcRequestEncoder jsonRpcRequestEncoder = new JsonRpcRequestEncoder();
     JsonRpcResponseDecoder jsonRpcResponseDecoder = new JsonRpcResponseDecoder(jsonb, charset);
     JsonRpcResponseHandler jsonRpcResponseHandler = new JsonRpcResponseHandler(jsonb, responseListenerRegistry);
+
+    JsonRpcNettyChannelInitializer.Builder builder = JsonRpcNettyChannelInitializer.builder(jsonRpcRequestEncoder,
+      jsonRpcResponseDecoder, jsonRpcResponseHandler);
+    appendLogging(configuration, builder);
+    appendSsl(configuration, builder);
+    return builder.build();
+  }
+
+  private static void appendLogging(Configuration configuration, JsonRpcNettyChannelInitializer.Builder builder) {
     NettyLogLevel level = NettyRequestConfigurationUtils.resolveLogLevel(configuration);
-    if (level.equals(NettyLogLevel.DISABLED)) {
-      return JsonRpcNettyChannelInitializer.withoutLogging(jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
-    } else {
-      return JsonRpcNettyChannelInitializer.withLogging(new LoggingHandler(level.get()), jsonRpcRequestEncoder,
-        jsonRpcResponseDecoder, jsonRpcResponseHandler);
+    if (/*if logging is not disabled*/!NettyLogLevel.DISABLED.equals(level)) {
+      builder.withLogging(new LoggingHandler(level.get()));
+    }
+  }
+
+  private static void appendSsl(Configuration configuration, JsonRpcNettyChannelInitializer.Builder builder) {
+    NettySslProvider sslProvider = NettyRequestConfigurationUtils.resolveSslProvider(configuration);
+    if (/*if ssl is enabled*/!sslProvider.equals(NettySslProvider.DISABLED)) {
+      try {
+        SslContext sslContext = SslContextBuilder.forClient()
+          .sslProvider(sslProvider.get())
+          .trustManager(NettyRequestConfigurationUtils.resolveTrustManagerCert(configuration))
+          .keyManager(NettyRequestConfigurationUtils.resolveKeyManagerCert(configuration),
+            NettyRequestConfigurationUtils.resolveKey(configuration),
+            NettyRequestConfigurationUtils.resolveKeyPassword(configuration))
+          .clientAuth(NettyRequestConfigurationUtils.resolveClientAuth(configuration))
+          .build();
+        builder.withSsl(sslContext.newHandler(ByteBufAllocator.DEFAULT));
+      } catch (SSLException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

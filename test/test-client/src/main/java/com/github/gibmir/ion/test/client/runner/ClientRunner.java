@@ -7,7 +7,6 @@ import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.client.request.Request1;
 import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
