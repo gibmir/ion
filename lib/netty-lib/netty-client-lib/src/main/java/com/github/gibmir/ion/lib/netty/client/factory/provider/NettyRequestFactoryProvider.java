@@ -25,6 +25,8 @@ import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import javax.net.ssl.SSLException;
@@ -32,6 +34,7 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
 public class NettyRequestFactoryProvider implements RequestFactoryProvider {
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyRequestFactoryProvider.class);
   private static volatile NettyRequestFactory nettyRequestFactoryInstance;
 
   @Override
@@ -98,8 +101,9 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
           .clientAuth(NettyRequestConfigurationUtils.resolveClientAuth(configuration))
           .build();
         builder.withSsl(sslContext.newHandler(ByteBufAllocator.DEFAULT));
+        //todo initialization exception
       } catch (SSLException e) {
-        e.printStackTrace();
+        LOGGER.error("Exception occurred while client initialize ssl.", e);
       }
     }
   }

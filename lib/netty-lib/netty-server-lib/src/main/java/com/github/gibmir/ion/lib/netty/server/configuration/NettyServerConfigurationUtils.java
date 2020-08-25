@@ -3,12 +3,16 @@ package com.github.gibmir.ion.lib.netty.server.configuration;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
+import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.nio.file.Paths;
 
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
@@ -77,5 +81,74 @@ public class NettyServerConfigurationUtils {
       .map(NettyLogLevel::valueOf).orElse(NettyLogLevel.DISABLED);
     LOGGER.info("Netty log level was received [{}]", nettyLogLevel);
     return nettyLogLevel;
+  }
+
+  /*ssl*/
+  //string
+  public static final String NETTY_SERVER_SSL_PROVIDER =
+    ROOT_PREFIX + ".netty.server.ssl.provider";
+
+  public static NettySslProvider resolveSslProvider(Configuration configuration) {
+    NettySslProvider nettySslProvider = configuration.getOptionalValue(NETTY_SERVER_SSL_PROVIDER, String.class)
+      .map(NettySslProvider::valueOf).orElse(NettySslProvider.DISABLED);
+    LOGGER.info("Netty ssl provider was resolved [{}]", nettySslProvider);
+    return nettySslProvider;
+  }
+
+  //string
+  public static final String NETTY_SERVER_SSL_TRUST_MANAGER_CERT_PATH =
+    ROOT_PREFIX + ".netty.server.ssl.trust.manager.cert.path";
+
+  public static File resolveTrustManagerCert(Configuration configuration) {
+    String trustManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_TRUST_MANAGER_CERT_PATH, String.class);
+    LOGGER.info("Trust manager cert path was resolved [{}]", trustManagerCertPathString);
+    if (trustManagerCertPathString == null) {
+      //for system default
+      return null;
+    }
+    return Paths.get(trustManagerCertPathString).toFile();
+  }
+
+  //string
+  public static final String NETTY_SERVER_SSL_KEY_MANAGER_CERT_PATH =
+    ROOT_PREFIX + ".netty.server.ssl.key.manager.cert.path";
+
+  public static File resolveKeyManagerCert(Configuration configuration) {
+    String keyManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_KEY_MANAGER_CERT_PATH, String.class);
+    LOGGER.info("Key manager cert path was resolved [{}]", keyManagerCertPathString);
+    if (keyManagerCertPathString == null) {
+      //for system default
+      return null;
+    }
+    return Paths.get(keyManagerCertPathString).toFile();
+  }
+
+  //string
+  public static final String NETTY_SERVER_SSL_KEY_PATH =
+    ROOT_PREFIX + ".netty.server.ssl.key.path";
+
+  public static File resolveKey(Configuration configuration) {
+    String keyManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_KEY_PATH, String.class);
+    LOGGER.info("Key path was resolved [{}]", keyManagerCertPathString);
+    if (keyManagerCertPathString == null) {
+      //for system default
+      return null;
+    }
+    return Paths.get(keyManagerCertPathString).toFile();
+  }
+
+  //string
+  public static final String NETTY_SERVER_SSL_KEY_PASSWORD =
+    ROOT_PREFIX + ".netty.server.ssl.key.password";
+
+  public static String resolveKeyPassword(Configuration configuration) {
+    String keyPassword = configuration.getValue(NETTY_SERVER_SSL_KEY_PASSWORD, String.class);
+    if (keyPassword == null) {
+      LOGGER.info("Key password is null");
+      //for system default
+      return null;
+    }
+    LOGGER.info("Key password is not null");
+    return keyPassword;
   }
 }
