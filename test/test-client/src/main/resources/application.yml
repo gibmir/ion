@@ -4,20 +4,19 @@ ion:
       channel:
         type: 'NIO'
       response:
-        listener:
-          cache:
-            record:
-              stats:
-                enabled: false
-            weak:
-              reference:
-                enabled: false
-            soft:
-              values:
-                enabled: false
-            eviction:
-              timeout: 6000
-              size: 1000
+        cache:
+          record:
+            stats:
+            enabled: false
+          weak:
+            reference:
+            enabled: false
+          soft:
+            values:
+            enabled: false
+          eviction:
+            timeout: 6000
+            size: 1000
       log:
         level: 'DISABLED'
       socket:

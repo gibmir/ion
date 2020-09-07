@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.sender.codecs.encoder;
 
+import com.github.gibmir.ion.lib.netty.client.channel.codecs.encoder.JsonRpcRequestEncoder;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 

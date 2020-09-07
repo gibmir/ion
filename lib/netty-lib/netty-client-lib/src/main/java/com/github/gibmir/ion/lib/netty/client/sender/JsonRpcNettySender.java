@@ -8,8 +8,8 @@ import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingExcept
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatch;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.future.ResponseFuture;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.ResponseListenerRegistry;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
 import io.netty.channel.pool.ChannelPool;

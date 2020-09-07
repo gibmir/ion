@@ -38,6 +38,7 @@ public class ClientRunner {
   private static void sendNotification(RequestFactory requestFactory) {
     Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
     request.notificationCall("notification message");
+    System.out.println("notification was sent");
   }
 
   private static void sendNamedRequest(RequestFactory requestFactory, int times) throws InterruptedException, ExecutionException, TimeoutException {

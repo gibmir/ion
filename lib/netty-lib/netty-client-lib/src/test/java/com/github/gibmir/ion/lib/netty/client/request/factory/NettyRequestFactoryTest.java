@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.request.factory;
 
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.SimpleResponseListenerRegistry;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.jupiter.api.Test;

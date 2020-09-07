@@ -97,9 +97,9 @@ public class NettyServerConfigurationUtils {
 
   //string
   public static final String NETTY_SERVER_SSL_TRUST_MANAGER_CERT_PATH =
-    ROOT_PREFIX + ".netty.server.ssl.trust.manager.cert.path";
+    ROOT_PREFIX + ".netty.server.ssl.trust.path";
 
-  public static File resolveTrustManagerCert(Configuration configuration) {
+  public static File resolveTrustStore(Configuration configuration) {
     String trustManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_TRUST_MANAGER_CERT_PATH, String.class);
     LOGGER.info("Trust manager cert path was resolved [{}]", trustManagerCertPathString);
     if (trustManagerCertPathString == null) {
@@ -111,9 +111,9 @@ public class NettyServerConfigurationUtils {
 
   //string
   public static final String NETTY_SERVER_SSL_KEY_MANAGER_CERT_PATH =
-    ROOT_PREFIX + ".netty.server.ssl.key.manager.cert.path";
+    ROOT_PREFIX + ".netty.server.ssl.certificate.path";
 
-  public static File resolveKeyManagerCert(Configuration configuration) {
+  public static File resolveCertificate(Configuration configuration) {
     String keyManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_KEY_MANAGER_CERT_PATH, String.class);
     LOGGER.info("Key manager cert path was resolved [{}]", keyManagerCertPathString);
     if (keyManagerCertPathString == null) {
@@ -127,7 +127,7 @@ public class NettyServerConfigurationUtils {
   public static final String NETTY_SERVER_SSL_KEY_PATH =
     ROOT_PREFIX + ".netty.server.ssl.key.path";
 
-  public static File resolveKey(Configuration configuration) {
+  public static File resolvePrivateKey(Configuration configuration) {
     String keyManagerCertPathString = configuration.getValue(NETTY_SERVER_SSL_KEY_PATH, String.class);
     LOGGER.info("Key path was resolved [{}]", keyManagerCertPathString);
     if (keyManagerCertPathString == null) {

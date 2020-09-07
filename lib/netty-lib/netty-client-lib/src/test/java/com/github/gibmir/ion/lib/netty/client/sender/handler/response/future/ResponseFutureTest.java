@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.sender.handler.response.future;
 
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TestException;
 import org.junit.jupiter.api.Test;
 

@@ -14,7 +14,7 @@ import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.request.NettyRequest0;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.future.ResponseFuture;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;

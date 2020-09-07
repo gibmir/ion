@@ -6,21 +6,17 @@ import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.factory.JsonRpcServerFactory;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
-import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
-import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
+import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
+import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.server.channel.initializer.appender.JsonRpcServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ssl.SslAppenderDecorator;
 import com.github.gibmir.ion.lib.netty.server.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.factory.NettyJsonRpcServerFactory;
-import com.github.gibmir.ion.lib.netty.server.handler.JsonRpcRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
@@ -38,7 +34,7 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
 
   @Override
-  public JsonRpcServerFactory provide() {
+  public NettyJsonRpcServerFactory provide() {
     NettyJsonRpcServerFactory localInstance = nettyJsonRpcServerFactory;
     //double-check singleton
     if (localInstance == null) {
@@ -62,21 +58,22 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     EventLoopGroup bossGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
+
     appendLogging(serverBootstrap, NettyServerConfigurationUtils.resolveLogLevel(configuration));
+    JsonRpcChannelInitializer jsonRpcChannelInitializer =
+      createJsonRpcServerChannelInitializer(serverProcessor, configuration, charset, jsonb);
     serverBootstrap.group(bossGroup, workerGroup)
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
-      .childHandler(new ChannelInitializer<>() {
-        @Override
-        protected void initChannel(Channel channel) {
-          ChannelPipeline pipeline = channel.pipeline();
-          appendSsl(pipeline, configuration);
-          pipeline.addLast(new JsonRpcRequestDecoder(jsonb, charset))
-            .addLast(new JsonRpcResponseEncoder())
-            .addLast(new JsonRpcRequestHandler(serverProcessor, jsonb, charset));
-        }
-      });
+      .childHandler(jsonRpcChannelInitializer);
     serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration));
     return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry);
+  }
+
+  private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(ServerProcessor serverProcessor,
+                                                                                 Configuration configuration,
+                                                                                 Charset charset, Jsonb jsonb) {
+    ChannelHandlerAppender channelHandlerAppender = new JsonRpcServerChannelHandlerAppender(serverProcessor, charset, jsonb);
+    return new JsonRpcChannelInitializer(decorateWithSsl(channelHandlerAppender, configuration));
   }
 
   private static void appendLogging(ServerBootstrap serverBootstrap, NettyLogLevel nettyLogLevel) {
@@ -85,22 +82,22 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
     }
   }
 
-  private static void appendSsl(ChannelPipeline channelPipeline, Configuration configuration) {
-
+  private static ChannelHandlerAppender decorateWithSsl(ChannelHandlerAppender channelHandlerAppender, Configuration configuration) {
     NettySslProvider sslProvider = NettyServerConfigurationUtils.resolveSslProvider(configuration);
     if (/*if ssl is enabled*/!NettySslProvider.DISABLED.equals(sslProvider)) {
       try {
-        SslContext sslContext = SslContextBuilder.forServer(NettyServerConfigurationUtils.resolveKeyManagerCert(configuration),
-          NettyServerConfigurationUtils.resolveKey(configuration),
+        SslContext sslContext = SslContextBuilder.forServer(NettyServerConfigurationUtils.resolveCertificate(configuration),
+          NettyServerConfigurationUtils.resolvePrivateKey(configuration),
           NettyServerConfigurationUtils.resolveKeyPassword(configuration))
           .sslProvider(sslProvider.get())
-          .trustManager(NettyServerConfigurationUtils.resolveTrustManagerCert(configuration))
+          .trustManager(NettyServerConfigurationUtils.resolveTrustStore(configuration))
           .build();
-        channelPipeline.addLast(sslContext.newHandler(ByteBufAllocator.DEFAULT));
+        return SslAppenderDecorator.decorate(channelHandlerAppender, sslContext);
         //todo initialization exception
       } catch (SSLException e) {
         LOGGER.error("Exception occurred while server initialize ssl.", e);
       }
     }
+    return channelHandlerAppender;
   }
 }

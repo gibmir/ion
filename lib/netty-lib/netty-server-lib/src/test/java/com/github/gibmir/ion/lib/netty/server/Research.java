@@ -2,9 +2,9 @@ package com.github.gibmir.ion.lib.netty.server;
 
 import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
-import com.github.gibmir.ion.lib.netty.server.codecs.decoder.JsonRpcRequestDecoder;
-import com.github.gibmir.ion.lib.netty.server.codecs.encoder.JsonRpcResponseEncoder;
-import com.github.gibmir.ion.lib.netty.server.handler.JsonRpcRequestHandler;
+import com.github.gibmir.ion.lib.netty.server.channel.codecs.decoder.JsonRpcRequestDecoder;
+import com.github.gibmir.ion.lib.netty.server.channel.codecs.encoder.JsonRpcResponseEncoder;
+import com.github.gibmir.ion.lib.netty.server.channel.handler.JsonRpcRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

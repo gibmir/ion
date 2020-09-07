@@ -1,8 +1,8 @@
 package com.github.gibmir.ion.lib.netty.client.environment.mock;
 
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.future.ResponseFuture;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.ResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.sender.handler.response.registry.SimpleResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.future.ResponseFuture;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.SimpleResponseListenerRegistry;
 
 import java.util.Map;
 

@@ -1,5 +1,12 @@
 .idea/
 *.iml
+# ssl
+*.keystore
+*.jks
+*.cert
+*.p12
+*.pem
+*.crt
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml

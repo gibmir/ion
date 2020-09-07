@@ -4,10 +4,10 @@ Project represents json-rpc 2.0 protocol implementation.
 ## Features:
   * Functional remote procedure call API
   * Configurable requests
-  * Netty tcp client
-  * Netty tcp server
   * API for framework configuration
   * YAML framework configuration
+  * Netty tcp client and server
+  * TLS support for the netty client and server
   
 ## Examples:
 ### Service API
@@ -35,7 +35,7 @@ So far, so good. You can get request factory provider through SPI mechanism(or c
 RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 ```
 After that we can create request:
-```
+```keytool -export -keystore mysslstore.jks -alias cert -file maanadev.org.cert
 Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
 ```
 Make a positional call through request:
@@ -62,6 +62,57 @@ JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
 ```
 Finally, you can register your procedure processor:
 ```
-jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class, String::toUpperCase);
+jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class,/*TestStringProcedure implementation*/ String::toUpperCase);
+```
+
+## SSL
+
+For testing, you can use script: 
+```shell script
+#Generate new key and create a self signed certificate:
+openssl req \
+-x509 \
+-nodes \
+-days 365 \
+-newkey rsa:4096 \
+-keyout selfsigned.key.pem \
+-out selfsigned-x509.crt \
+
+#Convert PEM key to PKCS8 format:
+openssl pkcs8 \
+-v1 PBE-MD5-DES \
+-topk8 \
+-inform PEM \
+-outform PEM \
+-in selfsigned.key.pem \
+-out selfsigned-pkcs8.pem
+```
+It will provide self signed certificate and private key. 
+Setup ion server configuration as follows:
+```yaml
+ion:
+  netty:
+    server:
+      ssl:
+        provider: 'JDK'
+        certificate:
+          path: 'Path to your *.crt'
+        key:
+          path: 'Path to your *.pem'
+          password: 'Your *.pem password'
+```
+Setup ion client configuration as follows:
+```yaml
+ion:
+  netty:
+    client:
+      ssl:
+        provider: 'JDK'
+        trust:
+          path: 'Path to your *.crt'
+        key:
+          path: 'Path to your *.pem'
+          password: 'Your *.pem password'
+        auth: 'netty auth mode'
 ```
 **You can find examples in submodules of module `test`**
