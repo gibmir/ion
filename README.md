@@ -19,8 +19,9 @@ public interface ServiceProcedure extends JsonRemoteProcedure1<String, String> {
  
 }
 ```
-To specify named parameters you can use special annotation (but framework gave you defaults):
+To specify named parameters or procedure name you can use special annotation:
 ```java
+@Named(name = "procedureName")
 public interface TestStringProcedure extends JsonRemoteProcedure1<String, String> {
   @Override
   String call(@Named(name = "namedArgument") String arg);
