@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.lib.netty.client.factory;
 
-import com.github.gibmir.ion.api.client.batch.request.builder.BatchRequestBuilder;
 import com.github.gibmir.ion.api.client.factory.RequestFactory;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
@@ -58,13 +57,13 @@ public class NettyRequestFactory implements RequestFactory {
   }
 
   @Override
-  public BatchRequestBuilder<?> batch() {
+  public NettyBatchRequest.NettyBatchRequestBuilder batch() {
     return new NettyBatchRequest.NettyBatchRequestBuilder(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb,
       defaultCharset);
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     defaultJsonRpcNettySender.close();
   }
 }

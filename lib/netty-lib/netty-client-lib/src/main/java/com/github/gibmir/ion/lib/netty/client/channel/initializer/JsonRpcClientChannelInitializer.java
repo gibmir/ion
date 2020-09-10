@@ -59,19 +59,6 @@ public class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel>
   private JsonRpcClientChannelInitializer(ChannelHandler... channelHandlers) {
     this.channelHandlers = channelHandlers;
   }
-  //todo redo usage in tests on builder
-  public static JsonRpcClientChannelInitializer withLogging(LoggingHandler loggingHandler,
-                                                            JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                                                            JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                                                            JsonRpcResponseHandler jsonRpcResponseHandler) {
-    return new JsonRpcClientChannelInitializer(loggingHandler, jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
-  }
-
-  public static JsonRpcClientChannelInitializer withoutLogging(JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                                                               JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                                                               JsonRpcResponseHandler jsonRpcResponseHandler) {
-    return new JsonRpcClientChannelInitializer(jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
-  }
 
   public static Builder builder(JsonRpcRequestEncoder jsonRpcRequestEncoder,
                                 JsonRpcResponseDecoder jsonRpcResponseDecoder,

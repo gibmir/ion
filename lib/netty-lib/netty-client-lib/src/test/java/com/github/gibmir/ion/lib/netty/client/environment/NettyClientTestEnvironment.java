@@ -28,8 +28,8 @@ public class NettyClientTestEnvironment {
   public static final JsonRpcResponseDecoder TEST_RESPONSE_DECODER = new JsonRpcResponseDecoder(JsonbMock.newMock(TEST_JSON), TEST_CHARSET);
   public static final LoggingHandler TEST_LOGGING_HANDLER = new LoggingHandler(LogLevel.ERROR);
   public static final JsonRpcClientChannelInitializer TEST_NETTY_CLIENT_INITIALIZER =
-     JsonRpcClientChannelInitializer.withLogging(TEST_LOGGING_HANDLER, TEST_REQUEST_ENCODER, TEST_RESPONSE_DECODER,
-      TEST_RESPONSE_HANDLER);
+    JsonRpcClientChannelInitializer.builder(TEST_REQUEST_ENCODER, TEST_RESPONSE_DECODER, TEST_RESPONSE_HANDLER)
+      .withLogging(TEST_LOGGING_HANDLER).build();
   public static final String TEST_PROCEDURE_NAME = "test-procedure";
   public static final InetSocketAddress TEST_SOCKET_ADDRESS = InetSocketAddress.createUnresolved("localhost", 55_555);
   public static final String TEST_ID = "test-id";

@@ -1,10 +1,10 @@
 package com.github.gibmir.ion.lib.netty.client.sender.pool;
 
-import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
-import com.github.gibmir.ion.lib.netty.client.environment.mock.EventLoopGroupMock;
 import com.github.gibmir.ion.lib.netty.client.channel.codecs.decoder.JsonRpcResponseDecoder;
 import com.github.gibmir.ion.lib.netty.client.channel.handler.JsonRpcResponseHandler;
 import com.github.gibmir.ion.lib.netty.client.channel.initializer.JsonRpcClientChannelInitializer;
+import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
+import com.github.gibmir.ion.lib.netty.client.environment.mock.EventLoopGroupMock;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -35,9 +35,10 @@ class NettyChannelPoolTest {
   void testEmbedded() {
     EventLoopGroup eventLoopGroup = new NioEventLoopGroup(1);
     NettyChannelPool nettyChannelPool = assertDoesNotThrow(() -> new NettyChannelPool(eventLoopGroup, EmbeddedChannel.class,
-      JsonRpcClientChannelInitializer.withLogging(TEST_LOGGING_HANDLER, TEST_REQUEST_ENCODER,
+      JsonRpcClientChannelInitializer.builder(TEST_REQUEST_ENCODER,
         new JsonRpcResponseDecoder(TEST_REAL_JSONB, TEST_CHARSET),
-        new JsonRpcResponseHandler(TEST_REAL_JSONB, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))));
+        new JsonRpcResponseHandler(TEST_REAL_JSONB, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
+        .withLogging(TEST_LOGGING_HANDLER).build()));
     SimpleChannelPool localhost = assertDoesNotThrow(() -> nettyChannelPool.get(InetSocketAddress.createUnresolved("localhost", 55_555)));
     assertNotNull(localhost);
     assertDoesNotThrow(nettyChannelPool::close);
