@@ -52,17 +52,18 @@ public class ProcedureScanner {
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(CALL_METHOD_NAME),
       ReflectionUtils.withParametersCount(parametersCount)).iterator().next();
     List<ParameterizedType> parametrizedInterfaces = findParametrizedInterfacesFor(procedureClass);
+    String procedureName = getProcedureName(procedureClass);
     for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
       if (parametrizedInterface.getRawType() == JsonRemoteProcedure0.class) {
         Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
 
-        return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), EMPTY_ARGUMENT_NAMES,
+        return new ParameterizedJsonRemoteProcedureSignature(procedureName, EMPTY_ARGUMENT_NAMES,
           EMPTY_ARGUMENT_TYPES,
           getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
           callMethod.getParameterTypes()), parametersCount);
       }
     }
-    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
   @SuppressWarnings("unchecked")
@@ -75,16 +76,17 @@ public class ProcedureScanner {
     setParameterName(parameterNames, callMethod.getParameters(), FIRST_PROCEDURE_PARAMETER, FIRST_PARAMETER_DEFAULT_NAME);
 
     List<ParameterizedType> parametrizedInterfaces = findParametrizedInterfacesFor(procedureClass);
+    String procedureName = getProcedureName(procedureClass);
     for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
       if (parametrizedInterface.getRawType() == JsonRemoteProcedure1.class) {
         Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
-        return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
+        return new ParameterizedJsonRemoteProcedureSignature(procedureName, parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER]},
           getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
           callMethod.getParameterTypes()), parametersCount);
       }
     }
-    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
   @SuppressWarnings("unchecked")
@@ -98,17 +100,18 @@ public class ProcedureScanner {
     setParameterName(parameterNames, parameters, SECOND_PROCEDURE_PARAMETER, SECOND_PARAMETER_DEFAULT_NAME);
 
     List<ParameterizedType> parametrizedInterfacesFor = findParametrizedInterfacesFor(procedureClass);
+    String procedureName = getProcedureName(procedureClass);
     for (ParameterizedType parameterizedType : parametrizedInterfacesFor) {
       if (parameterizedType.getRawType() == JsonRemoteProcedure2.class) {
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
+        return new ParameterizedJsonRemoteProcedureSignature(procedureName, parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
             actualTypeArguments[SECOND_PROCEDURE_PARAMETER]},
           getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
           callMethod.getParameterTypes()), parametersCount);
       }
     }
-    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
   @SuppressWarnings("unchecked")
@@ -122,17 +125,18 @@ public class ProcedureScanner {
     setParameterName(parameterNames, parameters, SECOND_PROCEDURE_PARAMETER, SECOND_PARAMETER_DEFAULT_NAME);
     setParameterName(parameterNames, parameters, THIRD_PROCEDURE_PARAMETER, THIRD_PARAMETER_DEFAULT_NAME);
     List<ParameterizedType> parametrisedInterfaces = findParametrizedInterfacesFor(procedureClass);
+    String procedureName = getProcedureName(procedureClass);
     for (ParameterizedType parameterizedType : parametrisedInterfaces) {
       if (parameterizedType.getRawType() == JsonRemoteProcedure3.class) {
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        return new ParameterizedJsonRemoteProcedureSignature(procedureClass.getName(), parameterNames,
+        return new ParameterizedJsonRemoteProcedureSignature(procedureName, parameterNames,
           new Type[]{actualTypeArguments[FIRST_PROCEDURE_PARAMETER],
             actualTypeArguments[SECOND_PROCEDURE_PARAMETER], actualTypeArguments[THIRD_PROCEDURE_PARAMETER]},
           getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
           callMethod.getParameterTypes()), parametersCount);
       }
     }
-    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureClass.getName());
+    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
   private static void setParameterName(String[] parameterNames, Parameter[] parameters, int position, String defaultName) {
@@ -145,6 +149,14 @@ public class ProcedureScanner {
       return parameter.getAnnotation(Named.class).name();
     } else {
       return defaultName;
+    }
+  }
+
+  public static String getProcedureName(Class<?> procedureClass) {
+    if (procedureClass.isAnnotationPresent(Named.class)) {
+      return procedureClass.getAnnotation(Named.class).name();
+    } else {
+      return procedureClass.getName();
     }
   }
 

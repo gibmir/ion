@@ -5,10 +5,6 @@ import com.github.gibmir.ion.api.server.factory.JsonRpcServerFactory;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
 
-import javax.crypto.SecretKeyFactory;
-import java.security.Provider;
-import java.security.Security;
-
 public class ServerRunner {
   public static void main(String[] args) {
     //todo Unexpected char -1 at (line no=1, column no=243, offset=242)
