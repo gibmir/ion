@@ -4,12 +4,16 @@ import io.netty.handler.logging.LogLevel;
 
 import java.util.function.Supplier;
 
-//todo there is a possibility to remove loghandler
 public enum NettyLogLevel implements Supplier<LogLevel> {
+  @SuppressWarnings("unused")
   TRACE(LogLevel.TRACE),
+  @SuppressWarnings("unused")
   DEBUG(LogLevel.DEBUG),
+  @SuppressWarnings("unused")
   INFO(LogLevel.INFO),
+  @SuppressWarnings("unused")
   WARN(LogLevel.WARN),
+  @SuppressWarnings("unused")
   ERROR(LogLevel.ERROR),
   /**
    * Provides disabled log level.
