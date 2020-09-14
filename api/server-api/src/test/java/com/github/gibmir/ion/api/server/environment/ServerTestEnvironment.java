@@ -7,40 +7,59 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.core.procedure.named.Named;
 
 public class ServerTestEnvironment {
-
-  public interface TestProcedure0 extends JsonRemoteProcedure0<String> {
+  //argument types
+  public interface FirstTestType {
 
   }
 
-  public interface TestProcedure1 extends JsonRemoteProcedure1<String, String> {
+  public interface SecondTestType {
+
+  }
+
+  public interface ThirdTestType {
+
+  }
+
+  public interface ReturnTestType {
+
+  }
+
+  //classic procedures
+  public interface TestProcedure0 extends JsonRemoteProcedure0<ReturnTestType> {
+
+  }
+
+  public interface TestProcedure1 extends JsonRemoteProcedure1<FirstTestType, ReturnTestType> {
     @Override
-    String call(@Named(name = "some") String arg);
+    ReturnTestType call(@Named(name = "some") FirstTestType arg);
   }
 
-  public interface TestProcedure2 extends JsonRemoteProcedure2<String, String, String> {
-
-  }
-
-  public interface TestProcedure3 extends JsonRemoteProcedure3<String, String, String, String> {
+  public interface TestProcedure2 extends JsonRemoteProcedure2<FirstTestType, SecondTestType, ReturnTestType> {
 
   }
 
-  public interface IncorrectTestProcedure0 extends TestProcedure0 {
+  public interface TestProcedure3 extends JsonRemoteProcedure3<FirstTestType, SecondTestType, ThirdTestType, ReturnTestType> {
 
   }
 
-  public interface IncorrectTestProcedure1 extends TestProcedure1 {
+  //hierarchy procedures
+  public interface HierarchyTestProcedure0 extends TestProcedure0 {
 
   }
 
-  public interface IncorrectTestProcedure2 extends TestProcedure2 {
+  public interface HierarchyTestProcedure1 extends TestProcedure1 {
 
   }
 
-  public interface IncorrectTestProcedure3 extends TestProcedure3 {
+  public interface HierarchyTestProcedure2 extends TestProcedure2 {
 
   }
 
+  public interface HierarchyTestProcedure3 extends TestProcedure3 {
+
+  }
+
+  //procedures with raw generics
   public interface RawTestProcedure1 extends JsonRemoteProcedure1 {
 
   }
@@ -53,6 +72,7 @@ public class ServerTestEnvironment {
 
   }
 
+  //multiple implementation procedures
   public interface MultipleTestProcedure1 extends Comparable<String>, JsonRemoteProcedure1<String, String> {
 
   }
@@ -66,6 +86,7 @@ public class ServerTestEnvironment {
 
   }
 
+  //test exception
   public static class ServerTestException extends RuntimeException {
 
   }

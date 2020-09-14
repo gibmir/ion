@@ -18,39 +18,50 @@ class ProcedureScannerTest {
 
   @Test
   void testResolveCorrectSignature0() {
-    JsonRemoteProcedureSignature jsonRemoteProcedureSignature = assertDoesNotThrow(() -> ProcedureScanner.resolveSignature0(ServerTestEnvironment.TestProcedure0.class));
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature0(ServerTestEnvironment.TestProcedure0.class));
     assertThat(jsonRemoteProcedureSignature.getGenericTypes().length, is(0));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      is(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
   void testResolveCorrectSignature1() {
-    Type[] genericTypes = assertDoesNotThrow(() -> ProcedureScanner.resolveSignature1(ServerTestEnvironment.TestProcedure1.class)
-      .getGenericTypes());
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature1(ServerTestEnvironment.TestProcedure1.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
 
     assertThat(genericTypes, arrayWithSize(1));
-    assertThat(genericTypes[0].getTypeName(), equalTo(String.class.getName()));
-
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
   void testResolveCorrectSignature2() {
-    Type[] genericTypes = assertDoesNotThrow(() -> ProcedureScanner.resolveSignature2(ServerTestEnvironment.TestProcedure2.class)
-      .getGenericTypes());
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature2(ServerTestEnvironment.TestProcedure2.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
 
     assertThat(genericTypes, arrayWithSize(2));
-    assertThat(genericTypes[0].getTypeName(), equalTo(String.class.getName()));
-    assertThat(genericTypes[1].getTypeName(), equalTo(String.class.getName()));
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(genericTypes[1].getTypeName(), equalTo(ServerTestEnvironment.SecondTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
   void testResolveCorrectSignature3() {
-    Type[] genericTypes = assertDoesNotThrow(() -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.TestProcedure3.class)
-      .getGenericTypes());
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.TestProcedure3.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
 
     assertThat(genericTypes, arrayWithSize(3));
-    assertThat(genericTypes[0].getTypeName(), equalTo(String.class.getName()));
-    assertThat(genericTypes[1].getTypeName(), equalTo(String.class.getName()));
-    assertThat(genericTypes[2].getTypeName(), equalTo(String.class.getName()));
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(genericTypes[1].getTypeName(), equalTo(ServerTestEnvironment.SecondTestType.class.getName()));
+    assertThat(genericTypes[2].getTypeName(), equalTo(ServerTestEnvironment.ThirdTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
@@ -102,24 +113,48 @@ class ProcedureScannerTest {
         .getGenericTypes());
   }
 
-  //todo incorrect until deep scan feature
   @Test
-  void testResolveIncorrectSignature1() {
-    assertThrows(IllegalArgumentException.class,
-      () -> ProcedureScanner.resolveSignature1(ServerTestEnvironment.IncorrectTestProcedure1.class)
-        .getGenericTypes());
+  void testResolveHierarchySignature0() {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature0(ServerTestEnvironment.HierarchyTestProcedure0.class));
+    assertThat(jsonRemoteProcedureSignature.getGenericTypes().length, is(0));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      is(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
-  void testResolveIncorrectSignature2() {
-    assertThrows(IllegalArgumentException.class, () -> ProcedureScanner.resolveSignature2(ServerTestEnvironment.IncorrectTestProcedure2.class)
-      .getGenericTypes());
+  void testResolveHierarchySignature1() {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature1(ServerTestEnvironment.HierarchyTestProcedure1.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
+    assertThat(genericTypes, arrayWithSize(1));
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
   @Test
-  void testResolveIncorrectSignature3() {
-    assertThrows(IllegalArgumentException.class, () -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.IncorrectTestProcedure3.class)
-      .getGenericTypes());
+  void testResolveHierarchySignature2() {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature2(ServerTestEnvironment.HierarchyTestProcedure2.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
+    assertThat(genericTypes, arrayWithSize(2));
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(genericTypes[1].getTypeName(), equalTo(ServerTestEnvironment.SecondTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
   }
 
+  @Test
+  void testResolveHierarchySignature3() {
+    JsonRemoteProcedureSignature jsonRemoteProcedureSignature =
+      assertDoesNotThrow(() -> ProcedureScanner.resolveSignature3(ServerTestEnvironment.HierarchyTestProcedure3.class));
+    Type[] genericTypes = jsonRemoteProcedureSignature.getGenericTypes();
+    assertThat(genericTypes, arrayWithSize(3));
+    assertThat(genericTypes[0].getTypeName(), equalTo(ServerTestEnvironment.FirstTestType.class.getName()));
+    assertThat(genericTypes[1].getTypeName(), equalTo(ServerTestEnvironment.SecondTestType.class.getName()));
+    assertThat(genericTypes[2].getTypeName(), equalTo(ServerTestEnvironment.ThirdTestType.class.getName()));
+    assertThat(jsonRemoteProcedureSignature.getReturnType().getTypeName(),
+      equalTo(ServerTestEnvironment.ReturnTestType.class.getName()));
+  }
 }
