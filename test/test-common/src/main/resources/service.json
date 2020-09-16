@@ -1,0 +1,25 @@
+{
+  "testService": {
+    "description": "Service is a set of procedures",
+    "types": {
+      "id": {
+        "type": "integer"
+      }
+    },
+    "procedures": {
+      "testProcedureName": {
+        "description": "This is test procedure",
+        "arguments": {
+          "testArgumentName": {
+            "type": "id",
+            "description": "test argument description"
+          }
+        },
+        "return": {
+          "type": "string",
+          "description": "test return argument"
+        }
+      }
+    }
+  }
+}
