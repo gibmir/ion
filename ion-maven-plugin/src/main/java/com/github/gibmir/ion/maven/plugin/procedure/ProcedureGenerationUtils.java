@@ -1,0 +1,112 @@
+package com.github.gibmir.ion.maven.plugin.procedure;
+
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
+import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.api.core.procedure.named.Named;
+import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.api.schema.service.procedure.Procedure;
+import com.github.gibmir.ion.api.schema.type.PropertyType;
+import com.github.gibmir.ion.maven.plugin.IonPluginMojo;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeSpec;
+
+import javax.lang.model.element.Modifier;
+
+public class ProcedureGenerationUtils {
+
+  public static final String NAMED_ANNOTATION_NAME_PARAM = "name";
+
+  public static TypeSpec asTypeSpecification(Procedure procedure) {
+    String procedureName = procedure.getName();
+    AnnotationSpec annotationSpec = AnnotationSpec.builder(Named.class)
+      .addMember(NAMED_ANNOTATION_NAME_PARAM, IonPluginMojo.asAnnotationMember(procedureName)).build();
+    TypeSpec.Builder procedureTypeSpecBuilder = TypeSpec.interfaceBuilder(IonPluginMojo.asClassName(procedureName))
+      .addModifiers(Modifier.PUBLIC).addAnnotation(annotationSpec)
+      .addJavadoc(procedure.getDescription());
+    PropertyType[] argumentTypes = procedure.getArgumentTypes();
+    int argumentTypesLength = argumentTypes.length;
+    ClassName returnClassName = ClassName.bestGuess(IonPluginMojo.asClassName(procedure.getReturnArgumentType().getName()));
+    MethodSpec.Builder callMethodSpec = MethodSpec.methodBuilder(ProcedureScanner.PROCEDURE_MAIN_METHOD_NAME)
+      .addModifiers(Modifier.PUBLIC)
+      .addModifiers(Modifier.ABSTRACT)
+      .addAnnotation(Override.class)
+      .returns(returnClassName);
+    if (argumentTypesLength == 0) {
+      procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure0.class),
+        returnClassName));
+    } else if (argumentTypesLength == 1) {
+      prepareOneArgProcedure(procedureTypeSpecBuilder, argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER],
+        returnClassName, callMethodSpec);
+    } else if (argumentTypesLength == 2) {
+      prepareTwoArgProcedure(procedureTypeSpecBuilder, argumentTypes, returnClassName, callMethodSpec);
+    } else if (argumentTypesLength == 3) {
+      prepareThreeArgProcedure(procedureTypeSpecBuilder, argumentTypes, returnClassName, callMethodSpec);
+    } else {
+      String message = String.format("Procedure [%s] has too many arguments [%d]", procedureName, argumentTypesLength);
+      throw new IllegalArgumentException(message);
+    }
+    procedureTypeSpecBuilder.addMethod(callMethodSpec.build());
+    return procedureTypeSpecBuilder.build();
+  }
+
+  private static void prepareOneArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType argumentType,
+                                             ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+    String firstArgumentName = argumentType.getName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure1.class),
+      firstArgumentClassName, returnClassName));
+    AnnotationSpec annotationSpec = AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+      IonPluginMojo.asAnnotationMember(firstArgumentName)).build();
+    ParameterSpec parameterSpec = ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
+      .addAnnotation(annotationSpec).build();
+    callMethodSpec.addParameter(parameterSpec);
+  }
+
+  private static void prepareTwoArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
+                                             ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
+    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
+    procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure2.class),
+      firstArgumentClassName, secondArgumentClassName, returnClassName));
+    callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
+      .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+        IonPluginMojo.asAnnotationMember(firstArgumentName)).build())
+      .build())
+      .addParameter(ParameterSpec.builder(secondArgumentClassName, IonPluginMojo.asFieldName(secondArgumentName))
+        .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+          IonPluginMojo.asAnnotationMember(secondArgumentName)).build())
+        .build());
+  }
+
+  private static void prepareThreeArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
+                                               ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
+    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
+    String thirdArgumentName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getName();
+    ClassName thirdArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(thirdArgumentName));
+    procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure3.class),
+      firstArgumentClassName, secondArgumentClassName, thirdArgumentClassName, returnClassName));
+    callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
+      .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+        IonPluginMojo.asAnnotationMember(firstArgumentName)).build())
+      .build())
+      .addParameter(ParameterSpec.builder(secondArgumentClassName, IonPluginMojo.asFieldName(secondArgumentName))
+        .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+          IonPluginMojo.asAnnotationMember(secondArgumentName)).build())
+        .build())
+      .addParameter(ParameterSpec.builder(thirdArgumentClassName, IonPluginMojo.asFieldName(thirdArgumentName))
+        .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
+          IonPluginMojo.asAnnotationMember(thirdArgumentName)).build())
+        .build());
+  }
+}

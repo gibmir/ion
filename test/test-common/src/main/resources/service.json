@@ -1,11 +1,30 @@
 {
-  "testService": {
-    "description": "Service is a set of procedures",
-    "types": {
-      "id": {
-        "type": "integer"
+  "types": {
+    "simpleTypeName": {
+      "description": "simple type description",
+      "properties": {
+        "simpleProperty": {
+          "type": "string",
+          "description": "simpleStringProperty"
+        }
       }
     },
+    "composedTypeName": {
+      "description": "some type description",
+      "properties": {
+        "propertyName": {
+          "type": "integer",
+          "description": "property description"
+        },
+        "otherHardProperty": {
+          "type": "simpleTypeName",
+          "description": "simple type property"
+        }
+      }
+    }
+  },
+  "testService": {
+    "description": "Service is a set of procedures",
     "procedures": {
       "testProcedureName": {
         "description": "This is test procedure",
