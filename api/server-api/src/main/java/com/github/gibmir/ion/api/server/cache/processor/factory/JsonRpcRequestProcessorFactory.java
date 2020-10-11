@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 
 public class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
+  public static final String CALL_METHOD_NAME = "call";
 
   public static <R, P extends JsonRemoteProcedure0<R>> JsonRpcRequestProcessor createProcessor0(Class<P> procedure,
                                                                                                 P service) {
@@ -78,7 +79,7 @@ public class JsonRpcRequestProcessorFactory {
     Class<T> procedure, T service, JsonRemoteProcedureSignature jsonRemoteProcedureSignature)
     throws NoSuchMethodException, IllegalAccessException {
     MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
-    final MethodHandle methodHandle = publicLookup.findVirtual(procedure, ProcedureScanner.CALL_METHOD_NAME,
+    final MethodHandle methodHandle = publicLookup.findVirtual(procedure, CALL_METHOD_NAME,
       jsonRemoteProcedureSignature.getMethodType());
     NamedMethodHandle namedMethodHandle = new NamedMethodHandle(methodHandle.asSpreader(Object[].class,
       jsonRemoteProcedureSignature.getParametersCount()), jsonRemoteProcedureSignature.getParameterNames(),

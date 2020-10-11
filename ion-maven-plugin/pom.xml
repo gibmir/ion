@@ -24,16 +24,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>client-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>schema-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
                 <version>${mvn.plug.api.ver}</version>
@@ -80,11 +70,24 @@
         <!--ION-->
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>schema-api</artifactId>
+            <artifactId>schema-lib</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 </project>

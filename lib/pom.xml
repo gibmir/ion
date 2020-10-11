@@ -16,6 +16,7 @@
         <module>configuration-lib</module>
         <module>http-lib</module>
         <module>netty-lib</module>
+        <module>schema-lib</module>
     </modules>
     <dependencyManagement>
         <dependencies>
