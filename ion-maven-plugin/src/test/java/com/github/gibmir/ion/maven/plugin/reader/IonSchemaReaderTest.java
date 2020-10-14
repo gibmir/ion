@@ -1,11 +1,14 @@
-package com.github.gibmir.ion.maven.plugin;
+package com.github.gibmir.ion.maven.plugin.reader;
 
+import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonObject;
+import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
+import java.util.Map;
 
 class IonSchemaReaderTest {
 
@@ -58,8 +61,9 @@ class IonSchemaReaderTest {
   void testRead() {
     Jsonb jsonb = JsonbProvider.provider().create().build();
 
-    JsonObject schemaJsonStructure = jsonb.fromJson(SCHEMA_JSON, JsonObject.class);
-    JsonValue types = schemaJsonStructure.get("types");
-    System.out.println(types.toString());
+    JsonValue schemaJsonStructure = jsonb.fromJson(SCHEMA_JSON, JsonValue.class);
+    Map<String, TypeDeclaration> stringTypeDeclarationMap = IonSchemaReader.readTypes(schemaJsonStructure);
+    System.out.println(stringTypeDeclarationMap);
+
   }
 }

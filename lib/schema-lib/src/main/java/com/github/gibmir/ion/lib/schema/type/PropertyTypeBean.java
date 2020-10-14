@@ -21,4 +21,13 @@ public class PropertyTypeBean extends SchemaElementBean implements PropertyType 
   public int hashCode() {
     return super.hashCode();
   }
+
+  @Override
+  public String toString() {
+    return "PropertyTypeBean{" +
+      "id='" + id + '\'' +
+      ", name='" + name + '\'' +
+      ", description='" + description + '\'' +
+      '}';
+  }
 }

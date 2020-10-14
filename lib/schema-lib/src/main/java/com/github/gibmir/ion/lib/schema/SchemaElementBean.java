@@ -5,9 +5,9 @@ import com.github.gibmir.ion.api.schema.SchemaElement;
 import java.util.Objects;
 
 public class SchemaElementBean implements SchemaElement {
-  private String id;
-  private String name;
-  private String description;
+  protected String id;
+  protected String name;
+  protected String description;
 
   public SchemaElementBean() {
   }
