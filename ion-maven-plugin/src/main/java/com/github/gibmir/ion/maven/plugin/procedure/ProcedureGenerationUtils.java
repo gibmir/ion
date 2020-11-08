@@ -31,7 +31,7 @@ public class ProcedureGenerationUtils {
       .addJavadoc(procedure.getDescription());
     PropertyType[] argumentTypes = procedure.getArgumentTypes();
     int argumentTypesLength = argumentTypes.length;
-    ClassName returnClassName = ClassName.bestGuess(IonPluginMojo.asClassName(procedure.getReturnArgumentType().getName()));
+    ClassName returnClassName = ClassName.bestGuess(IonPluginMojo.asClassName(procedure.getReturnArgumentType().getTypeName()));
     MethodSpec.Builder callMethodSpec = MethodSpec.methodBuilder(ProcedureScanner.PROCEDURE_MAIN_METHOD_NAME)
       .addModifiers(Modifier.PUBLIC)
       .addModifiers(Modifier.ABSTRACT)
@@ -57,13 +57,14 @@ public class ProcedureGenerationUtils {
 
   private static void prepareOneArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType argumentType,
                                              ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
-    String firstArgumentName = argumentType.getName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String firstArgumentTypeName = argumentType.getTypeName();
+    String argumentName = argumentType.getName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure1.class),
       firstArgumentClassName, returnClassName));
     AnnotationSpec annotationSpec = AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
-      IonPluginMojo.asAnnotationMember(firstArgumentName)).build();
-    ParameterSpec parameterSpec = ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
+      IonPluginMojo.asAnnotationMember(argumentName)).build();
+    ParameterSpec parameterSpec = ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(argumentName))
       .addAnnotation(annotationSpec).build();
     callMethodSpec.addParameter(parameterSpec);
   }

@@ -8,6 +8,7 @@ import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.api.schema.type.Types;
 import com.github.gibmir.ion.maven.plugin.IonPluginMojo;
+import com.github.gibmir.ion.maven.plugin.service.ServiceGenerationUtils;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -41,21 +42,22 @@ public class TypeGenerationUtils {
       .addModifiers(Modifier.PUBLIC)
       .addJavadoc(typeDeclaration.getDescription());
     for (PropertyType propertyType : typeDeclaration.getPropertyTypes()) {
-      String typeName = propertyType.getName();
-      Types type = Types.from(typeName);
+      String propertyName = propertyType.getName();
+      String propertyTypeName = propertyType.getTypeName();
+      Types type = Types.from(propertyTypeName);
       FieldSpec fieldSpec;
       MethodSpec getterMethodSpec;
       MethodSpec setterMethodSpec;
       if (Types.CUSTOM.equals(type)) {
-        ClassName fieldTypeName = ClassName.bestGuess(IonPluginMojo.asClassName(typeName));
-        fieldSpec = createField(propertyType, typeName, fieldTypeName);
-        getterMethodSpec = createGetter(typeName, fieldTypeName);
-        setterMethodSpec = createSetter(typeName, fieldTypeName);
+        ClassName fieldTypeName = ClassName.bestGuess(IonPluginMojo.asClassName(propertyTypeName));
+        fieldSpec = createField(propertyType, propertyName, fieldTypeName);
+        getterMethodSpec = createGetter(propertyName, fieldTypeName);
+        setterMethodSpec = createSetter(propertyName, fieldTypeName);
       } else {
         Type fieldType = type.resolve();
-        fieldSpec = createField(propertyType, typeName, fieldType);
-        getterMethodSpec = createGetter(typeName, fieldType);
-        setterMethodSpec = createSetter(typeName, fieldType);
+        fieldSpec = createField(propertyType, propertyName, fieldType);
+        getterMethodSpec = createGetter(propertyName, fieldType);
+        setterMethodSpec = createSetter(propertyName, fieldType);
       }
       typeSpecBuilder.addField(fieldSpec)
         .addMethod(getterMethodSpec)
@@ -65,10 +67,10 @@ public class TypeGenerationUtils {
   }
 
 
-
   private static MethodSpec createSetter(String typeName, Type fieldType) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
+      .addCode(ServiceGenerationUtils.SETTER_CODE_BLOCK, typeName, typeName)
       .addParameter(ParameterSpec.builder(fieldType, IonPluginMojo.asFieldName(typeName)).build())
       .build();
   }
@@ -76,6 +78,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createSetter(String typeName, ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
+      .addCode(ServiceGenerationUtils.SETTER_CODE_BLOCK, typeName, typeName)
       .addParameter(ParameterSpec.builder(fieldTypeName, IonPluginMojo.asFieldName(typeName)).build())
       .build();
   }
@@ -95,6 +98,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
+      .addCode(ServiceGenerationUtils.RETURN_PROCEDURE, typeName)
       .returns(fieldTypeName)
       .build();
   }
@@ -102,6 +106,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, Type fieldType) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
+      .addCode(ServiceGenerationUtils.RETURN_PROCEDURE, typeName)
       .returns(fieldType)
       .build();
   }
@@ -123,12 +128,14 @@ public class TypeGenerationUtils {
     stack.remove(typeDeclaration);
     stack.push(typeDeclaration);
     for (PropertyType propertyType : typeDeclaration.getPropertyTypes()) {
-      String propertyTypeName = propertyType.getName();
+      String propertyName = propertyType.getName();
+
+      String propertyTypeName = propertyType.getTypeName();
       if (Types.CUSTOM.equals(Types.from(propertyTypeName))) {
         TypeDeclaration propertyTypeDeclaration = schemaTypeDeclarationMap.get(propertyTypeName);
         if (propertyTypeDeclaration == null) {
-          String message = String.format("Property type [%s] does not contains in %s",
-            propertyTypeName, schemaTypeDeclarationMap);
+          String message = String.format("Property [%s] type [%s] does not contains in %s",
+            propertyName, propertyTypeName, schemaTypeDeclarationMap);
           throw new IllegalArgumentException(message);
         }
         return fillStack(propertyTypeDeclaration, stack, schemaTypeDeclarationMap);

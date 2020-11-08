@@ -23,6 +23,7 @@ public class ServiceGenerationUtils {
 
   public static final String LOAD_PROCEDURE_CODE_BLOCK = "$L = $L.$L($L.class)";
   public static final String RETURN_PROCEDURE = "return $L;";
+  public static final String SETTER_CODE_BLOCK = "this.$L = $L;";
 
   public static TypeSpec asTypeSpecification(Service service) throws NoSuchMethodException {
     TypeSpec.Builder serviceTypeBuilder = TypeSpec.classBuilder(IonPluginMojo.asClassName(service.getName()))
@@ -52,7 +53,7 @@ public class ServiceGenerationUtils {
 
       PropertyType[] argumentTypes = serviceProcedure.getArgumentTypes();
       int argumentsCount = argumentTypes.length;
-      ClassName returnArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(serviceProcedure.getReturnArgumentType().getName()));
+      ClassName returnArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(serviceProcedure.getReturnArgumentType().getTypeName()));
       if (argumentsCount == 0) {
         ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Request0.class), returnArgumentClassName);
         serviceTypeBuilder.addMethod(MethodSpec.methodBuilder(serviceProcedureFieldName).addModifiers(Modifier.PUBLIC)
@@ -85,8 +86,8 @@ public class ServiceGenerationUtils {
 
   private static void prepareOneArgProcedureField(TypeSpec.Builder serviceTypeBuilder, String serviceProcedureFieldName,
                                                   PropertyType argumentType, ClassName returnArgumentClassName) {
-    String firstArgumentName = argumentType.getName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String firstArgumentTypeName = argumentType.getTypeName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
     ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Request1.class),
       firstArgumentClassName, returnArgumentClassName);
     serviceTypeBuilder.addField(parameterizedTypeName,
@@ -99,9 +100,9 @@ public class ServiceGenerationUtils {
 
   private static void prepareTwoArgProcedureField(TypeSpec.Builder serviceTypeBuilder, String serviceProcedureFieldName,
                                                   PropertyType[] argumentTypes, ClassName returnArgumentClassName) {
-    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
+    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
     ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
-    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
+    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
     ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
     ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Request2.class),
       firstArgumentClassName, secondArgumentClassName, returnArgumentClassName);
@@ -115,11 +116,11 @@ public class ServiceGenerationUtils {
 
   private static void prepareThreeArgProcedureField(TypeSpec.Builder serviceTypeBuilder, String serviceProcedureFieldName,
                                                     PropertyType[] argumentTypes, ClassName returnArgumentClassName) {
-    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
+    String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
     ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
-    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
+    String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
     ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
-    String thirdArgumentName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getName();
+    String thirdArgumentName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getTypeName();
     ClassName thirdArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(thirdArgumentName));
     ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Request3.class),
       firstArgumentClassName, secondArgumentClassName, thirdArgumentClassName, returnArgumentClassName);
@@ -129,6 +130,5 @@ public class ServiceGenerationUtils {
       .addCode(RETURN_PROCEDURE, serviceProcedureFieldName)
       .returns(parameterizedTypeName)
       .build());
-
   }
 }

@@ -4,9 +4,10 @@ import com.github.gibmir.ion.api.schema.Schema;
 import com.github.gibmir.ion.api.schema.service.Service;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 
+import java.util.Arrays;
 import java.util.Map;
 
-public class SchemaBean extends SchemaElementBean implements Schema {
+public class SchemaBean implements Schema {
   private Service[] services;
   private Map<String, TypeDeclaration> types;
 
@@ -14,9 +15,8 @@ public class SchemaBean extends SchemaElementBean implements Schema {
     super();
   }
 
-  public SchemaBean(String id, String name, String description, Map<String, TypeDeclaration> types,
+  public SchemaBean(Map<String, TypeDeclaration> types,
                     Service... services) {
-    super(id, name, description);
     this.services = services;
     this.types = types;
   }
@@ -29,5 +29,13 @@ public class SchemaBean extends SchemaElementBean implements Schema {
   @Override
   public Service[] getServices() {
     return services;
+  }
+
+  @Override
+  public String toString() {
+    return "SchemaBean{" +
+      "services=" + Arrays.toString(services) +
+      ", types=" + types +
+      '}';
   }
 }

@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ion-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
     <properties>
         <!--MAVEN CORE-->
         <mvn.core.ver>3.6.1</mvn.core.ver>
@@ -21,6 +22,15 @@
         <!--CODE GENERATION-->
         <javapoet.version>1.13.0</javapoet.version>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${mvn.plug.plug.ver}</version>
+            </plugin>
+        </plugins>
+    </build>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -83,7 +93,6 @@
             <artifactId>yasson</artifactId>
             <version>1.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>

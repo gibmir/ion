@@ -13,7 +13,7 @@
       "description": "some type description",
       "properties": {
         "propertyName": {
-          "type": "integer",
+          "type": "number",
           "description": "property description"
         },
         "otherHardProperty": {
@@ -30,7 +30,7 @@
         "description": "This is test procedure",
         "arguments": {
           "testArgumentName": {
-            "type": "id",
+            "type": "simpleTypeName",
             "description": "test argument description"
           }
         },

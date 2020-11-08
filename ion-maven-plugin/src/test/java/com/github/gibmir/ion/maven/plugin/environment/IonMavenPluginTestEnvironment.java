@@ -47,11 +47,13 @@ public class IonMavenPluginTestEnvironment {
     private final String id;
     private final String name;
     private final String description;
+    private final String typeName;
 
-    public TestPropertyType(String id, String name, String description) {
+    public TestPropertyType(String id, String name, String description, String typeName) {
       this.id = id;
       this.name = name;
       this.description = description;
+      this.typeName = typeName;
     }
 
     @Override
@@ -93,6 +95,10 @@ public class IonMavenPluginTestEnvironment {
     }
 
 
+    @Override
+    public String getTypeName() {
+      return typeName;
+    }
   }
 
   public static class TestProcedure implements Procedure {

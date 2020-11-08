@@ -18,13 +18,10 @@ class TypeGenerationUtilsTest {
 
   @Test
   void testLoadTypes() throws IOException {
-    //Кастомные типы объявляются обособленно. Строится по мере необходимости и таким образом будет соблюдаться порядок.
-    //Как сейчас сделано - неправильно. Нужно переделать. Скорее всего TypeDeclaration изменится и будет хранить
-    // только ссылки на типы для полей
     IonMavenPluginTestEnvironment.TestTypeDeclaration simpleType = new IonMavenPluginTestEnvironment.TestTypeDeclaration("simple", "simpleType", "desc",
-      new IonMavenPluginTestEnvironment.TestPropertyType("pog", "string", "pog simple"));
+      new IonMavenPluginTestEnvironment.TestPropertyType("pog", "string", "pog simple", "string"));
     IonMavenPluginTestEnvironment.TestTypeDeclaration composedType = new IonMavenPluginTestEnvironment.TestTypeDeclaration("composed", "composedType", "desc",
-      new IonMavenPluginTestEnvironment.TestPropertyType("pog", "simple", "pog simple"));
+      new IonMavenPluginTestEnvironment.TestPropertyType("pog", "simple", "pog simple", "string"));
     Map<String, TypeDeclaration> typeDeclarationMap = Map.of("composed", composedType, "simple", simpleType);
     Stack<TypeDeclaration> typeDeclarations = TypeGenerationUtils.buildLoadingStack(typeDeclarationMap);
     TypeGenerationUtils.loadTypes(typeDeclarations, "com.github.gibmir.ion",
@@ -34,14 +31,15 @@ class TypeGenerationUtilsTest {
   @Test
   void testProcedure() throws IOException {
     TypeSpec typeSpec = ProcedureGenerationUtils.asTypeSpecification(new IonMavenPluginTestEnvironment.TestProcedure(
-      new IonMavenPluginTestEnvironment.TestPropertyType("id", "string", ""), "description", "procedure", "id"));
+      new IonMavenPluginTestEnvironment.TestPropertyType("id", "string", "", "string"), "description", "procedure", "id"));
     JavaFile.builder("com.github.gibmir.ion", typeSpec).build()
       .writeTo(Path.of("F:\\Projects\\ion\\ion-maven-plugin\\src\\main\\resources"));
   }
 
   @Test
   void testService() throws IOException, NoSuchMethodException {
-    IonMavenPluginTestEnvironment.TestProcedure procedure = new IonMavenPluginTestEnvironment.TestProcedure(new IonMavenPluginTestEnvironment.TestPropertyType("id", "string", ""),
+    IonMavenPluginTestEnvironment.TestProcedure procedure = new IonMavenPluginTestEnvironment.TestProcedure(
+      new IonMavenPluginTestEnvironment.TestPropertyType("id", "string", "", "string"),
       "description", "procedure", "id");
 
     TypeSpec typeSpec = ProcedureGenerationUtils.asTypeSpecification(procedure);
