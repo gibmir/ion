@@ -9,10 +9,87 @@ Project represents json-rpc 2.0 protocol implementation.
   * Netty tcp client and server
   * TLS support for the netty client and server
   
-## Examples:
-### Service API
+## API:
 
-To use ion you need to describe your service as bunch of functions. 
+### Schema client API
+Project Ion provides own json schema API. It consists of two sections.
+First section is types description:
+```json
+{
+"types": {
+    "customTypeName": {
+      "description": "Your custom type description",
+      "properties": {
+        "customTypePropertyName": {
+          "type": "string",
+          "description": "Your custom type field description"
+        }
+      }
+    }
+  }
+}
+```
+Second section is services description:
+```json
+{
+ "customServiceName": {
+    "description": "Your custom service description",
+    "procedures": {
+      "customProcedureName": {
+        "description": "Your custom service procedure description",
+        "arguments": {
+          "customProcedureArgumentName": {
+            "type": "customTypeName",
+            "description": "Your custom procedure argument description"
+          }
+        },
+        "return": {
+          "type": "string",
+          "description": "Your custom procedure return argument description"
+        }
+      }
+    }
+  }
+}
+```
+Full schema looks like:
+```json
+{
+"types": {
+    "customTypeName": {
+      "description": "Your custom type description",
+      "properties": {
+        "customTypePropertyName": {
+          "type": "string",
+          "description": "Your custom type field description"
+        }
+      }
+    }
+  },
+ "customServiceName": {
+    "description": "Your custom service description",
+    "procedures": {
+      "customProcedureName": {
+        "description": "Your custom service procedure description",
+        "arguments": {
+          "customProcedureArgumentName": {
+            "type": "customTypeName",
+            "description": "Your custom procedure argument description"
+          }
+        },
+        "return": {
+          "type": "string",
+          "description": "Your custom procedure return argument description"
+        }
+      }
+    }
+  }
+}
+```
+To generate client you need to put your schema in your project resources folder and use ion-maven-plugin.
+
+### Service API
+To use low level API you need to describe your service as bunch of functions. 
 For example describe part of your functionality as function (get string and return string):
 ```java
 public interface ServiceProcedure extends JsonRemoteProcedure1<String, String> {
@@ -27,7 +104,6 @@ public interface TestStringProcedure extends JsonRemoteProcedure1<String, String
   String call(@Named(name = "namedArgument") String arg);
 }
 ```
-(`schema API. service functions code generation`)
 
 ---
 ### Client
