@@ -72,9 +72,11 @@ public class ProcedureGenerationUtils {
   private static void prepareTwoArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
                                              ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
     String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
-    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
+    String secondArgumentTypeName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
+    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentTypeName));
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure2.class),
       firstArgumentClassName, secondArgumentClassName, returnClassName));
     callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
@@ -90,11 +92,14 @@ public class ProcedureGenerationUtils {
   private static void prepareThreeArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
                                                ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentName));
+    String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
+    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
     String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
-    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentName));
+    String secondArgumentTypeName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
+    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentTypeName));
     String thirdArgumentName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getName();
-    ClassName thirdArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(thirdArgumentName));
+    String thirdArgumentTypeName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getTypeName();
+    ClassName thirdArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(thirdArgumentTypeName));
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure3.class),
       firstArgumentClassName, secondArgumentClassName, thirdArgumentClassName, returnClassName));
     callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))

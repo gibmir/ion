@@ -17,6 +17,14 @@
                 <groupId>com.github.gibmir.ion</groupId>
                 <artifactId>ion-maven-plugin</artifactId>
                 <version>${project.parent.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>ionise</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,24 +1,24 @@
 {
   "types": {
-    "simpleTypeName": {
-      "description": "simple type description",
+    "testType": {
+      "description": "Type for testing.",
       "properties": {
-        "simpleProperty": {
+        "testTypeProperty": {
           "type": "string",
-          "description": "simpleStringProperty"
+          "description": "property for test type"
         }
       }
     },
-    "composedTypeName": {
-      "description": "some type description",
+    "testComposedType": {
+      "description": "composed type",
       "properties": {
-        "propertyName": {
+        "numericProperty": {
           "type": "number",
-          "description": "property description"
+          "description": "numeric property"
         },
-        "otherHardProperty": {
-          "type": "simpleTypeName",
-          "description": "simple type property"
+        "typedProperty": {
+          "type": "testType",
+          "description": "test type property"
         }
       }
     }
@@ -26,12 +26,16 @@
   "testService": {
     "description": "Service is a set of procedures",
     "procedures": {
-      "testProcedureName": {
+      "testProcedure": {
         "description": "This is test procedure",
         "arguments": {
-          "testArgumentName": {
-            "type": "simpleTypeName",
-            "description": "test argument description"
+          "testArgument": {
+            "type": "testType",
+            "description": "test argument argument"
+          },
+          "testComposedArgument": {
+            "type": "testComposedType",
+            "description": "test composed argument"
           }
         },
         "return": {
