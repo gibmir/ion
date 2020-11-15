@@ -42,6 +42,19 @@
           "type": "string",
           "description": "test return argument"
         }
+      },
+      "otherTestProcedure": {
+        "description": "This is test procedure",
+        "arguments": {
+          "testArgument": {
+            "type": "testType",
+            "description": "test argument argument"
+          }
+        },
+        "return": {
+          "type": "string",
+          "description": "test return argument"
+        }
       }
     }
   }

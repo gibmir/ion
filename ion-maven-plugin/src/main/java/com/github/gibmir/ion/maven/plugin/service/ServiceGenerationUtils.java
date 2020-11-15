@@ -24,6 +24,7 @@ public class ServiceGenerationUtils {
   public static final String LOAD_PROCEDURE_CODE_BLOCK = "$L = $L.$L($L.class)";
   public static final String RETURN_PROCEDURE = "return $L;";
   public static final String SETTER_CODE_BLOCK = "this.$L = $L;";
+  public static final String FACTORY_LOAD = "$T $L = $T.load().provide()";
 
   public static TypeSpec asTypeSpecification(Service service) throws NoSuchMethodException {
     TypeSpec.Builder serviceTypeBuilder = TypeSpec.classBuilder(IonPluginMojo.asClassName(service.getName()))
@@ -31,12 +32,13 @@ public class ServiceGenerationUtils {
     String requestFactorySimpleName = RequestFactory.class.getSimpleName();
     String requestFactoryFieldName = IonPluginMojo.asFieldName(requestFactorySimpleName);
 
-    CodeBlock.Builder statementBuilder = CodeBlock.builder()
-      .add("$T $L = $T.load().provide();", RequestFactory.class, requestFactoryFieldName, RequestFactoryProvider.class);
-    prepareServiceProcedures(service, serviceTypeBuilder, statementBuilder);
+    CodeBlock.Builder constructorBuilder = CodeBlock.builder()
+      .addStatement(FACTORY_LOAD, RequestFactory.class, requestFactoryFieldName, RequestFactoryProvider.class);
+    prepareServiceProcedures(service, serviceTypeBuilder, constructorBuilder);
+    CodeBlock constructorCodeBlock = constructorBuilder.build();
     MethodSpec serviceConstructor = MethodSpec.constructorBuilder()
       .addModifiers(Modifier.PUBLIC)
-      .addStatement(statementBuilder.build())
+      .addCode(constructorCodeBlock)
       .build();
 
     serviceTypeBuilder.addModifiers(Modifier.PUBLIC)
@@ -46,7 +48,7 @@ public class ServiceGenerationUtils {
   }
 
   private static void prepareServiceProcedures(Service service, TypeSpec.Builder serviceTypeBuilder,
-                                               CodeBlock.Builder statementBuilder) throws NoSuchMethodException {
+                                               CodeBlock.Builder constructorBuilder) throws NoSuchMethodException {
     for (Procedure serviceProcedure : service.getServiceProcedures()) {
       String serviceProcedureClassName = IonPluginMojo.asClassName(serviceProcedure.getName());
       String serviceProcedureFieldName = IonPluginMojo.asFieldName(serviceProcedure.getName());
@@ -62,20 +64,20 @@ public class ServiceGenerationUtils {
           .build());
         serviceTypeBuilder.addField(parameterizedTypeName,
           serviceProcedureFieldName, Modifier.PRIVATE, Modifier.FINAL);
-        statementBuilder.add(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
+        constructorBuilder.addStatement(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
           RequestFactory.class.getMethod("noArg", Class.class).getName(), serviceProcedureClassName);
       } else if (argumentsCount == 1) {
         prepareOneArgProcedureField(serviceTypeBuilder, serviceProcedureFieldName,
           argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], returnArgumentClassName);
-        statementBuilder.add(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
+        constructorBuilder.addStatement(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
           RequestFactory.class.getMethod("singleArg", Class.class).getName(), serviceProcedureClassName);
       } else if (argumentsCount == 2) {
         prepareTwoArgProcedureField(serviceTypeBuilder, serviceProcedureFieldName, argumentTypes, returnArgumentClassName);
-        statementBuilder.add(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
+        constructorBuilder.addStatement(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName, IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
           RequestFactory.class.getMethod("twoArg", Class.class).getName(), serviceProcedureClassName);
       } else if (argumentsCount == 3) {
         prepareThreeArgProcedureField(serviceTypeBuilder, serviceProcedureFieldName, argumentTypes, returnArgumentClassName);
-        statementBuilder.add(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName,
+        constructorBuilder.addStatement(LOAD_PROCEDURE_CODE_BLOCK, serviceProcedureFieldName,
           IonPluginMojo.asFieldName(RequestFactory.class.getSimpleName()),
           RequestFactory.class.getMethod("threeArg", Class.class).getName(), serviceProcedureClassName);
       } else {

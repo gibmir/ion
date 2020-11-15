@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
  * @param <T> argument type
  * @param <R> response type
  */
+//todo encapsulate id
 public interface Request1<T, R> {
 
   /**

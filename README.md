@@ -86,7 +86,7 @@ Full schema looks like:
   }
 }
 ```
-To generate client you need to put your schema in your project resources folder and use ion-maven-plugin.
+To generate the client you need to put your schema in your project resources folder and use ion-maven-plugin.
 
 ### Service API
 To use low level API you need to describe your service as bunch of functions. 
