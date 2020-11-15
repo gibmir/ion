@@ -59,6 +59,7 @@ public class ServiceGenerationUtils {
       if (argumentsCount == 0) {
         ParameterizedTypeName parameterizedTypeName = ParameterizedTypeName.get(ClassName.get(Request0.class), returnArgumentClassName);
         serviceTypeBuilder.addMethod(MethodSpec.methodBuilder(serviceProcedureFieldName).addModifiers(Modifier.PUBLIC)
+          .addJavadoc(service.getDescription())
           .addCode(RETURN_PROCEDURE, serviceProcedureFieldName)
           .returns(parameterizedTypeName)
           .build());
