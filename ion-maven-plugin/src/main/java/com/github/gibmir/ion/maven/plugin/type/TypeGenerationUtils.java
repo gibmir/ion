@@ -1,9 +1,5 @@
 package com.github.gibmir.ion.maven.plugin.type;
 
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
-import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.api.schema.type.Types;
@@ -14,7 +10,6 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
@@ -98,7 +93,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.RETURN_PROCEDURE, typeName)
+      .addCode(ServiceGenerationUtils.PROCEDURE_RETURN_CODE_BLOCK, typeName)
       .returns(fieldTypeName)
       .build();
   }
@@ -106,7 +101,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, Type fieldType) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.RETURN_PROCEDURE, typeName)
+      .addCode(ServiceGenerationUtils.PROCEDURE_RETURN_CODE_BLOCK, typeName)
       .returns(fieldType)
       .build();
   }
