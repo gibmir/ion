@@ -23,37 +23,39 @@
       }
     }
   },
-  "testService": {
-    "description": "Service is a set of procedures",
-    "procedures": {
-      "testProcedure": {
-        "description": "This is test procedure",
-        "arguments": {
-          "testArgument": {
-            "type": "testType",
-            "description": "test argument argument"
+  "services": {
+    "testService": {
+      "description": "Service is a set of procedures",
+      "procedures": {
+        "testProcedure": {
+          "description": "This is test procedure",
+          "arguments": {
+            "testArgument": {
+              "type": "testType",
+              "description": "test argument argument"
+            },
+            "testComposedArgument": {
+              "type": "testComposedType",
+              "description": "test composed argument"
+            }
           },
-          "testComposedArgument": {
-            "type": "testComposedType",
-            "description": "test composed argument"
+          "return": {
+            "type": "string",
+            "description": "test return argument"
           }
         },
-        "return": {
-          "type": "string",
-          "description": "test return argument"
-        }
-      },
-      "otherTestProcedure": {
-        "description": "This is test procedure",
-        "arguments": {
-          "testArgument": {
-            "type": "testType",
-            "description": "test argument argument"
+        "otherTestProcedure": {
+          "description": "This is test procedure",
+          "arguments": {
+            "testArgument": {
+              "type": "testType",
+              "description": "test argument argument"
+            }
+          },
+          "return": {
+            "type": "string",
+            "description": "test return argument"
           }
-        },
-        "return": {
-          "type": "string",
-          "description": "test return argument"
         }
       }
     }

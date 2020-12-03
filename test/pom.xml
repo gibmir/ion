@@ -73,7 +73,6 @@
     </dependencyManagement>
     <properties>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
-        <testcontainers.version>1.14.3</testcontainers.version>
         <yasson.version>1.0.4</yasson.version>
     </properties>
     <dependencies>
@@ -81,16 +80,6 @@
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>core-api</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>${testcontainers.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
         </dependency>
     </dependencies>
 </project>

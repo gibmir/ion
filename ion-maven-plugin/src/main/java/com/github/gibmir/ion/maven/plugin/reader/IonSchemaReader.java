@@ -20,6 +20,7 @@ import java.util.Set;
 
 public class IonSchemaReader {
   public static final String SCHEMA_TYPES_KEY = "types";
+  public static final String SCHEMA_SERVICES_KEY = "services";
   public static final String DESCRIPTION_KEY = "description";
   public static final String DEFAULT_DESCRIPTION = "empty description";
   public static final String ID_KEY = "id";
@@ -59,12 +60,10 @@ public class IonSchemaReader {
   public static Service[] readServices(JsonValue jsonSchema) {
     List<Service> services = new ArrayList<>();
     JsonObject schemaObject = jsonSchema.asJsonObject();
-    Set<String> serviceNames = schemaObject.keySet();
+    JsonObject servicesObject = schemaObject.get(SCHEMA_SERVICES_KEY).asJsonObject();
+    Set<String> serviceNames = servicesObject.keySet();
     for (String serviceName : serviceNames) {
-      if (SCHEMA_TYPES_KEY.equals(serviceName)) {
-        continue;
-      }
-      JsonObject serviceObject = schemaObject.get(serviceName).asJsonObject();
+      JsonObject serviceObject = servicesObject.get(serviceName).asJsonObject();
       String serviceId = serviceObject.getString(ID_KEY, DEFAULT_ID);
       String serviceDescription = serviceObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION);
       List<ProcedureBean> procedures = getProcedures(serviceObject);

@@ -20,43 +20,62 @@ class IonSchemaReaderTest {
 
   public static final String SCHEMA_JSON = "{\n" +
     "  \"types\": {\n" +
-    "    \"simpleTypeName\": {\n" +
-    "      \"description\": \"simple type description\",\n" +
+    "    \"testType\": {\n" +
+    "      \"description\": \"Type for testing.\",\n" +
     "      \"properties\": {\n" +
-    "        \"simpleProperty\": {\n" +
+    "        \"testTypeProperty\": {\n" +
     "          \"type\": \"string\",\n" +
-    "          \"description\": \"simpleStringProperty\"\n" +
+    "          \"description\": \"property for test type\"\n" +
     "        }\n" +
     "      }\n" +
     "    },\n" +
-    "    \"composedTypeName\": {\n" +
-    "      \"description\": \"some type description\",\n" +
+    "    \"testComposedType\": {\n" +
+    "      \"description\": \"composed type\",\n" +
     "      \"properties\": {\n" +
-    "        \"propertyName\": {\n" +
-    "          \"type\": \"integer\",\n" +
-    "          \"description\": \"property description\"\n" +
+    "        \"numericProperty\": {\n" +
+    "          \"type\": \"number\",\n" +
+    "          \"description\": \"numeric property\"\n" +
     "        },\n" +
-    "        \"otherHardProperty\": {\n" +
-    "          \"type\": \"simpleTypeName\",\n" +
-    "          \"description\": \"simple type property\"\n" +
+    "        \"typedProperty\": {\n" +
+    "          \"type\": \"testType\",\n" +
+    "          \"description\": \"test type property\"\n" +
     "        }\n" +
     "      }\n" +
     "    }\n" +
     "  },\n" +
-    "  \"testService\": {\n" +
-    "    \"description\": \"Service is a set of procedures\",\n" +
-    "    \"procedures\": {\n" +
-    "      \"testProcedureName\": {\n" +
-    "        \"description\": \"This is test procedure\",\n" +
-    "        \"arguments\": {\n" +
-    "          \"testArgumentName\": {\n" +
-    "            \"type\": \"id\",\n" +
-    "            \"description\": \"test argument description\"\n" +
+    "  \"services\": {\n" +
+    "    \"testService\": {\n" +
+    "      \"description\": \"Service is a set of procedures\",\n" +
+    "      \"procedures\": {\n" +
+    "        \"testProcedure\": {\n" +
+    "          \"description\": \"This is test procedure\",\n" +
+    "          \"arguments\": {\n" +
+    "            \"testArgument\": {\n" +
+    "              \"type\": \"testType\",\n" +
+    "              \"description\": \"test argument argument\"\n" +
+    "            },\n" +
+    "            \"testComposedArgument\": {\n" +
+    "              \"type\": \"testComposedType\",\n" +
+    "              \"description\": \"test composed argument\"\n" +
+    "            }\n" +
+    "          },\n" +
+    "          \"return\": {\n" +
+    "            \"type\": \"string\",\n" +
+    "            \"description\": \"test return argument\"\n" +
     "          }\n" +
     "        },\n" +
-    "        \"return\": {\n" +
-    "          \"type\": \"string\",\n" +
-    "          \"description\": \"test return argument\"\n" +
+    "        \"otherTestProcedure\": {\n" +
+    "          \"description\": \"This is test procedure\",\n" +
+    "          \"arguments\": {\n" +
+    "            \"testArgument\": {\n" +
+    "              \"type\": \"testType\",\n" +
+    "              \"description\": \"test argument argument\"\n" +
+    "            }\n" +
+    "          },\n" +
+    "          \"return\": {\n" +
+    "            \"type\": \"string\",\n" +
+    "            \"description\": \"test return argument\"\n" +
+    "          }\n" +
     "        }\n" +
     "      }\n" +
     "    }\n" +
