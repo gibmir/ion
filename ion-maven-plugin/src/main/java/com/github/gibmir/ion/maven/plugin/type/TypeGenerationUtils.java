@@ -116,6 +116,7 @@ public class TypeGenerationUtils {
 
   private static Stack<TypeDeclaration> fillStack(TypeDeclaration typeDeclaration, Stack<TypeDeclaration> stack,
                                                   Map<String, TypeDeclaration> schemaTypeDeclarationMap) {
+    //if type is not custom - it has already loaded
     if (!Types.CUSTOM.equals(Types.from(typeDeclaration.getName()))) {
       return stack;
     }
@@ -138,6 +139,4 @@ public class TypeGenerationUtils {
     }
     return stack;
   }
-
-
 }

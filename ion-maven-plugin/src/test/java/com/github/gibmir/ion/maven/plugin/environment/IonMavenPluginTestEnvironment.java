@@ -9,6 +9,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class IonMavenPluginTestEnvironment {
+  public static final String TEST_PROCEDURE_NAME = "testProcedure";
+  public static final String TEST_SERVICE_NAME = "testService";
+  public static final String TEST_DESCRIPTION = "test description";
+  public static final String TEST_ID = "someId";
+  public static final String TEST_PROPERTY_NAME = "testProperty";
+  public static final String TEST_TYPE_NAME = "string";
   public static class TestService implements Service {
     private final Procedure[] procedures;
     private final String id;

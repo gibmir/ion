@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_DESCRIPTION;
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_ID;
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_PROCEDURE_NAME;
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_PROPERTY_NAME;
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_SERVICE_NAME;
+import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TEST_TYPE_NAME;
 import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TestProcedure;
 import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TestPropertyType;
 import static com.github.gibmir.ion.maven.plugin.environment.IonMavenPluginTestEnvironment.TestService;
@@ -20,13 +26,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServiceGenerationUtilsTest {
-
-  public static final String TEST_PROCEDURE_NAME = "testProcedure";
-  public static final String TEST_SERVICE_NAME = "testService";
-  public static final String TEST_DESCRIPTION = "test description";
-  public static final String TEST_ID = "someId";
-  public static final String TEST_PROPERTY_NAME = "testProperty";
-  public static final String TEST_TYPE_NAME = "string";
 
   @Test
   void testTypeSpecificationWithoutProcedures() throws NoSuchMethodException {
