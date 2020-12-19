@@ -14,7 +14,6 @@
     <modules>
         <module>discovery-lib</module>
         <module>configuration-lib</module>
-        <module>http-lib</module>
         <module>netty-lib</module>
         <module>schema-lib</module>
     </modules>

@@ -12,6 +12,7 @@ import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.
 import com.github.gibmir.ion.lib.netty.client.channel.initializer.appender.JsonRpcClientChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.client.configuration.NettyClientConfigurationUtils;
+import com.github.gibmir.ion.lib.netty.common.exceptions.NettyInitializationException;
 import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
@@ -97,9 +98,8 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
           .clientAuth(NettyClientConfigurationUtils.resolveClientAuth(configuration))
           .build();
         return SslAppenderDecorator.decorate(channelHandlerAppender, sslContext);
-        //todo initialization exception
       } catch (SSLException e) {
-        LOGGER.error("Exception occurred while client initialize ssl.", e);
+        throw new NettyInitializationException("Exception occurred during ssl initialization", e);
       }
     }
     return channelHandlerAppender;

@@ -8,12 +8,13 @@ import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
-import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
-import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
-import com.github.gibmir.ion.lib.netty.server.channel.initializer.appender.JsonRpcServerChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ssl.SslAppenderDecorator;
+import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
+import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
+import com.github.gibmir.ion.lib.netty.common.exceptions.NettyInitializationException;
+import com.github.gibmir.ion.lib.netty.server.channel.initializer.appender.JsonRpcServerChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.server.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.factory.NettyJsonRpcServerFactory;
 import io.netty.bootstrap.ServerBootstrap;
@@ -93,9 +94,8 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
           .trustManager(NettyServerConfigurationUtils.resolveTrustStore(configuration))
           .build();
         return SslAppenderDecorator.decorate(channelHandlerAppender, sslContext);
-        //todo initialization exception
       } catch (SSLException e) {
-        LOGGER.error("Exception occurred while server initialize ssl.", e);
+        throw new NettyInitializationException("Exception occurred during ssl initialization", e);
       }
     }
     return channelHandlerAppender;
