@@ -15,10 +15,5 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>core-api</artifactId>
-        </dependency>
     </dependencies>
-
 </project>

@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.api.dto.request.transfer;
 
-import java.util.EnumMap;
 import java.util.Map;
 
 public class RequestDto extends AbstractJsonRpcRequest {

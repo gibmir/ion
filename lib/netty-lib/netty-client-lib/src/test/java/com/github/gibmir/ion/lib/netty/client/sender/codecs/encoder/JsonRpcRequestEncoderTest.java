@@ -12,6 +12,10 @@ class JsonRpcRequestEncoderTest {
   void testEncodeCorrectByteArray() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     embeddedChannel.pipeline().addFirst(new JsonRpcRequestEncoder());
-    assertDoesNotThrow(() -> embeddedChannel.writeOutbound("pog".getBytes()));
+    assertDoesNotThrow(() -> {
+      //bytes array
+      Object bytes = "pog".getBytes();
+      embeddedChannel.writeOutbound(/*vararg*/bytes);
+    });
   }
 }

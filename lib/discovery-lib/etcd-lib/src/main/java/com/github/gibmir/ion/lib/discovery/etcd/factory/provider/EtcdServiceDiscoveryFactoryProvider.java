@@ -11,7 +11,6 @@ import io.etcd.jetcd.KV;
 import io.etcd.jetcd.Watch;
 
 import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

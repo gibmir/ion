@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ssl;
 
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.ssl.SslContext;
 

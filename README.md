@@ -89,7 +89,7 @@ Full schema looks like:
 To generate the client you need to put your schema in your project resources folder and use ion-maven-plugin.
 
 ### Service API
-To use low level API you need to describe your service as bunch of functions. 
+To use low level API you need to describe your service as a bunch of functions. 
 For example describe part of your functionality as function (get string and return string):
 ```java
 public interface ServiceProcedure extends JsonRemoteProcedure1<String, String> {
@@ -164,7 +164,7 @@ openssl pkcs8 \
 -in selfsigned.key.pem \
 -out selfsigned-pkcs8.pem
 ```
-It will provide self signed certificate and private key. 
+It will provide self-signed certificate and private key. 
 Setup ion server configuration as follows:
 ```yaml
 ion:

@@ -79,6 +79,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
     } else {
       LOGGER.error("There is no response future listener for id [{}] ", id);
     }
+    //removes from map
     return null;
   }
 

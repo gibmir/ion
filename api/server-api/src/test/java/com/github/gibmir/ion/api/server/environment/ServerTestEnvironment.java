@@ -60,14 +60,17 @@ public class ServerTestEnvironment {
   }
 
   //procedures with raw generics
+  @SuppressWarnings("rawtypes")
   public interface RawTestProcedure1 extends JsonRemoteProcedure1 {
 
   }
 
+  @SuppressWarnings("rawtypes")
   public interface RawTestProcedure2 extends JsonRemoteProcedure2 {
 
   }
 
+  @SuppressWarnings("rawtypes")
   public interface RawTestProcedure3 extends JsonRemoteProcedure3 {
 
   }

@@ -65,6 +65,8 @@ class ProcedureScannerTest {
   }
 
   @Test
+  //raw type exception testing
+  @SuppressWarnings({"unchecked", "rawtypes"})
   void testResolveRawSignature1() {
     assertThrows(IllegalArgumentException.class,
       () -> {
@@ -75,6 +77,8 @@ class ProcedureScannerTest {
   }
 
   @Test
+  //raw type exception testing
+  @SuppressWarnings({"unchecked", "rawtypes"})
   void testResolveRawSignature2() {
     assertThrows(IllegalArgumentException.class, () -> {
       Class rawTestProcedure2Class = ServerTestEnvironment.RawTestProcedure2.class;
@@ -84,6 +88,8 @@ class ProcedureScannerTest {
   }
 
   @Test
+  //raw type exception testing
+  @SuppressWarnings({"unchecked", "rawtypes"})
   void testResolveRawSignature3() {
     assertThrows(IllegalArgumentException.class, () -> {
       Class rawTestProcedure3Class = ServerTestEnvironment.RawTestProcedure3.class;

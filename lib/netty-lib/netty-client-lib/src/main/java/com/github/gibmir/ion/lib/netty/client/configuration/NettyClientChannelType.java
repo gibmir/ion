@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.configuration;
 
 import io.netty.channel.Channel;
-import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 

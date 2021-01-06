@@ -14,7 +14,6 @@ import com.github.gibmir.ion.lib.netty.client.request.batch.NettyBatchRequest;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 
 import javax.json.bind.Jsonb;
-import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 

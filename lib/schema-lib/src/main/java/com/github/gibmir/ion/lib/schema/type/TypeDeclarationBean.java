@@ -6,7 +6,6 @@ import com.github.gibmir.ion.lib.schema.SchemaElementBean;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 
 public class TypeDeclarationBean extends SchemaElementBean implements TypeDeclaration {
   private PropertyType[] propertyTypes;

@@ -17,7 +17,7 @@ public class FutureChannelMock {
   private FutureChannelMock() {
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public static Future<Channel> newMock(Channel channel, final boolean isSuccess) throws ExecutionException, InterruptedException {
     Future<Channel> future = mock(Future.class);
     when(future.isDone()).then(__ -> isSuccess);

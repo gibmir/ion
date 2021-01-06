@@ -16,7 +16,6 @@ import io.etcd.jetcd.watch.WatchEvent;
 
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
