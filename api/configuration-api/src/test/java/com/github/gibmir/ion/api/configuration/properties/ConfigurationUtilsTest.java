@@ -1,6 +1,8 @@
 package com.github.gibmir.ion.api.configuration.properties;
 
+import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.stub.ConfigurationTestStub;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 import javax.json.bind.JsonbConfig;
@@ -8,6 +10,9 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.config.BinaryDataStrategy;
 import javax.json.bind.config.PropertyNamingStrategy;
 import javax.json.bind.config.PropertyOrderStrategy;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -15,6 +20,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfigurationUtilsTest {
 
@@ -26,6 +32,7 @@ class ConfigurationUtilsTest {
   public static final boolean TEST_NULL_VALUES = true;
   public static final String TEST_NAMING_STRATEGY = PropertyNamingStrategy.CASE_INSENSITIVE;
   public static final String TEST_ORDER_STRATEGY = PropertyOrderStrategy.ANY;
+  public static final String TEST_CHARSET_VALUE = "UTF-8";
 
   @Test
   void createJsonbWithCorrectConfiguration() {
@@ -51,5 +58,27 @@ class ConfigurationUtilsTest {
     assertThat(jsonbConfigMap.get(JsonbConfig.PROPERTY_NAMING_STRATEGY), equalTo(TEST_NAMING_STRATEGY));
     assertThat(jsonbConfigMap.get(JsonbConfig.PROPERTY_ORDER_STRATEGY), equalTo(TEST_ORDER_STRATEGY));
     assertDoesNotThrow(() -> ConfigurationUtils.createJsonbWith(configuration));
+  }
+
+  @Test
+  void testReadCharsetFromCorrectConfiguration() {
+    Configuration configurationTestStub = new ConfigurationTestStub(Map.of(ConfigurationUtils.REQUEST_CHARSET_PROPERTY,
+      TEST_CHARSET_VALUE));
+    Charset charset = ConfigurationUtils.readCharsetFrom(configurationTestStub);
+    assertThat(charset, CoreMatchers.equalTo(Charset.forName(TEST_CHARSET_VALUE)));
+  }
+
+  @Test
+  void testReadCharsetFromIncorrectConfiguration() {
+    Configuration configurationTestStub = new ConfigurationTestStub(Map.of(ConfigurationUtils.REQUEST_CHARSET_PROPERTY,
+      "INCORRECT"));
+    assertThrows(IllegalArgumentException.class, () -> ConfigurationUtils.readCharsetFrom(configurationTestStub));
+  }
+
+  @Test
+  void testReadCharsetFromEmptyConfig() {
+    Configuration configurationTestStub = new ConfigurationTestStub(Collections.emptyMap());
+    Charset charset = ConfigurationUtils.readCharsetFrom(configurationTestStub);
+    assertThat(charset, CoreMatchers.equalTo(StandardCharsets.UTF_8));
   }
 }

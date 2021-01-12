@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.factory.provider;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.github.gibmir.ion.api.client.factory.configuration.RequestConfigurationUtils;
 import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
@@ -12,7 +11,6 @@ import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.
 import com.github.gibmir.ion.lib.netty.client.channel.initializer.appender.JsonRpcClientChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.client.configuration.NettyClientConfigurationUtils;
-import com.github.gibmir.ion.lib.netty.common.exceptions.NettyInitializationException;
 import com.github.gibmir.ion.lib.netty.client.factory.NettyRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.sender.JsonRpcNettySender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
@@ -21,6 +19,7 @@ import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.loggi
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ssl.SslAppenderDecorator;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
+import com.github.gibmir.ion.lib.netty.common.exceptions.NettyInitializationException;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.pool.ChannelPoolMap;
@@ -58,7 +57,7 @@ public class NettyRequestFactoryProvider implements RequestFactoryProvider {
     Configuration configuration = ConfigurationProvider.load().provide();
     Cache<String, ResponseFuture> responseFuturesCache = NettyClientConfigurationUtils.createResponseFuturesCache(configuration);
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
-    Charset charset = RequestConfigurationUtils.readCharsetFrom(configuration);
+    Charset charset = ConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     ChannelInitializer<Channel> channelInitializer = createJsonRpcNettyChannelInitializer(configuration,
       responseListenerRegistry, charset, jsonb);

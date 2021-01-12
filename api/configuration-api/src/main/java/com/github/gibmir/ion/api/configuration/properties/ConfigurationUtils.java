@@ -36,6 +36,9 @@ public class ConfigurationUtils {
     + ".configuration.file.path";
   public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
+  //charset
+  public static final String REQUEST_CHARSET_PROPERTY = ROOT_PREFIX + ".client.request.charset";
+
   private ConfigurationUtils() {
   }
 
@@ -60,5 +63,10 @@ public class ConfigurationUtils {
     optionalLocale.ifPresent(jsonbConfig::withLocale);
     configuration.getOptionalValue(JSONB_DATE_FORMAT, String.class)
       .ifPresent(dateFormat -> optionalLocale.ifPresent(locale -> jsonbConfig.withDateFormat(dateFormat, locale)));
+  }
+
+  public static Charset readCharsetFrom(Configuration configuration) {
+    return configuration.getOptionalValue(REQUEST_CHARSET_PROPERTY, String.class)
+      .map(Charset::forName).orElse(ConfigurationUtils.DEFAULT_CHARSET);
   }
 }
