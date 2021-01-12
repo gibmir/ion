@@ -26,6 +26,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>dto-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
             <artifactId>configuration-api</artifactId>
         </dependency>
         <dependency>
