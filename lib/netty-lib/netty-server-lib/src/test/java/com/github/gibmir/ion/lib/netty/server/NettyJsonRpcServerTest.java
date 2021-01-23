@@ -3,6 +3,7 @@ package com.github.gibmir.ion.lib.netty.server;
 import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
+import com.github.gibmir.ion.lib.netty.server.common.NettyJsonRpcServer;
 import com.github.gibmir.ion.lib.netty.server.environment.NettyServerTestEnvironment;
 import com.github.gibmir.ion.lib.netty.server.environment.NettyServerTestEnvironment.TestException;
 import com.github.gibmir.ion.lib.netty.server.environment.mock.ProcedureProcessorRegistryMock;
