@@ -18,8 +18,8 @@
     <dependencies>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>netty-server-lib</artifactId>
-            <version>${project.parent.version}</version>
+            <artifactId>netty-common-server</artifactId>
+            <version>0.1</version>
         </dependency>
     </dependencies>
 </project>

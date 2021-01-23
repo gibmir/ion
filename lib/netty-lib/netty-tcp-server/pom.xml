@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>netty-server-lib</artifactId>
+    <artifactId>netty-tcp-server</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>

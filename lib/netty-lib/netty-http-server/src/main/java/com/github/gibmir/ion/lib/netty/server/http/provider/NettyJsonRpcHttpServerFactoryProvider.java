@@ -13,7 +13,6 @@ import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.Chann
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
 import com.github.gibmir.ion.lib.netty.server.http.channel.appender.HttpJsonRpcServerChannelHandlerAppender;
-import com.github.gibmir.ion.lib.netty.server.provider.NettyJsonRpcServerFactoryProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFactoryProvider {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcServerFactoryProvider.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcHttpServerFactoryProvider.class);
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
 
   @Override
@@ -60,6 +59,7 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
       .childHandler(jsonRpcChannelInitializer);
     serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration));
+    LOGGER.info("Ion http json-rpc 2.0 server is ready to run");
     return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry);
   }
 

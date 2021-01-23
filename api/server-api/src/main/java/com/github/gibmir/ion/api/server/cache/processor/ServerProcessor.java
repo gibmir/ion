@@ -45,6 +45,7 @@ public class ServerProcessor {
     List<JsonRpcResponse> jsonRpcResponseList = new ArrayList<>(batchSize);
     for (JsonValue jsonValue : jsonArray) {
       try {
+        //process each batch element
         processObject((JsonObject) jsonValue, jsonb, jsonRpcResponseList::add);
       } catch (Exception e) {
         jsonRpcResponseList.add(ErrorResponse.withNullId(e));
@@ -71,6 +72,7 @@ public class ServerProcessor {
       responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, jsonRpcError));
       return;
     }
+    LOGGER.info("Starting incoming request processing. id [{}]; method [{}]", idValue, methodValue);
     procedureProcessorRegistry.process(id, ((JsonString) methodValue).getString(), jsonObject,
       jsonb, responseConsumer);
   }
@@ -87,6 +89,7 @@ public class ServerProcessor {
         Errors.INVALID_RPC.getError().appendMessage("Method was not present"));
       return;
     }
+    LOGGER.info("Starting incoming notification processing. method [{}]", methodValue);
     procedureProcessorRegistry.process(((JsonString) methodValue).getString(), jsonObject,
       jsonb);
   }

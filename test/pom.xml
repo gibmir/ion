@@ -51,7 +51,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>netty-server-lib</artifactId>
+                <artifactId>netty-tcp-server</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
             <dependency>
@@ -61,7 +61,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>netty-client-lib</artifactId>
+                <artifactId>netty-tcp-client</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
             <dependency>

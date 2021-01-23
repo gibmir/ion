@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>netty-client-lib</artifactId>
+    <artifactId>netty-tcp-client</artifactId>
 
     <dependencies>
         <dependency>

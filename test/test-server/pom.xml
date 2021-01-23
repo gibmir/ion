@@ -42,7 +42,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>netty-http-server</artifactId>
+            <artifactId>netty-tcp-server</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
