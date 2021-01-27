@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.environment.mock;
 
-import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
+import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPool;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.channel.pool.ChannelPoolMap;
 

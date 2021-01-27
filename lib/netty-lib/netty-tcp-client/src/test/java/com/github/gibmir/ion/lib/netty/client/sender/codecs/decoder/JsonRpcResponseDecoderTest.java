@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder;
 
-import com.github.gibmir.ion.lib.netty.client.channel.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.JsonRpcResponseDecoder;
 import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;

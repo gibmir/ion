@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>netty-lib</artifactId>
+        <groupId>com.github.gibmir.ion</groupId>
+        <version>0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>netty-common-client</artifactId>
+    <description>Provides common ion netty client classes</description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>dto-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>configuration-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>netty-common-lib</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${javax.json-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>netty-http-server</artifactId>
+    <description>ion HTTP server implementation</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -19,7 +20,7 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>netty-common-server</artifactId>
-            <version>0.1</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>

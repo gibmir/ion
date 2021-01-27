@@ -14,7 +14,9 @@
     <modules>
         <module>netty-common-lib</module>
         <!-- clients -->
+        <module>netty-common-client</module>
         <module>netty-tcp-client</module>
+        <module>netty-http-client</module>
         <!-- servers -->
         <module>netty-common-server</module>
         <module>netty-tcp-server</module>
@@ -29,6 +31,11 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.gibmir.ion</groupId>
+                <artifactId>netty-common-client</artifactId>
+                <version>${project.parent.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -19,6 +19,7 @@ ion:
             size: 1000
       log:
         level: 'DISABLED'
+      uri: 'http://localhost:52222'
       socket:
         address:
           host: 'localhost'

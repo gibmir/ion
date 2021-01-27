@@ -66,6 +66,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.gibmir.ion</groupId>
+                <artifactId>netty-http-client</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.gibmir.ion</groupId>
                 <artifactId>yaml-lib</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>

@@ -1,9 +1,9 @@
 package com.github.gibmir.ion.lib.netty.client.sender.handler;
 
-import com.github.gibmir.ion.lib.netty.client.channel.handler.JsonRpcResponseHandler;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
 import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ResponseListenerRegistryMock;
-import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
