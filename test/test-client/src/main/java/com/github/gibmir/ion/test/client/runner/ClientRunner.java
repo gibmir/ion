@@ -16,8 +16,8 @@ import java.util.concurrent.TimeoutException;
 public class ClientRunner {
   public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
-    sendBatch(requestFactory);
-    sendNotification(requestFactory);
+//    sendBatch(requestFactory);
+//    sendNotification(requestFactory);
     sendRequest(requestFactory, 1);
     sendNamedRequest(requestFactory, 1);
   }

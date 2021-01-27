@@ -1,9 +1,9 @@
 package com.github.gibmir.ion.lib.netty.client.sender.pool;
 
-import com.github.gibmir.ion.lib.netty.client.channel.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.channel.handler.JsonRpcResponseHandler;
-import com.github.gibmir.ion.lib.netty.client.channel.initializer.JsonRpcClientChannelInitializer;
-import com.github.gibmir.ion.lib.netty.client.channel.pool.NettyChannelPool;
+import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
+import com.github.gibmir.ion.lib.netty.client.common.channel.initializer.JsonRpcClientChannelInitializer;
+import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.EventLoopGroupMock;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.embedded.EmbeddedChannel;

@@ -1,1 +1,1 @@
-com.github.gibmir.ion.lib.netty.client.factory.provider.NettyRequestFactoryProvider
+com.github.gibmir.ion.lib.netty.client.request.factory.provider.NettyTcpRequestFactoryProvider

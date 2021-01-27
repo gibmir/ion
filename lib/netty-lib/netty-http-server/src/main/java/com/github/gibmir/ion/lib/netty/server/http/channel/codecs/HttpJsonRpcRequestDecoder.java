@@ -26,9 +26,11 @@ public class HttpJsonRpcRequestDecoder extends MessageToMessageDecoder<HttpConte
   protected void decode(ChannelHandlerContext ctx, HttpContent msg, List<Object> out) {
     ByteBuf body = msg.content();
     int readableBytes = body.readableBytes();
-    byte[] bodyPayload = new byte[readableBytes];
-    body.readBytes(bodyPayload);
-    LOGGER.debug("HTTP body with size [{}] was read", readableBytes);
-    out.add(jsonb.fromJson(new String(bodyPayload, charset), JsonValue.class));
+    if (readableBytes > 0) {
+      byte[] bodyPayload = new byte[readableBytes];
+      body.readBytes(bodyPayload);
+      LOGGER.debug("HTTP request body with size [{}] was read", readableBytes);
+      out.add(jsonb.fromJson(new String(bodyPayload, charset), JsonValue.class));
+    }
   }
 }

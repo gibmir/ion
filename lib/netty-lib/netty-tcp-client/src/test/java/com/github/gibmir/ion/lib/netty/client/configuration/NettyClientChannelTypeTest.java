@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.configuration;
 
+import com.github.gibmir.ion.lib.netty.client.common.configuration.NettyClientChannelType;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.jupiter.api.Test;

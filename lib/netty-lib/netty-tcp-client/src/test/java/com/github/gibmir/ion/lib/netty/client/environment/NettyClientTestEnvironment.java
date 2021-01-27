@@ -2,11 +2,11 @@ package com.github.gibmir.ion.lib.netty.client.environment;
 
 import com.github.gibmir.ion.lib.netty.client.environment.mock.JsonbMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ResponseListenerRegistryMock;
-import com.github.gibmir.ion.lib.netty.client.channel.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.channel.codecs.encoder.JsonRpcRequestEncoder;
-import com.github.gibmir.ion.lib.netty.client.channel.handler.JsonRpcResponseHandler;
-import com.github.gibmir.ion.lib.netty.client.channel.handler.response.registry.ResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.channel.initializer.JsonRpcClientChannelInitializer;
+import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.JsonRpcResponseDecoder;
+import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.encoder.JsonRpcRequestEncoder;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.common.channel.initializer.JsonRpcClientChannelInitializer;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
