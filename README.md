@@ -80,20 +80,22 @@ Second section is services description:
 
 ```json
 {
-  "customServiceName": {
-    "description": "Your custom service description",
-    "procedures": {
-      "customProcedureName": {
-        "description": "Your custom service procedure description",
-        "arguments": {
-          "customProcedureArgumentName": {
-            "type": "customTypeName",
-            "description": "Your custom procedure argument description"
+  "services": {
+    "customServiceName": {
+      "description": "Your custom service description",
+      "procedures": {
+        "customProcedureName": {
+          "description": "Your custom service procedure description",
+          "arguments": {
+            "customProcedureArgumentName": {
+              "type": "customTypeName",
+              "description": "Your custom procedure argument description"
+            }
+          },
+          "return": {
+            "type": "string",
+            "description": "Your custom procedure return argument description"
           }
-        },
-        "return": {
-          "type": "string",
-          "description": "Your custom procedure return argument description"
         }
       }
     }
@@ -116,20 +118,22 @@ Full schema looks like:
       }
     }
   },
-  "customServiceName": {
-    "description": "Your custom service description",
-    "procedures": {
-      "customProcedureName": {
-        "description": "Your custom service procedure description",
-        "arguments": {
-          "customProcedureArgumentName": {
-            "type": "customTypeName",
-            "description": "Your custom procedure argument description"
+  "services": {
+    "customServiceName": {
+      "description": "Your custom service description",
+      "procedures": {
+        "customProcedureName": {
+          "description": "Your custom service procedure description",
+          "arguments": {
+            "customProcedureArgumentName": {
+              "type": "customTypeName",
+              "description": "Your custom procedure argument description"
+            }
+          },
+          "return": {
+            "type": "string",
+            "description": "Your custom procedure return argument description"
           }
-        },
-        "return": {
-          "type": "string",
-          "description": "Your custom procedure return argument description"
         }
       }
     }
@@ -167,7 +171,7 @@ public interface TestStringProcedure extends JsonRemoteProcedure1<String, String
 
 So far, so good. You can get request factory provider through SPI mechanism(or create concrete implementation manually):
 
-```
+```java
 RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 ```
 
@@ -201,19 +205,19 @@ request.namedCall("id-1", "argument")
 
 You can get a json-rpc server factory through SPI(or create concrete implementation manually):
 
-```
+```java
 JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
 ```
 
 After that you need to create a server:
 
-```
+```java
 JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
 ```
 
 Finally, you can register your procedure processor:
 
-```
+```java
 jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class,/*TestStringProcedure implementation*/ String::toUpperCase);
 ```
 
