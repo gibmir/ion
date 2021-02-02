@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public interface Request3<T1, T2, T3, R> {
 
   /**
-   * Makes a positional call.
+   * Makes a positional(array arguments) call.
    *
    * @param id   request id
    * @param arg1 first argument
@@ -57,7 +57,7 @@ public interface Request3<T1, T2, T3, R> {
   CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2, T3 arg3);
 
   /**
-   * Makes a notification call.
+   * Makes a positional(array arguments) notification call.
    *
    * @implSpec You must follow the json-rpc 2.0 specification.
    * Example request:
@@ -65,7 +65,20 @@ public interface Request3<T1, T2, T3, R> {
    * {"jsonrpc": "2.0", "method": "subtract", "params": [42, 23, 33]}
    * }
    * </pre>
-   * There is no response for specification.
+   * There is no response for notification.
    */
-  void notificationCall(T1 arg1, T2 arg2, T3 arg3);
+  void positionalNotificationCall(T1 arg1, T2 arg2, T3 arg3);
+
+  /**
+   * Makes a named(key-value arguments) notification call.
+   *
+   * @implSpec You must follow the json-rpc 2.0 specification.
+   * Example request:
+   * <pre>{@code
+   * {"jsonrpc": "2.0", "method": "subtract", "params": {"first": 3, "second": 3, "third": 3}}
+   * }
+   * </pre>
+   * There is no response for notification.
+   */
+  void namedNotificationCall(T1 arg1, T2 arg2, T3 arg3);
 }

@@ -30,7 +30,7 @@ public class NettyHttpRequest0<R> extends AbstractNettyHttpRequest<NettyHttpRequ
 
   @Override
   public void notificationCall() {
-    defaultJsonRpcSender.send(new NotificationDto(jsonRemoteProcedureSignature.getProcedureName(), EMPTY_PAYLOAD),
+    defaultJsonRpcSender.send(NotificationDto.empty(jsonRemoteProcedureSignature.getProcedureName()),
       jsonb, charset, uri);
   }
 

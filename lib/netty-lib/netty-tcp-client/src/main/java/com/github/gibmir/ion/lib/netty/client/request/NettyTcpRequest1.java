@@ -22,30 +22,45 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
     super(jsonRpcSender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest1<T, R> socketAddress(SocketAddress socketAddress) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, socketAddress, jsonb,
       charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest1<T, R> jsonb(Jsonb jsonb) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest1<T, R> charset(Charset charset) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<R> positionalCall(String id, T arg) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<R> namedCall(String id, T arg) {
     Map<String, Object> argsMap = new WeakHashMap<>(3);
@@ -55,9 +70,24 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
       jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void notificationCall(T arg) {
-    defaultJsonRpcSender.send(new NotificationDto(jsonRemoteProcedureSignature.getProcedureName(),
+  public void positionalNotificationCall(T arg) {
+    defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg}), jsonb, charset, defaultSocketAddress);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void namedNotificationCall(T arg) {
+    Map<String, Object> argsMap = new WeakHashMap<>(1);
+    String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
+    argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg);
+    defaultJsonRpcSender.send(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(),
+      argsMap), jsonb, charset, defaultSocketAddress);
   }
 }

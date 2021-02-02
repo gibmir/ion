@@ -37,7 +37,7 @@ public interface Request0<R> {
    * {"jsonrpc": "2.0", "method": "myMethod"}
    * }
    * </pre>
-   * There is no response for specification.
+   * There is no response for notification.
    */
   void notificationCall();
 }

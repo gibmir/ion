@@ -141,16 +141,17 @@ public class JsonRpcRequestProcessorFactory {
     public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
       if (paramsValue == null) {
-        process(new NotificationDto(procedureName, EMPTY_ARGS));
+        process(NotificationDto.empty(procedureName));
         return;
       }
       int argumentsCount = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          process(new NotificationDto(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
+          process(NotificationDto.positional(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
           return;
         case OBJECT:
-          process(new NotificationDto(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
+          //named processing
+          process(NotificationDto.positional(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
           return;
         default:
           LOGGER.error("Exception [{}] occurred while processing notification",
@@ -200,15 +201,14 @@ public class JsonRpcRequestProcessorFactory {
         invokeMethod(notificationRequest);
       } catch (Throwable throwable) {
         String procedureName = notificationRequest.getProcedureName();
-        LOGGER.error("Exception occurred while invoking method [{}]. Message is:{}",
-          procedureName, throwable.getMessage());
+        LOGGER.error("Exception occurred while invoking notification request to procedure [{}].", procedureName, throwable);
       }
     }
 
     private void invokeMethod(NotificationDto notificationRequest) throws Throwable {
       final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
       if (result != null) {
-        LOGGER.warn("Result isn't null for notification request:[{}]", notificationRequest);
+        LOGGER.warn("Result isn't null for notification request to procedure [{}]", notificationRequest.getProcedureName());
       }
     }
   }

@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ID;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TestException;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_ID;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REAL_JSONB;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TestException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

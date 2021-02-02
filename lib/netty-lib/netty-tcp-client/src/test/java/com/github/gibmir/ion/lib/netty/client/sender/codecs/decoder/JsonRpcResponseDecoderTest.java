@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.sender.codecs.decoder;
 
 import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment;
+import com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.DecoderException;
@@ -13,7 +13,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REAL_JSONB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +22,7 @@ class JsonRpcResponseDecoderTest {
 
   public static final EmbeddedChannel TEST_EMBEDDED_CHANNEL = new EmbeddedChannel();
   public static final JsonRpcResponseDecoder TEST_JSON_RPC_RESPONSE_DECODER = new JsonRpcResponseDecoder(TEST_REAL_JSONB,
-    NettyClientTestEnvironment.TEST_CHARSET);
+    TestEnvironment.TEST_CHARSET);
 
   @BeforeAll
   static void beforeAll() {
@@ -63,7 +63,7 @@ class JsonRpcResponseDecoderTest {
   void testIncorrectJsonDecoding() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     JsonRpcResponseDecoder jsonRpcResponseDecoder = new JsonRpcResponseDecoder(TEST_REAL_JSONB,
-      NettyClientTestEnvironment.TEST_CHARSET);
+      TestEnvironment.TEST_CHARSET);
     embeddedChannel.pipeline().addLast(jsonRpcResponseDecoder);
     DecoderException decoderException = assertThrows(DecoderException.class,
       () -> embeddedChannel.writeInbound(Unpooled.wrappedBuffer("incorrect".getBytes())));

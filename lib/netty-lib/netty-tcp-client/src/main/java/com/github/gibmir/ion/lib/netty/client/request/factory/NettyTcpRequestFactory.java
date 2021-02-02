@@ -6,12 +6,13 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
+import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
 import com.github.gibmir.ion.lib.netty.client.request.NettyTcpRequest0;
 import com.github.gibmir.ion.lib.netty.client.request.NettyTcpRequest1;
 import com.github.gibmir.ion.lib.netty.client.request.NettyTcpRequest2;
 import com.github.gibmir.ion.lib.netty.client.request.NettyTcpRequest3;
 import com.github.gibmir.ion.lib.netty.client.request.batch.NettyTcpBatchRequest;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
 
 import javax.json.bind.Jsonb;
 import java.io.IOException;
@@ -58,8 +59,8 @@ public class NettyTcpRequestFactory implements RequestFactory {
 
   @Override
   public NettyTcpBatchRequest.Builder batch() {
-    return new NettyTcpBatchRequest.Builder(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb,
-      defaultCharset);
+    return NettyTcpBatchRequest.builder(new BatchRequestAggregator(), defaultJsonRpcNettySender,
+      defaultSocketAddress, defaultJsonb, defaultCharset);
   }
 
   @Override

@@ -40,7 +40,7 @@ public class NettyHttpRequest1<T, R> extends AbstractNettyHttpRequest<NettyHttpR
 
   @Override
   public CompletableFuture<R> namedCall(String id, T arg) {
-    Map<String, Object> argsMap = new WeakHashMap<>(3);
+    Map<String, Object> argsMap = new WeakHashMap<>(1);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg);
     return defaultJsonRpcSender.send(id, RequestDto.named(id, jsonRemoteProcedureSignature.getProcedureName(), argsMap),
@@ -48,9 +48,18 @@ public class NettyHttpRequest1<T, R> extends AbstractNettyHttpRequest<NettyHttpR
   }
 
   @Override
-  public void notificationCall(T arg) {
-    defaultJsonRpcSender.send(new NotificationDto(jsonRemoteProcedureSignature.getProcedureName(),
+  public void positionalNotificationCall(T arg) {
+    defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg}), jsonb, charset, uri);
+  }
+
+  @Override
+  public void namedNotificationCall(T arg) {
+    Map<String, Object> argsMap = new WeakHashMap<>(1);
+    String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
+    argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg);
+    defaultJsonRpcSender.send(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(), argsMap),
+      jsonb, charset, uri);
   }
 
   @Override

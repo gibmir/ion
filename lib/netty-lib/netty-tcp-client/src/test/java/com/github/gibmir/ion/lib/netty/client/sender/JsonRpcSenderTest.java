@@ -30,13 +30,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ARGS;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_CHARSET;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ID;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_PROCEDURE_NAME;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_SOCKET_ADDRESS;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TestException;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_ARGS;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_CHARSET;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_ID;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_PROCEDURE_NAME;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_SOCKET_ADDRESS;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TestException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,7 +58,7 @@ class JsonRpcSenderTest {
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock
       .newMock(ChannelPoolStub.createWith(FutureChannelMock.newMock(channel, true)));
     NettyTcpJsonRpcSender jsonRpcNettySender = new NettyTcpJsonRpcSender(channelPoolMap, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
-    NotificationDto notificationDto = new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS);
+    NotificationDto notificationDto = NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(notificationDto);
     jsonRpcNettySender.send(notificationDto, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
 
@@ -74,7 +74,7 @@ class JsonRpcSenderTest {
     Channel channel = ChannelMock.emptyMock();
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock.newMock(TestException.class);
     NettyTcpJsonRpcSender jsonRpcNettySender = new NettyTcpJsonRpcSender(channelPoolMap, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
-    NotificationDto notificationDto = new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS);
+    NotificationDto notificationDto = NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS);
     Jsonb jsonb = JsonbMock.newMock(notificationDto);
     jsonRpcNettySender.send(notificationDto, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
 
@@ -192,7 +192,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     NettyBatch nettyBatch = new NettyBatch(batchRequests, Collections.emptyList());
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
@@ -213,7 +213,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     NettyBatch nettyBatch = new NettyBatch(batchRequests,
       Collections.singletonList(new NettyBatch.AwaitBatchPart("", void.class)));
@@ -236,7 +236,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     NettyBatch nettyBatch = new NettyBatch(batchRequests, List.of(new NettyBatch.AwaitBatchPart(TEST_ID, int.class)));
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
@@ -256,7 +256,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(null, null));
     NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
@@ -277,7 +277,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class));
     NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
@@ -306,7 +306,7 @@ class JsonRpcSenderTest {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
-      new NotificationDto(TEST_PROCEDURE_NAME, TEST_ARGS)
+      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
     List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(
       /*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class),

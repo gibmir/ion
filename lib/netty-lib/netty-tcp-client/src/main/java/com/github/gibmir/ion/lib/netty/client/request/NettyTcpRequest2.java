@@ -22,33 +22,48 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
     super(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest2<T1, T2, R> socketAddress(SocketAddress socketAddress) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, socketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest2<T1, T2, R> jsonb(Jsonb jsonb) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public NettyTcpRequest2<T1, T2, R> charset(Charset charset) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2) {
-    Map<String, Object> argsMap = new WeakHashMap<>(3);
+    Map<String, Object> argsMap = new WeakHashMap<>(2);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
     argsMap.put(parameterNames[ProcedureScanner.SECOND_PROCEDURE_PARAMETER], arg2);
@@ -56,9 +71,25 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
       argsMap), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void notificationCall(T1 arg1, T2 arg2) {
-    defaultJsonRpcSender.send(new NotificationDto(jsonRemoteProcedureSignature.getProcedureName(),
+  public void positionalNotificationCall(T1 arg1, T2 arg2) {
+    defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, defaultSocketAddress);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void namedNotificationCall(T1 arg1, T2 arg2) {
+    Map<String, Object> argsMap = new WeakHashMap<>(2);
+    String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
+    argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
+    argsMap.put(parameterNames[ProcedureScanner.SECOND_PROCEDURE_PARAMETER], arg2);
+    defaultJsonRpcSender.send(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(), argsMap),
+      jsonb, charset, defaultSocketAddress);
   }
 }

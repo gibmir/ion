@@ -4,7 +4,7 @@ import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.Json
 import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.encoder.JsonRpcRequestEncoder;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
 import com.github.gibmir.ion.lib.netty.client.common.channel.initializer.JsonRpcClientChannelInitializer;
-import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment;
+import com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.JsonbMock;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -25,11 +25,11 @@ class JsonRpcClientChannelInitializerTest {
   void testInitChannelWithLoggingAndSsl() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     ChannelPipeline pipeline = embeddedChannel.pipeline();
-    Jsonb jsonb = JsonbMock.newMock(NettyClientTestEnvironment.TEST_JSON);
+    Jsonb jsonb = JsonbMock.newMock(TestEnvironment.TEST_JSON);
     JsonRpcClientChannelInitializer jsonRpcClientChannelInitializer =
       JsonRpcClientChannelInitializer.builder(new JsonRpcRequestEncoder(),
-        new JsonRpcResponseDecoder(jsonb, NettyClientTestEnvironment.TEST_CHARSET),
-        new JsonRpcResponseHandler(jsonb, NettyClientTestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
+        new JsonRpcResponseDecoder(jsonb, TestEnvironment.TEST_CHARSET),
+        new JsonRpcResponseHandler(jsonb, TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
         .withLogging(new LoggingHandler(LogLevel.ERROR))
         .withSsl(mock(SslHandler.class))
         .build();
@@ -45,12 +45,12 @@ class JsonRpcClientChannelInitializerTest {
   void testInitChannelWithoutLoggingAndSsl() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     ChannelPipeline pipeline = embeddedChannel.pipeline();
-    Jsonb jsonb = JsonbMock.newMock(NettyClientTestEnvironment.TEST_JSON);
+    Jsonb jsonb = JsonbMock.newMock(TestEnvironment.TEST_JSON);
     JsonRpcClientChannelInitializer jsonRpcClientChannelInitializer = JsonRpcClientChannelInitializer.builder(new JsonRpcRequestEncoder(),
       new JsonRpcResponseDecoder(jsonb,
-        NettyClientTestEnvironment.TEST_CHARSET),
+        TestEnvironment.TEST_CHARSET),
       new JsonRpcResponseHandler(jsonb,
-        NettyClientTestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY)).build();
+        TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY)).build();
     pipeline.addLast(jsonRpcClientChannelInitializer);
     assertNull(pipeline.get(LoggingHandler.class));
     assertNotNull(pipeline.get(JsonRpcRequestEncoder.class));

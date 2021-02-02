@@ -1,13 +1,13 @@
 package com.github.gibmir.ion.lib.netty.client.sender.handler.response.future;
 
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
-import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TestException;
+import com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TestException;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_ID;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_ID;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REAL_JSONB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

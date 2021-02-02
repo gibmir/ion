@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.netty.client.sender.handler;
 
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
-import com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment;
+import com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ResponseListenerRegistryMock;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.json.JsonValue;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REAL_JSONB;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -38,7 +38,7 @@ class JsonRpcResponseHandlerTest {
   void testReadWithExceptionally() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     ResponseListenerRegistry responseListenerRegistry = ResponseListenerRegistryMock.emptyMock();
-    doThrow(NettyClientTestEnvironment.TestException.class).when(responseListenerRegistry).notifyListenerWith(any(), any());
+    doThrow(TestEnvironment.TestException.class).when(responseListenerRegistry).notifyListenerWith(any(), any());
     embeddedChannel.pipeline().addFirst(new JsonRpcResponseHandler(TEST_REAL_JSONB, responseListenerRegistry));
     JsonValue testCorrectJson = TEST_REAL_JSONB.fromJson("{\"key\":\"value\"}", JsonValue.class);
     embeddedChannel.writeInbound(testCorrectJson);

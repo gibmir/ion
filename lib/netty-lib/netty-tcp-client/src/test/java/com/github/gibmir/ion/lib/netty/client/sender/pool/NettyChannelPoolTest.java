@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
 
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_CHARSET;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_LOGGING_HANDLER;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_NETTY_CLIENT_INITIALIZER;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REAL_JSONB;
-import static com.github.gibmir.ion.lib.netty.client.environment.NettyClientTestEnvironment.TEST_REQUEST_ENCODER;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_CHARSET;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_LOGGING_HANDLER;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_NETTY_CLIENT_INITIALIZER;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REAL_JSONB;
+import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_REQUEST_ENCODER;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
