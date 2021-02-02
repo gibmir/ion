@@ -171,13 +171,13 @@ public interface TestStringProcedure extends JsonRemoteProcedure1<String, String
 
 So far, so good. You can get request factory provider through SPI mechanism(or create concrete implementation manually):
 
-```java
+```
 RequestFactory requestFactory = RequestFactoryProvider.load().provide();
 ```
 
 After that we can create request:
 
-```keytool -export -keystore mysslstore.jks -alias cert -file maanadev.org.cert
+```
 Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
 ```
 
@@ -190,7 +190,7 @@ request.positionalCall("id-1", "argument")
 Make a notification call through request:
 
 ```
-request.notificationCall("notification message")
+request.positionalNotificationCall("notification message")
 ```
 
 Make a named call through request:
@@ -199,25 +199,39 @@ Make a named call through request:
 request.namedCall("id-1", "argument")
 ```
 
+Build the batch request with factory:
+
+```
+BatchRequest batchRequest = requestFactory.batch()
+     .addPositionalRequest("first-batch-part-id", TestStringProcedure.class, "procedure argument")
+     .build();
+```
+
+Then do a batch call:
+
+```
+batchRequest.call();
+```
+
 ---
 
 ### Server
 
 You can get a json-rpc server factory through SPI(or create concrete implementation manually):
 
-```java
+```
 JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
 ```
 
 After that you need to create a server:
 
-```java
+```
 JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
 ```
 
 Finally, you can register your procedure processor:
 
-```java
+```
 jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class,/*TestStringProcedure implementation*/ String::toUpperCase);
 ```
 
