@@ -1,9 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.http.request.factory;
 
-import com.github.gibmir.ion.api.client.batch.request.builder.BatchRequestBuilder;
 import com.github.gibmir.ion.api.client.factory.RequestFactory;
-import com.github.gibmir.ion.api.client.request.Request2;
-import com.github.gibmir.ion.api.client.request.Request3;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
@@ -48,19 +45,19 @@ public class NettyHttpRequestFactory implements RequestFactory {
   }
 
   @Override
-  public <T1, T2, R> Request2<T1, T2, R> twoArg(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure) {
+  public <T1, T2, R> NettyHttpRequest2<T1, T2, R> twoArg(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure) {
     return new NettyHttpRequest2<>(defaultJsonRpcNettySender, defaultUri, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature2(procedure));
   }
 
   @Override
-  public <T1, T2, T3, R> Request3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure) {
+  public <T1, T2, T3, R> NettyHttpRequest3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure) {
     return new NettyHttpRequest3<>(defaultJsonRpcNettySender, defaultUri, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature3(procedure));
   }
 
   @Override
-  public BatchRequestBuilder<?> batch() {
+  public NettyHttpBatchRequest.Builder batch() {
     return NettyHttpBatchRequest.builder(new BatchRequestAggregator(), defaultJsonRpcNettySender, defaultUri,
       defaultJsonb, defaultCharset);
   }
