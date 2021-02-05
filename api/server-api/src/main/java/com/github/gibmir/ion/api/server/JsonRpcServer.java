@@ -5,8 +5,12 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
+import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
+
+import java.util.Collection;
 
 public interface JsonRpcServer {
+
   <R, P extends JsonRemoteProcedure0<R>> ProcedureManager registerProcedureProcessor(
     Class<P> procedureClass, P procedureImpl);
 
@@ -18,4 +22,8 @@ public interface JsonRpcServer {
 
   <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> ProcedureManager registerProcedureProcessor(
     Class<P> procedureClass, P procedureImpl);
+
+  ProcedureManager register(ProcedureProcessor... procedureProcessors);
+
+  ProcedureManager register(Collection<ProcedureProcessor> procedureProcessors);
 }

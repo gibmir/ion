@@ -17,9 +17,4 @@ public class NettyProcedureManager implements ProcedureManager {
   public void close() {
     procedureProcessorRegistry.unregister(procedureName);
   }
-
-  @Override
-  public String getProcedureName() {
-    return procedureName;
-  }
 }
