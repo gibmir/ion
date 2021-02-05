@@ -6,10 +6,16 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
 import com.github.gibmir.ion.api.server.JsonRpcServer;
+import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.cache.processor.factory.JsonRpcRequestProcessorFactory;
+import com.github.gibmir.ion.api.server.manager.ComposedProcedureManager;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import com.github.gibmir.ion.lib.netty.server.common.manager.NettyProcedureManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class NettyJsonRpcServer implements JsonRpcServer {
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
@@ -52,5 +58,23 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor3(procedureClass,
       procedureImpl));
     return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
+  }
+
+  @Override
+  public ProcedureManager register(ProcedureProcessor... procedureProcessors) {
+    List<ProcedureManager> managers = new ArrayList<>(procedureProcessors.length);
+    for (ProcedureProcessor procedureManager : procedureProcessors) {
+      managers.add(procedureManager.register(this));
+    }
+    return new ComposedProcedureManager(managers);
+  }
+
+  @Override
+  public ProcedureManager register(Collection<ProcedureProcessor> procedureProcessors) {
+    List<ProcedureManager> managers = new ArrayList<>(procedureProcessors.size());
+    for (ProcedureProcessor procedureManager : procedureProcessors) {
+      managers.add(procedureManager.register(this));
+    }
+    return new ComposedProcedureManager(managers);
   }
 }
