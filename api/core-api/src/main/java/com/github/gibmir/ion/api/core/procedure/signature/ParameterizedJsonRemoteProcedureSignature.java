@@ -2,6 +2,7 @@ package com.github.gibmir.ion.api.core.procedure.signature;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 public class ParameterizedJsonRemoteProcedureSignature implements JsonRemoteProcedureSignature {
   private final String procedureName;
@@ -50,5 +51,17 @@ public class ParameterizedJsonRemoteProcedureSignature implements JsonRemoteProc
   @Override
   public int getParametersCount() {
     return parametersCount;
+  }
+
+  @Override
+  public String toString() {
+    return "ParameterizedJsonRemoteProcedureSignature{" +
+      "procedureName='" + procedureName + '\'' +
+      ", parameterNames=" + Arrays.toString(parameterNames) +
+      ", genericTypes=" + Arrays.toString(genericTypes) +
+      ", returnType=" + returnType +
+      ", methodType=" + methodType +
+      ", parametersCount=" + parametersCount +
+      '}';
   }
 }

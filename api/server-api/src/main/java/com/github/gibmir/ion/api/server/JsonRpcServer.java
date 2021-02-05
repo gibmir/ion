@@ -23,7 +23,17 @@ public interface JsonRpcServer {
   <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> ProcedureManager registerProcedureProcessor(
     Class<P> procedureClass, P procedureImpl);
 
+  /**
+   * Register procedure processors from provided vararg.
+   *
+   * @param procedureProcessors processors vararg. <b>must not be {@code null}</b>
+   */
   ProcedureManager register(ProcedureProcessor... procedureProcessors);
 
+  /**
+   * Register procedure processors from provided collection.
+   *
+   * @param procedureProcessors processors collection. <b>must not be {@code null}</b>
+   */
   ProcedureManager register(Collection<ProcedureProcessor> procedureProcessors);
 }

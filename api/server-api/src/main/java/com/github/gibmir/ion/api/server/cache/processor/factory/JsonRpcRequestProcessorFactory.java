@@ -78,6 +78,7 @@ public class JsonRpcRequestProcessorFactory {
   private static <T> JsonRpcRequestProcessor createProcessor(
     Class<T> procedure, T service, JsonRemoteProcedureSignature jsonRemoteProcedureSignature)
     throws NoSuchMethodException, IllegalAccessException {
+    LOGGER.debug("Procedure signature was resolved {}. Starting method handle creation", jsonRemoteProcedureSignature);
     MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
     final MethodHandle methodHandle = publicLookup.findVirtual(procedure, CALL_METHOD_NAME,
       jsonRemoteProcedureSignature.getMethodType());

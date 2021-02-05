@@ -1,10 +1,14 @@
 package com.github.gibmir.ion.api.server.manager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class ComposedProcedureManager implements ProcedureManager {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ComposedProcedureManager.class);
   private final ProcedureManager[] procedureManagers;
 
   public ComposedProcedureManager(ProcedureManager[] procedureManagers) {
@@ -17,6 +21,7 @@ public class ComposedProcedureManager implements ProcedureManager {
 
   @Override
   public void close() {
+    LOGGER.debug("Closing multiple procedure managers");
     List<Exception> closeExceptions = new ArrayList<>();
     for (ProcedureManager procedureManager : procedureManagers) {
       try {
