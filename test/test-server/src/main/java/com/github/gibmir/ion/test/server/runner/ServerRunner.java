@@ -12,6 +12,5 @@ public class ServerRunner {
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
     jsonRpcServer.register(ProcedureProcessor.from(TestStringProcedure.class, String::toUpperCase));
-    jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class, String::toUpperCase);
   }
 }
