@@ -3,10 +3,12 @@ package com.github.gibmir.ion.maven.plugin.reader;
 import com.github.gibmir.ion.api.schema.service.Service;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
+import com.github.gibmir.ion.api.schema.type.TypeParameter;
 import com.github.gibmir.ion.lib.schema.service.ServiceBean;
 import com.github.gibmir.ion.lib.schema.service.procedure.ProcedureBean;
 import com.github.gibmir.ion.lib.schema.type.PropertyTypeBean;
 import com.github.gibmir.ion.lib.schema.type.TypeDeclarationBean;
+import com.github.gibmir.ion.lib.schema.type.TypeParameterBean;
 
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -26,10 +28,11 @@ public class IonSchemaReader {
   public static final String ID_KEY = "id";
   public static final String DEFAULT_ID = "empty id";
   public static final String PROCEDURES_KEY = "procedures";
-  public static final String PROPERTIES = "properties";
+  public static final String PROPERTIES_KEY = "properties";
   public static final String RETURN_TYPE_KEY = "return";
   public static final String ARGUMENTS_KEY = "arguments";
   public static final String TYPE_KEY = "type";
+  public static final String PARAMETRIZATION_KEY = "parametrization";
 
   private IonSchemaReader() {
   }
@@ -47,9 +50,10 @@ public class IonSchemaReader {
           JsonObject typeObject = typeJson.asJsonObject();
           String typeId = typeObject.getString(ID_KEY, DEFAULT_ID);
           String typeDescription = typeObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION);
-          Set<PropertyType> typeProperties = getTypeProperties(typeObject.get(PROPERTIES));
+          Set<PropertyType> typeProperties = getTypeProperties(typeObject.get(PROPERTIES_KEY));
+          Set<TypeParameter> typeParameters = getTypeParameters(typeObject.get(PARAMETRIZATION_KEY));
           TypeDeclaration typeDeclaration =
-            new TypeDeclarationBean(typeId, typeName, typeDescription, typeProperties);
+            new TypeDeclarationBean(typeId, typeName, typeDescription, typeProperties, typeParameters);
           namePerDeclaration.put(typeName, typeDeclaration);
         }
       }
@@ -127,6 +131,21 @@ public class IonSchemaReader {
           propertyObject.getString(TYPE_KEY)));
       }
       return propertyTypes;
+    } else {
+      return Collections.emptySet();
+    }
+  }
+
+  public static Set<TypeParameter> getTypeParameters(JsonValue typeParametersJson) {
+    if (typeParametersJson != null) {
+      JsonObject parametersObject = typeParametersJson.asJsonObject();
+      Set<TypeParameter> typeParameters = new HashSet<>();
+      for (String parameterName : parametersObject.keySet()) {
+        JsonObject parameterObject = parametersObject.get(parameterName).asJsonObject();
+        typeParameters.add(new TypeParameterBean(parameterObject.getString(ID_KEY, DEFAULT_ID),
+          parameterName, parameterObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION)));
+      }
+      return typeParameters;
     } else {
       return Collections.emptySet();
     }
