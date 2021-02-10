@@ -2,10 +2,21 @@
   "types": {
     "testType": {
       "description": "Type for testing.",
+      "parametrization": {
+        "T": {
+          "description": "parameter type"
+        }
+      },
       "properties": {
         "testTypeProperty": {
           "type": "string",
           "description": "property for test type"
+        },
+        "testTypedList": {
+          "type": "list of T"
+        },
+        "testStringList": {
+          "type": "list of string"
         }
       }
     },

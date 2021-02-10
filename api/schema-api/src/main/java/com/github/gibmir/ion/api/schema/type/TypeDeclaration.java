@@ -7,4 +7,6 @@ import com.github.gibmir.ion.api.schema.SchemaElement;
  */
 public interface TypeDeclaration extends SchemaElement {
   PropertyType[] getPropertyTypes();
+
+  TypeParameter[] getParameters();
 }

@@ -2,6 +2,7 @@ package com.github.gibmir.ion.maven.plugin.environment;
 
 import com.github.gibmir.ion.api.schema.service.Service;
 import com.github.gibmir.ion.api.schema.service.procedure.Procedure;
+import com.github.gibmir.ion.api.schema.type.TypeParameter;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 
@@ -15,6 +16,7 @@ public class IonMavenPluginTestEnvironment {
   public static final String TEST_ID = "someId";
   public static final String TEST_PROPERTY_NAME = "testProperty";
   public static final String TEST_TYPE_NAME = "string";
+
   public static class TestService implements Service {
     private final Procedure[] procedures;
     private final String id;
@@ -150,22 +152,56 @@ public class IonMavenPluginTestEnvironment {
     }
   }
 
+  public static class TestTypeParameter implements TypeParameter {
+    private final String id;
+    private final String name;
+    private final String description;
+
+    public TestTypeParameter(String id, String name, String description) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+    }
+
+    @Override
+    public String getId() {
+      return id;
+    }
+
+    @Override
+    public String getName() {
+      return name;
+    }
+
+    @Override
+    public String getDescription() {
+      return description;
+    }
+  }
+
   public static class TestTypeDeclaration implements TypeDeclaration {
     private final String id;
     private final String name;
     private final String description;
     private final PropertyType[] propertyTypes;
+    private final TypeParameter[] typeParameters;
 
-    public TestTypeDeclaration(String id, String name, String description, PropertyType... propertyTypes) {
+    public TestTypeDeclaration(String id, String name, String description, TypeParameter[] typeParameters, PropertyType... propertyTypes) {
       this.id = id;
       this.name = name;
       this.description = description;
+      this.typeParameters = typeParameters;
       this.propertyTypes = propertyTypes;
     }
 
     @Override
     public PropertyType[] getPropertyTypes() {
       return propertyTypes;
+    }
+
+    @Override
+    public TypeParameter[] getParameters() {
+      return typeParameters;
     }
 
     @Override
