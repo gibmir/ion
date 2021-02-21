@@ -16,6 +16,15 @@ Project represents json-rpc 2.0 protocol implementation.
 
 ion framework uses SPI to load services implementations.
 
+```xml
+<!--For yaml configuration-->
+<dependency>
+    <groupId>com.github.gibmir.ion</groupId>
+    <artifactId>yaml-lib</artifactId>
+    <version>${ion.version}</version>
+</dependency>
+```
+
 For <b>client</b> usage you need to include in your pom.xml:
 
 ```xml
@@ -67,7 +76,7 @@ Project Ion provides own json schema API. It consists of two sections. First sec
       "description": "Your custom type description",
       "properties": {
         "customTypePropertyName": {
-          "type": "string",
+          "type": "list<string>",
           "description": "Your custom type field description"
         }
       }
@@ -75,6 +84,8 @@ Project Ion provides own json schema API. It consists of two sections. First sec
   }
 }
 ```
+
+<b>Note that type with name customTypeName has parametrized property.</b>
 
 Second section is services description:
 
@@ -112,7 +123,7 @@ Full schema looks like:
       "description": "Your custom type description",
       "properties": {
         "customTypePropertyName": {
-          "type": "string",
+          "type": "list<string>",
           "description": "Your custom type field description"
         }
       }
