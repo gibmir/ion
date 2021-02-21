@@ -25,14 +25,13 @@ import static org.mockito.Mockito.verify;
 
 class NettyTcpBatchRequestTest {
   private BatchRequestAggregator batchRequestAggregator;
-  private NettyTcpJsonRpcSender nettyTcpJsonRpcSender;
   private Jsonb jsonb;
   private NettyTcpBatchRequest.Builder builder;
 
   @BeforeEach
   void beforeEach() {
     batchRequestAggregator = mock(BatchRequestAggregator.class);
-    nettyTcpJsonRpcSender = mock(NettyTcpJsonRpcSender.class);
+    NettyTcpJsonRpcSender nettyTcpJsonRpcSender = mock(NettyTcpJsonRpcSender.class);
     jsonb = mock(Jsonb.class);
     builder = NettyTcpBatchRequest.builder(batchRequestAggregator, nettyTcpJsonRpcSender, TEST_SOCKET_ADDRESS, jsonb,
       TEST_CHARSET);

@@ -111,11 +111,11 @@ public class IonMavenPluginTestEnvironment {
 
   public static class TestProcedure implements Procedure {
 
-    private PropertyType returnArgumentType;
-    private String description;
-    private String name;
-    private String id;
-    private PropertyType[] propertyTypes;
+    private final PropertyType returnArgumentType;
+    private final String description;
+    private final String name;
+    private final String id;
+    private final PropertyType[] propertyTypes;
 
     public TestProcedure(PropertyType returnArgumentType, String description, String name, String id,
                          PropertyType... propertyTypes) {

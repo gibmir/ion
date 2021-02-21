@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.lib.netty.server.http.channel.codecs;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;

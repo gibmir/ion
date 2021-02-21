@@ -26,14 +26,13 @@ import static org.mockito.Mockito.verify;
 class NettyHttpBatchRequestTest {
 
   private BatchRequestAggregator batchRequestAggregator;
-  private NettyHttpJsonRpcSender nettyHttpJsonRpcSender;
   private Jsonb jsonb;
   private NettyHttpBatchRequest.Builder builder;
 
   @BeforeEach
   void beforeEach() {
     batchRequestAggregator = mock(BatchRequestAggregator.class);
-    nettyHttpJsonRpcSender = mock(NettyHttpJsonRpcSender.class);
+    NettyHttpJsonRpcSender nettyHttpJsonRpcSender = mock(NettyHttpJsonRpcSender.class);
     jsonb = mock(Jsonb.class);
     builder = NettyHttpBatchRequest.builder(batchRequestAggregator,
       nettyHttpJsonRpcSender, TEST_URI, jsonb, TEST_CHARSET);

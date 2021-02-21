@@ -21,10 +21,6 @@
             <artifactId>netty-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-api</artifactId>
         </dependency>
