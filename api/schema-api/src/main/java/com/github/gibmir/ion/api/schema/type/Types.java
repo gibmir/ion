@@ -1,23 +1,24 @@
 package com.github.gibmir.ion.api.schema.type;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
 public enum Types {
-  BOOLEAN("boolean", Boolean.class),
-  STRING("string", String.class),
-  NUMBER("number", Double.class),
-  CUSTOM("custom", null),
-  LIST("list", List.class),
-  MAP("map", Map.class),
+  BOOLEAN("boolean", Boolean.class, false),
+  STRING("string", String.class, false),
+  NUMBER("number", Double.class, false),
+  CUSTOM("custom", null, false),
+  LIST("list", List.class, true),
+  MAP("map", Map.class, true),
   ;
   private final String typeName;
-  private final Type type;
+  private final Class<?> type;
+  private final boolean parametrized;
 
-  Types(String typeName, Type type) {
+  Types(String typeName, Class<?> type, boolean parametrized) {
     this.typeName = typeName;
     this.type = type;
+    this.parametrized = parametrized;
   }
 
   public static Types from(String typeName) {
@@ -27,6 +28,10 @@ public enum Types {
       return NUMBER;
     } else if (typeName.equals(BOOLEAN.typeName)) {
       return BOOLEAN;
+    } else if (typeName.equals(LIST.typeName)) {
+      return LIST;
+    } else if (typeName.equals(MAP.typeName)) {
+      return MAP;
     } else {
       return CUSTOM;
     }
@@ -40,7 +45,11 @@ public enum Types {
     return MAP.typeName.equals(typeName.trim());
   }
 
-  public Type resolve() {
+  public Class<?> resolve() {
     return type;
+  }
+
+  public boolean isParametrized() {
+    return parametrized;
   }
 }

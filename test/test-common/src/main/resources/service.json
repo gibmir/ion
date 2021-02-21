@@ -13,10 +13,10 @@
           "description": "property for test type"
         },
         "testTypedList": {
-          "type": "list of T"
+          "type": "list<list<T>>"
         },
         "testStringList": {
-          "type": "list of string"
+          "type": "list<string>"
         }
       }
     },

@@ -12,7 +12,6 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
@@ -20,7 +19,6 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -28,7 +26,7 @@ public class TypeGenerationUtils {
 
   public static final String GETTER_METHOD_PREFIX = "get";
   public static final String SETTER_METHOD_PREFIX = "set";
-  public static final String PARAMETRIZATION_SEPARATOR = " of ";
+  public static final String PARAMETRIZATION_SEPARATOR = "<";
 
   public static void loadTypes(Stack<TypeDeclaration> typeLoadingStack, String packageName, Path path) throws IOException {
     while (!typeLoadingStack.isEmpty()) {
@@ -57,33 +55,11 @@ public class TypeGenerationUtils {
       MethodSpec setterMethodSpec;
       if (Types.CUSTOM.equals(type)) {
         if (isParametrizedProperty(propertyTypeName)) {
-          //custom parametrized type
-          String[] split = propertyTypeName.split(PARAMETRIZATION_SEPARATOR);
-          String parametrizedTypeName = split[0].trim();
-          ClassName fieldTypeName;
-          if (Types.isList(parametrizedTypeName)) {
-            fieldTypeName = ClassName.get(List.class);
-          } else if (Types.isMap(parametrizedTypeName)) {
-            fieldTypeName = ClassName.get(Map.class);
-          } else {
-            fieldTypeName = ClassName.bestGuess(IonPluginMojo.asClassName(parametrizedTypeName));
-          }
-          if (split.length > 2) {
-            //multiple parametrization - "list of list of"
-            throw new UnsupportedOperationException("Parametrized parameters is unsupported");
-          } else {
-            String[] propertyParametrizationTypes = split[1].split(",");
-            TypeName[] propertyParametrizationTypeNames = new TypeName[propertyParametrizationTypes.length];
-            for (int i = 0; i < propertyParametrizationTypes.length; i++) {
-              String classNameString = IonPluginMojo.asClassName(propertyParametrizationTypes[i].trim());
-              propertyParametrizationTypeNames[i] = ClassName.bestGuess(classNameString);
-            }
-            ParameterizedTypeName parametrizedFieldTypeName = ParameterizedTypeName.get(fieldTypeName,
-              propertyParametrizationTypeNames);
-            fieldSpec = createField(propertyType, propertyName, parametrizedFieldTypeName);
-            getterMethodSpec = createGetter(propertyName, parametrizedFieldTypeName);
-            setterMethodSpec = createSetter(propertyName, parametrizedFieldTypeName);
-          }
+          ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(propertyTypeName);
+          ParameterizedTypeName parametrizedFieldTypeName = parametrizedTypeTree.buildTypeName();
+          fieldSpec = createField(propertyType, propertyName, parametrizedFieldTypeName);
+          getterMethodSpec = createGetter(propertyName, parametrizedFieldTypeName);
+          setterMethodSpec = createSetter(propertyName, parametrizedFieldTypeName);
         } else {
           ClassName fieldTypeName = ClassName.bestGuess(IonPluginMojo.asClassName(propertyTypeName));
           fieldSpec = createField(propertyType, propertyName, fieldTypeName);
@@ -196,8 +172,7 @@ public class TypeGenerationUtils {
       String propertyTypeName = propertyType.getTypeName();
       if (Types.CUSTOM.equals(Types.from(propertyTypeName))) {
         if (isParametrizedProperty(propertyTypeName)) {
-          fillStackWithParametrizedProperty(typeDeclaration, stack, schemaTypeDeclarationMap, propertyName,
-            propertyTypeName);
+          fillStackWithParametrizedProperty(stack, schemaTypeDeclarationMap, propertyTypeName);
         } else {
           //if custom property not parametrized - need to load
           TypeDeclaration propertyTypeDeclaration = schemaTypeDeclarationMap.get(propertyTypeName);
@@ -213,63 +188,22 @@ public class TypeGenerationUtils {
     return stack;
   }
 
-  private static void fillStackWithParametrizedProperty(TypeDeclaration typeDeclaration,
-                                                        Stack<TypeDeclaration> stack,
+  private static void fillStackWithParametrizedProperty(Stack<TypeDeclaration> stack,
                                                         Map<String, TypeDeclaration> schemaTypeDeclarationMap,
-                                                        String propertyName, String propertyTypeName) {
-    String[] parametrizationSplit = propertyTypeName.split(PARAMETRIZATION_SEPARATOR);
-    String parametrizedType = parametrizationSplit[0];
-    if (!Types.isList(parametrizedType) && !Types.isMap(parametrizedType)) {
-      //property with custom parametrized type - need to be loaded
-      TypeDeclaration propertyTypeDeclaration = schemaTypeDeclarationMap.get(propertyTypeName);
-      if (propertyTypeDeclaration == null) {
-        String message = String.format("Property [%s] type [%s] does not contains in %s",
-          propertyName, propertyTypeName, schemaTypeDeclarationMap);
-        throw new IllegalArgumentException(message);
+                                                        String propertyTypeName) {
+    ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(propertyTypeName);
+    Stack<String> parametrizedTypeNameStack = parametrizedTypeTree.buildTypeLoadingStack();
+    while (!parametrizedTypeNameStack.isEmpty()) {
+      String parametrizedTypeName = parametrizedTypeNameStack.pop();
+      TypeDeclaration typeDeclaration = schemaTypeDeclarationMap.get(parametrizedTypeName);
+      if (typeDeclaration != null) {
+        stack.remove(typeDeclaration);
+        stack.push(typeDeclaration);
       }
-    }
-    if (/*parametrized with parametrized type*/parametrizationSplit.length > 2) {
-      //recursive algorithm to build stack
-      String message = String.format("Parametrization with parametrized types is unsupported. Type [%s]",
-        propertyTypeName);
-      throw new UnsupportedOperationException(message);
-    } else {
-      String parametersString = parametrizationSplit[1];
-      String[] parameterNames = parametersString.split(",");
-      for (String parameterName : parameterNames) {
-        fillStackWithParameter(typeDeclaration, stack, schemaTypeDeclarationMap, propertyTypeName, parameterName.trim());
-      }
-    }
-  }
-
-  private static void fillStackWithParameter(TypeDeclaration typeDeclaration, Stack<TypeDeclaration> stack,
-                                             Map<String, TypeDeclaration> schemaTypeDeclarationMap,
-                                             String propertyTypeName, String trimmedParameterName) {
-    if (Types.CUSTOM.equals(Types.from(trimmedParameterName)) &&
-      //if parameter name looks like "T" - nothing to load
-      !isTypeParameter(trimmedParameterName, typeDeclaration.getParameters())) {
-      //if type was parametrized with custom type - need to load parameter type
-      TypeDeclaration parameterTypeDeclaration = schemaTypeDeclarationMap.get(trimmedParameterName);
-      if (parameterTypeDeclaration == null) {
-        String message = String.format("Property [%s] type [%s] does not contains in %s",
-          trimmedParameterName, propertyTypeName, schemaTypeDeclarationMap);
-        throw new IllegalArgumentException(message);
-      }
-      stack.remove(parameterTypeDeclaration);
-      stack.add(parameterTypeDeclaration);
     }
   }
 
   private static boolean isParametrizedProperty(String propertyTypeName) {
     return propertyTypeName.contains(PARAMETRIZATION_SEPARATOR);
-  }
-
-  private static boolean isTypeParameter(String parameterName, TypeParameter[] typeParameters) {
-    for (TypeParameter typeParameter : typeParameters) {
-      if (typeParameter.getName().equals(parameterName)) {
-        return true;
-      }
-    }
-    return false;
   }
 }

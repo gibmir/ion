@@ -2,11 +2,13 @@ package com.github.gibmir.ion.maven.plugin.type;
 
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.api.schema.type.TypeParameter;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.jupiter.api.Test;
 
 import javax.lang.model.element.Modifier;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -34,6 +36,65 @@ class TypeGenerationUtilsTest {
   public static final String TEST_ANOTHER_CUSTOM_TYPE_NAME = "custom2";
   public static final TypeParameter[] TYPE_PARAMETERS = new TypeParameter[0];
   public static final String TEST_PARAMETER_NAME = "T";
+
+  @Test
+  void testCorrectTypeLoadingStack() {
+//    String typeString = "a<b,c<d,e>,f<g,k<l>>>";
+    String typeString = "map<string,list<list<number>>>";
+
+    ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(typeString);
+
+    Stack<String> typeLoadingStack = parametrizedTypeTree.buildTypeLoadingStack();
+    //for each type declaration
+    assertThat(typeLoadingStack, hasSize(5));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("list")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("map")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("number")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("string")));
+  }
+
+  @Test
+  void testDifficultTypeLoadingStack() {
+    String typeString = "a<b,c<d,e>,f<g,k<l>>>";
+
+    ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(typeString);
+
+    Stack<String> typeLoadingStack = parametrizedTypeTree.buildTypeLoadingStack();
+    //for each type declaration
+    assertThat(typeLoadingStack, hasSize(9));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("a")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("b")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("c")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("d")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("e")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("f")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("g")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("k")));
+    assertThat(typeLoadingStack, hasItem(equalToIgnoringCase("l")));
+  }
+
+  @Test
+  void testBuildTypeName() {
+    String typeString = "map<string,list<list<number>>>";
+
+    ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(typeString);
+    ParameterizedTypeName parameterizedTypeName = parametrizedTypeTree.buildTypeName();
+    //map<...>
+    assertThat(parameterizedTypeName.rawType, hasToString(containsString(Map.class.getName())));
+    //<string,list<...>>
+    assertThat(parameterizedTypeName.typeArguments, hasSize(2));
+    assertThat(parameterizedTypeName.typeArguments, hasItem(hasToString(containsString(String.class.getName()))));
+    assertThat(parameterizedTypeName.typeArguments, hasItem(hasToString(containsString(List.class.getName()))));
+  }
+
+  @Test
+  void testDifficultTypeBuild() {
+    String typeString = "a<b,c<d,e>,f<g,k<l>>>";
+
+    ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(typeString);
+    //can't get type for -e-
+    assertThrows(IllegalArgumentException.class, parametrizedTypeTree::buildTypeName);
+  }
 
   @Test
   void testTypeDeclarationWithoutProperties() {
@@ -177,7 +238,7 @@ class TypeGenerationUtilsTest {
   void testLoadingStackWithOneCustomParametrizedTypeWithRegisteredCustomProperty() {
     Map<String, TypeDeclaration> schemaTypeDeclarations = new HashMap<>();
     TestPropertyType testPropertyType = new TestPropertyType(TEST_ID, TEST_ANOTHER_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
-      "list of string");
+      "list<string>");
     TestTypeDeclaration testTypeDeclaration = new TestTypeDeclaration(TEST_ID, TEST_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
       new TypeParameter[]{new TestTypeParameter(TEST_ID, "T", TEST_DESCRIPTION)}, testPropertyType);
     TestTypeDeclaration testPropertyTypeDeclaration = new TestTypeDeclaration(TEST_ID, TEST_ANOTHER_CUSTOM_TYPE_NAME,
@@ -191,11 +252,10 @@ class TypeGenerationUtilsTest {
 
   }
 
-  //fix with recursive parameters scan
   @Test
-  void testLoadingStackWithOneCustomIncorrectParametrizedTypeWithRegisteredCustomProperty() {
+  void testLoadingStackWithMultipleParametrization() {
     Map<String, TypeDeclaration> schemaTypeDeclarations = new HashMap<>();
-    String multipleParametrizationTypeName = "list of list of string";
+    String multipleParametrizationTypeName = "list<list<string>>";
     TestPropertyType testPropertyType = new TestPropertyType(TEST_ID, TEST_ANOTHER_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
       multipleParametrizationTypeName);
     TestTypeDeclaration testTypeDeclaration = new TestTypeDeclaration(TEST_ID, TEST_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
@@ -206,9 +266,8 @@ class TypeGenerationUtilsTest {
     //register property type
     schemaTypeDeclarations.put(TEST_ANOTHER_CUSTOM_TYPE_NAME, testPropertyTypeDeclaration);
 
-    UnsupportedOperationException unsupportedOperationException = assertThrows(UnsupportedOperationException.class,
-      () -> TypeGenerationUtils.buildLoadingStack(schemaTypeDeclarations));
-    assertThat(unsupportedOperationException.getMessage(), containsString(multipleParametrizationTypeName));
+    Stack<TypeDeclaration> typeDeclarations = TypeGenerationUtils.buildLoadingStack(schemaTypeDeclarations);
+    assertThat(typeDeclarations, hasSize(2));
   }
 
   @Test
@@ -230,7 +289,7 @@ class TypeGenerationUtilsTest {
   void testLoadingStackWithOneCustomCorrectlyParametrizedTypeWithRegisteredCustomProperty() {
     Map<String, TypeDeclaration> schemaTypeDeclarations = new HashMap<>();
     TestPropertyType testPropertyType = new TestPropertyType(TEST_ID, TEST_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
-      "list of " + TEST_CUSTOM_TYPE_NAME);
+      "list<" + TEST_CUSTOM_TYPE_NAME + '>');
     TestTypeDeclaration testTypeDeclaration = new TestTypeDeclaration(TEST_ID, TEST_CUSTOM_TYPE_NAME, TEST_DESCRIPTION,
       TYPE_PARAMETERS, testPropertyType);
     schemaTypeDeclarations.put(TEST_CUSTOM_TYPE_NAME, testTypeDeclaration);
