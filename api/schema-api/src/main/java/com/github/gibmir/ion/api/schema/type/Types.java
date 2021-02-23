@@ -7,7 +7,7 @@ public enum Types {
   BOOLEAN("boolean", Boolean.class, false),
   STRING("string", String.class, false),
   NUMBER("number", Double.class, false),
-  CUSTOM("custom", null, false),
+  CUSTOM("custom", null, true),
   LIST("list", List.class, true),
   MAP("map", Map.class, true),
   ;
@@ -35,14 +35,6 @@ public enum Types {
     } else {
       return CUSTOM;
     }
-  }
-
-  public static boolean isList(String typeName) {
-    return LIST.typeName.equals(typeName.trim());
-  }
-
-  public static boolean isMap(String typeName) {
-    return MAP.typeName.equals(typeName.trim());
   }
 
   public Class<?> resolve() {

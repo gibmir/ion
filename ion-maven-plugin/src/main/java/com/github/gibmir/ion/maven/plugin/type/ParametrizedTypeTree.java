@@ -1,6 +1,7 @@
 package com.github.gibmir.ion.maven.plugin.type;
 
 import com.github.gibmir.ion.api.schema.type.Types;
+import com.github.gibmir.ion.maven.plugin.IonPluginMojo;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -118,7 +119,7 @@ public class ParametrizedTypeTree {
         return ClassName.get(currentType.resolve());
       case CUSTOM:
       default:
-        return ClassName.bestGuess(currentTypeName);
+        return ClassName.bestGuess(IonPluginMojo.asClassName(currentTypeName));
     }
   }
 

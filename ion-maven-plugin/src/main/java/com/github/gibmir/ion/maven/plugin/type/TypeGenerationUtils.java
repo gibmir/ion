@@ -203,7 +203,7 @@ public class TypeGenerationUtils {
     }
   }
 
-  private static boolean isParametrizedProperty(String propertyTypeName) {
+  public static boolean isParametrizedProperty(String propertyTypeName) {
     return propertyTypeName.contains(PARAMETRIZATION_SEPARATOR);
   }
 }

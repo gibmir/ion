@@ -9,11 +9,14 @@ import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
 import com.github.gibmir.ion.api.schema.service.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.maven.plugin.IonPluginMojo;
+import com.github.gibmir.ion.maven.plugin.type.ParametrizedTypeTree;
+import com.github.gibmir.ion.maven.plugin.type.TypeGenerationUtils;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
@@ -59,7 +62,7 @@ public class ProcedureGenerationUtils {
                                              ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
     String firstArgumentTypeName = argumentType.getTypeName();
     String argumentName = argumentType.getName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
+    TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure1.class),
       firstArgumentClassName, returnClassName));
     AnnotationSpec annotationSpec = AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
@@ -73,10 +76,10 @@ public class ProcedureGenerationUtils {
                                              ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
     String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
+    TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
     String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
     String secondArgumentTypeName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
-    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentTypeName));
+    TypeName secondArgumentClassName = resolveClassName(secondArgumentTypeName);
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure2.class),
       firstArgumentClassName, secondArgumentClassName, returnClassName));
     callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
@@ -93,13 +96,13 @@ public class ProcedureGenerationUtils {
                                                ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
     String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
-    ClassName firstArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(firstArgumentTypeName));
+    TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
     String secondArgumentName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getName();
     String secondArgumentTypeName = argumentTypes[ProcedureScanner.SECOND_PROCEDURE_PARAMETER].getTypeName();
-    ClassName secondArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(secondArgumentTypeName));
+    TypeName secondArgumentClassName = resolveClassName(secondArgumentTypeName);
     String thirdArgumentName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getName();
     String thirdArgumentTypeName = argumentTypes[ProcedureScanner.THIRD_PROCEDURE_PARAMETER].getTypeName();
-    ClassName thirdArgumentClassName = ClassName.bestGuess(IonPluginMojo.asClassName(thirdArgumentTypeName));
+    TypeName thirdArgumentClassName = resolveClassName(thirdArgumentTypeName);
     procedureTypeSpecBuilder.addSuperinterface(ParameterizedTypeName.get(ClassName.get(JsonRemoteProcedure3.class),
       firstArgumentClassName, secondArgumentClassName, thirdArgumentClassName, returnClassName));
     callMethodSpec.addParameter(ParameterSpec.builder(firstArgumentClassName, IonPluginMojo.asFieldName(firstArgumentName))
@@ -114,5 +117,14 @@ public class ProcedureGenerationUtils {
         .addAnnotation(AnnotationSpec.builder(Named.class).addMember(NAMED_ANNOTATION_NAME_PARAM,
           IonPluginMojo.asAnnotationMember(thirdArgumentName)).build())
         .build());
+  }
+
+  private static TypeName resolveClassName(String argumentTypeName) {
+    if (TypeGenerationUtils.isParametrizedProperty(argumentTypeName)) {
+      ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(argumentTypeName);
+      return parametrizedTypeTree.buildTypeName();
+    } else {
+      return ClassName.bestGuess(IonPluginMojo.asClassName(argumentTypeName));
+    }
   }
 }

@@ -12,9 +12,6 @@
           "type": "string",
           "description": "property for test type"
         },
-        "testTypedList": {
-          "type": "list<list<T>>"
-        },
         "testStringList": {
           "type": "list<string>"
         }
@@ -42,25 +39,12 @@
           "description": "This is test procedure",
           "arguments": {
             "testArgument": {
-              "type": "testType",
+              "type": "testType<string>",
               "description": "test argument argument"
             },
             "testComposedArgument": {
               "type": "testComposedType",
               "description": "test composed argument"
-            }
-          },
-          "return": {
-            "type": "string",
-            "description": "test return argument"
-          }
-        },
-        "otherTestProcedure": {
-          "description": "This is test procedure",
-          "arguments": {
-            "testArgument": {
-              "type": "testType",
-              "description": "test argument argument"
             }
           },
           "return": {
