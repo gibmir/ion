@@ -28,6 +28,7 @@
         <javapoet.version>1.13.0</javapoet.version>
         <org.everit.json.schema.version>1.5.1</org.everit.json.schema.version>
         <testcontainers.version>1.14.3</testcontainers.version>
+        <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>
@@ -40,16 +41,43 @@
         </developer>
     </developers>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+                <!--To add generated sources-->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>${project.build.directory}/generated-sources/ionised</source>
+                                </sources>
+                            </configuration>
+                            <phase>generate-sources</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
             </plugin>
         </plugins>
     </build>

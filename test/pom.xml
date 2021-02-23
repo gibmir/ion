@@ -16,7 +16,6 @@
         <module>test-server</module>
         <module>test-common</module>
     </modules>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
