@@ -12,6 +12,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    *
    * @param id                   request id (must be unique)
    * @param jsonRemoteProcedure0 executed procedure
+   * @param responseCallback     callback for response
    * @param <R>                  return type
    * @return current builder
    * @implSpec You must follow the json-rpc 2.0 specification.
@@ -26,7 +27,8 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * }
    * </pre>
    */
-  <R> B addRequest(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0);
+  <R> B addRequest(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
+                   ResponseCallback<R> responseCallback);
 
   /**
    * Add request with positional(array) argument to {@link BatchRequest the batch}.
@@ -34,6 +36,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * @param id                   request id (must be unique)
    * @param jsonRemoteProcedure1 executed procedure
    * @param arg                  first argument
+   * @param responseCallback     callback for response
    * @param <T>                  first argument type
    * @param <R>                  return type
    * @return current builder
@@ -49,7 +52,8 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * }
    * </pre>
    */
-  <T, R> B addPositionalRequest(String id, Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg);
+  <T, R> B addPositionalRequest(String id, Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg,
+                                ResponseCallback<R> responseCallback);
 
   /**
    * Add request with positional(array) arguments to {@link BatchRequest the batch}.
@@ -58,6 +62,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * @param jsonRemoteProcedure2 executed procedure
    * @param arg1                 first argument
    * @param arg2                 second argument
+   * @param responseCallback     callback for response
    * @param <T1>                 first argument type
    * @param <T2>                 second argument type
    * @param <R>                  return type
@@ -75,7 +80,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * </pre>
    */
   <T1, T2, R> B addPositionalRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                     T1 arg1, T2 arg2);
+                                     T1 arg1, T2 arg2, ResponseCallback<R> responseCallback);
 
   /**
    * Add request with positional(array) arguments to {@link BatchRequest the batch}.
@@ -85,6 +90,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * @param arg1                 first argument
    * @param arg2                 second argument
    * @param arg3                 third argument
+   * @param responseCallback     callback for response
    * @param <T1>                 first argument type
    * @param <T2>                 second argument type
    * @param <T3>                 third argument type
@@ -104,13 +110,14 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    */
   <T1, T2, T3, R> B addPositionalRequest(String id,
                                          Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                         T1 arg1, T2 arg2, T3 arg3);
+                                         T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback);
 
   /**
    * Add request with named(key-value) argument to {@link BatchRequest the batch}.
    *
    * @param id                   request id (must be unique)
    * @param jsonRemoteProcedure1 executed procedure
+   * @param responseCallback     callback for response
    * @param arg                  argument
    * @param <T>                  argument type
    * @param <R>                  return type
@@ -127,7 +134,8 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * }
    * </pre>
    */
-  <T, R> B addNamedRequest(String id, Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg);
+  <T, R> B addNamedRequest(String id, Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg,
+                           ResponseCallback<R> responseCallback);
 
   /**
    * Add request with named(key-value) arguments to {@link BatchRequest the batch}.
@@ -136,6 +144,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * @param jsonRemoteProcedure2 executed procedure
    * @param arg1                 first argument
    * @param arg2                 second argument
+   * @param responseCallback     callback for response
    * @param <T1>                 first argument type
    * @param <T2>                 second argument type
    * @param <R>                  return type
@@ -152,8 +161,8 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * }
    * </pre>
    */
-  <T1, T2, R> B addNamedRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2, T1 arg1,
-                                T2 arg2);
+  <T1, T2, R> B addNamedRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                T1 arg1, T2 arg2, ResponseCallback<R> responseCallback);
 
   /**
    * Add request with named(key-value) arguments to {@link BatchRequest the batch}.
@@ -163,6 +172,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    * @param arg1                 first argument
    * @param arg2                 second argument
    * @param arg3                 third argument
+   * @param responseCallback     callback for response
    * @param <T1>                 first argument type
    * @param <T2>                 second argument type
    * @param <T3>                 third argument type
@@ -182,7 +192,7 @@ public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
    */
   <T1, T2, T3, R> B addNamedRequest(String id,
                                     Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                    T1 arg1, T2 arg2, T3 arg3);
+                                    T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback);
 
   /**
    * Add notification without args to {@link BatchRequest the batch}.

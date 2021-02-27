@@ -1,28 +1,28 @@
 package com.github.gibmir.ion.lib.netty.client.sender;
 
-import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
-import com.github.gibmir.ion.api.client.batch.response.element.BatchElement;
-import com.github.gibmir.ion.api.client.batch.response.element.type.BatchElementType;
+import com.github.gibmir.ion.api.client.batch.request.builder.ResponseCallback;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
+import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
+import com.github.gibmir.ion.lib.netty.client.common.request.batch.NettyBatch;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ChannelMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ChannelPoolMapMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ChannelPoolStub;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.FutureChannelMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.JsonbMock;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.ResponseListenerRegistryMock;
-import com.github.gibmir.ion.lib.netty.client.common.request.batch.NettyBatch;
-import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
-import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.channel.pool.ChannelPoolMap;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +38,15 @@ import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment
 import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TEST_SOCKET_ADDRESS;
 import static com.github.gibmir.ion.lib.netty.client.environment.TestEnvironment.TestException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class JsonRpcSenderTest {
@@ -196,12 +199,11 @@ class JsonRpcSenderTest {
     );
     NettyBatch nettyBatch = new NettyBatch(batchRequests, Collections.emptyList());
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-    CompletableFuture<BatchResponse> futureResult = jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
+    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
       TEST_SOCKET_ADDRESS);
 
     verify(jsonb).toJson(nettyBatch.getBatchRequestDto());
     verify(channel).writeAndFlush(nettyBatch.toString().getBytes(TEST_CHARSET));
-    assertNotNull(futureResult);
   }
 
   @Test
@@ -215,18 +217,12 @@ class JsonRpcSenderTest {
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
+    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
     NettyBatch nettyBatch = new NettyBatch(batchRequests,
-      Collections.singletonList(new NettyBatch.AwaitBatchPart("", void.class)));
+      Collections.singletonList(new NettyBatch.BatchPart<>("", responseCallback, void.class)));
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-    CompletableFuture<BatchResponse> futureResult = jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
-      TEST_SOCKET_ADDRESS);
-
-    verify(jsonb).toJson(nettyBatch.getBatchRequestDto());
-    verify(channel, never()).writeAndFlush(any());
-    assertNotNull(futureResult);
-    ExecutionException executionException = assertThrows(ExecutionException.class, futureResult::get);
-    assertTrue(executionException.getCause() instanceof ChannelException);
-    assertTrue(executionException.getCause().getMessage().contains(/*can't */"acquire"));
+    assertThrows(ChannelException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
+      TEST_SOCKET_ADDRESS));
   }
 
   @Test
@@ -238,12 +234,11 @@ class JsonRpcSenderTest {
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, List.of(new NettyBatch.AwaitBatchPart(TEST_ID, int.class)));
+    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, List.of(new NettyBatch.BatchPart<>(TEST_ID, responseCallback, int.class)));
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-
-    ExecutionException executionException = assertThrows(ExecutionException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
-      TEST_SOCKET_ADDRESS).get());
-    assertTrue(executionException.getCause() instanceof TestException);
+    assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
+      TEST_SOCKET_ADDRESS));
   }
 
   @Test
@@ -258,15 +253,17 @@ class JsonRpcSenderTest {
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(null, null));
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
+    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
+    List<NettyBatch.BatchPart<?>> batchParts = List.of(/*used with mock*/new NettyBatch.BatchPart<>(null,
+      responseCallback, null));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
     Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-
     assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
       TEST_SOCKET_ADDRESS));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testSendBatchWithSuccessResponseFutureCorrectProcessing() throws ExecutionException, InterruptedException {
     Channel channel = ChannelMock.emptyMock();
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock
@@ -279,23 +276,22 @@ class JsonRpcSenderTest {
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(/*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class));
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
-    Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-    CompletableFuture<BatchResponse> batchResponseCompletableFuture = jsonRpcNettySender.send(nettyBatch, jsonb,
-      TEST_CHARSET, TEST_SOCKET_ADDRESS);
+    ResponseCallback<Object> responseCallback = mock(ResponseCallback.class);
+    List<NettyBatch.BatchPart<?>> batchParts = List.of(/*used with mock*/new NettyBatch.BatchPart<>(TEST_ID,
+      responseCallback, Object.class));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
+
+    Jsonb jsonb = mock(Jsonb.class);
+    doAnswer(invocation -> Arrays.toString(invocation.getArguments())).when(jsonb).toJson(any());
+    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
     String expectedResult = "object";
     responseCache.get(TEST_ID).complete(expectedResult);
-    BatchResponse batchResponse = batchResponseCompletableFuture.get();
-    List<BatchElement> batchResponseElements = batchResponse.getBatchResponseElements();
-    BatchElement batchElement = batchResponseElements.get(0);
 
-    assertEquals(BatchElementType.SUCCESS, batchElement.resolveType());
-    assertEquals(TEST_ID, batchElement.getId());
-    assertEquals(expectedResult, batchElement.getResponseObject());
+    verify(responseCallback).onResponse(any(), any());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testSendBatchWithErrorResponseFutureCorrectProcessing() throws ExecutionException, InterruptedException {
     Channel channel = ChannelMock.emptyMock();
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock
@@ -308,28 +304,29 @@ class JsonRpcSenderTest {
       RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_ARGS),
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_ARGS)
     );
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = List.of(
-      /*used with mock*/new NettyBatch.AwaitBatchPart(TEST_ID, Object.class),
-      new NettyBatch.AwaitBatchPart(TEST_ID + 2, Object.class));
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, awaitBatchParts);
-    Jsonb jsonb = JsonbMock.newMock(nettyBatch);
-    CompletableFuture<BatchResponse> batchResponseCompletableFuture = jsonRpcNettySender.send(nettyBatch, jsonb,
-      TEST_CHARSET, TEST_SOCKET_ADDRESS);
+    ResponseCallback<?> firstBatchCallback = mock(ResponseCallback.class);
+    ResponseCallback<Object> secondBatchCallback = mock(ResponseCallback.class);
+    List<NettyBatch.BatchPart<?>> batchParts = List.of(
+      /*used with mock*/new NettyBatch.BatchPart<>(TEST_ID, firstBatchCallback, String.class),
+      new NettyBatch.BatchPart<>(TEST_ID + 2, secondBatchCallback, String.class));
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
+    Jsonb jsonb = mock(Jsonb.class);
+    doAnswer(invocation -> Arrays.toString(invocation.getArguments())).when(jsonb).toJson(any());
+    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET, TEST_SOCKET_ADDRESS);
+
     responsesCache.get(TEST_ID).completeExceptionally(new TestException());
-    String expectedSecondFutureResult = "pog";
+
+    ArgumentCaptor<Throwable> exceptionCaptor = ArgumentCaptor.forClass(Throwable.class);
+    verify(firstBatchCallback, times(1)).onResponse(any(), exceptionCaptor.capture());
+    Throwable throwable = exceptionCaptor.getValue();
+    assertTrue(throwable instanceof TestException);
+
+    String expectedSecondFutureResult = "{\"secondResult\": 1}";
     responsesCache.get(TEST_ID + 2).complete(expectedSecondFutureResult);
-    BatchResponse batchResponse = batchResponseCompletableFuture.get();
-    List<BatchElement> batchResponseElements = batchResponse.getBatchResponseElements();
 
-    BatchElement firstElement = batchResponseElements.get(0);
-    assertEquals(BatchElementType.ERROR, firstElement.resolveType());
-    assertEquals(TEST_ID, firstElement.getId());
-    assertTrue(firstElement.getResponseObject() instanceof TestException);
-
-    BatchElement secondElement = batchResponseElements.get(1);
-    assertEquals(BatchElementType.SUCCESS, secondElement.resolveType());
-    assertEquals(TEST_ID + 2, secondElement.getId());
-    assertEquals(expectedSecondFutureResult, secondElement.getResponseObject());
+    //callback was invoked
+    verify(secondBatchCallback, times(1))
+      .onResponse(any(), any());
   }
 
   /*CLOSE*/

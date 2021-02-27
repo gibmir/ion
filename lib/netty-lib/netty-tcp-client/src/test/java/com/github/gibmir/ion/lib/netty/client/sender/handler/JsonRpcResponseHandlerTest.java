@@ -23,10 +23,10 @@ class JsonRpcResponseHandlerTest {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     ResponseListenerRegistry responseListenerRegistry = ResponseListenerRegistryMock.emptyMock();
 
-    embeddedChannel.pipeline().addFirst(new JsonRpcResponseHandler(TEST_REAL_JSONB, responseListenerRegistry));
+    embeddedChannel.pipeline().addFirst(new JsonRpcResponseHandler(responseListenerRegistry));
     JsonValue testCorrectJson = TEST_REAL_JSONB.fromJson("{\"key\":\"value\"}", JsonValue.class);
     embeddedChannel.writeInbound(testCorrectJson);
-    verify(responseListenerRegistry, times(1)).notifyListenerWith(testCorrectJson, TEST_REAL_JSONB);
+    verify(responseListenerRegistry, times(1)).notifyListenerWith(testCorrectJson);
   }
 
   /**
@@ -38,10 +38,10 @@ class JsonRpcResponseHandlerTest {
   void testReadWithExceptionally() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     ResponseListenerRegistry responseListenerRegistry = ResponseListenerRegistryMock.emptyMock();
-    doThrow(TestEnvironment.TestException.class).when(responseListenerRegistry).notifyListenerWith(any(), any());
-    embeddedChannel.pipeline().addFirst(new JsonRpcResponseHandler(TEST_REAL_JSONB, responseListenerRegistry));
+    doThrow(TestEnvironment.TestException.class).when(responseListenerRegistry).notifyListenerWith(any());
+    embeddedChannel.pipeline().addFirst(new JsonRpcResponseHandler(responseListenerRegistry));
     JsonValue testCorrectJson = TEST_REAL_JSONB.fromJson("{\"key\":\"value\"}", JsonValue.class);
     embeddedChannel.writeInbound(testCorrectJson);
-    verify(responseListenerRegistry, times(1)).notifyListenerWith(testCorrectJson, TEST_REAL_JSONB);
+    verify(responseListenerRegistry, times(1)).notifyListenerWith(testCorrectJson);
   }
 }

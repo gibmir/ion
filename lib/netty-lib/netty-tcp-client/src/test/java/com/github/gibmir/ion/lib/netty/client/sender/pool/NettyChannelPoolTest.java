@@ -37,7 +37,7 @@ class NettyChannelPoolTest {
     NettyChannelPool nettyChannelPool = assertDoesNotThrow(() -> new NettyChannelPool(eventLoopGroup, EmbeddedChannel.class,
       JsonRpcClientChannelInitializer.builder(TEST_REQUEST_ENCODER,
         new JsonRpcResponseDecoder(TEST_REAL_JSONB, TEST_CHARSET),
-        new JsonRpcResponseHandler(TEST_REAL_JSONB, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
+        new JsonRpcResponseHandler(TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
         .withLogging(TEST_LOGGING_HANDLER).build()));
     SimpleChannelPool localhost = assertDoesNotThrow(() -> nettyChannelPool.get(InetSocketAddress.createUnresolved("localhost", 55_555)));
     assertNotNull(localhost);

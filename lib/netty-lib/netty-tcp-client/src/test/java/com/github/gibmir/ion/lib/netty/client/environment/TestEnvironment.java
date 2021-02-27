@@ -26,8 +26,7 @@ public class TestEnvironment {
 
   public static final String TEST_JSON = "test-json";
   public static final ResponseListenerRegistry TEST_EMPTY_RESPONSE_LISTENER_REGISTRY = ResponseListenerRegistryMock.emptyMock();
-  public static final JsonRpcResponseHandler TEST_RESPONSE_HANDLER = new JsonRpcResponseHandler(JsonbMock.newMock(TEST_JSON),
-    TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
+  public static final JsonRpcResponseHandler TEST_RESPONSE_HANDLER = new JsonRpcResponseHandler(TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
   public static final Charset TEST_CHARSET = StandardCharsets.UTF_8;
   public static final JsonRpcResponseDecoder TEST_RESPONSE_DECODER = new JsonRpcResponseDecoder(JsonbMock.newMock(TEST_JSON), TEST_CHARSET);
   public static final LoggingHandler TEST_LOGGING_HANDLER = new LoggingHandler(LogLevel.ERROR);
@@ -41,6 +40,7 @@ public class TestEnvironment {
   public static final String TEST_FIRST_ARG = "test-first-arg";
   public static final String TEST_SECOND_ARG = "test-second-arg";
   public static final String TEST_THIRD_ARG = "test-third-arg";
+
   private TestEnvironment() {
   }
 

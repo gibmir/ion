@@ -49,7 +49,14 @@ public class NettyHttpJsonRpcSender {
                                        Type returnType, URI uri) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     try {
-      responseListenerRegistry.register(new ResponseFuture(id, returnType, responseFuture, jsonb));
+      responseListenerRegistry.register(new ResponseFuture(id, returnType, jsonb,
+        /*response callback*/(response, throwable) -> {
+        if (throwable != null) {
+          responseFuture.completeExceptionally(throwable);
+        } else {
+          responseFuture.complete(response);
+        }
+      }));
       sendTo(uri, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
       responseFuture.completeExceptionally(e);
@@ -68,14 +75,14 @@ public class NettyHttpJsonRpcSender {
   @SuppressWarnings("unchecked")
   public CompletableFuture<BatchResponse> send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
                                                URI uri) {
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = nettyBatch.getAwaitBatchParts();
-    int size = awaitBatchParts.size();
+    List<NettyBatch.BatchPart<?>> batchParts = nettyBatch.getBatchParts();
+    int size = batchParts.size();
     CompletableFuture<BatchElement>[] futureBatchElements = new CompletableFuture[size];
     for (int i = 0; i < size; i++) {
       CompletableFuture<Object> futureBatchElement = new CompletableFuture<>();
-      NettyBatch.AwaitBatchPart awaitBatchPart = awaitBatchParts.get(i);
-      ResponseFuture responseFuture = new ResponseFuture(awaitBatchPart.getId(), awaitBatchPart.getReturnType(),
-        futureBatchElement, jsonb);
+      NettyBatch.BatchPart<?> batchPart = batchParts.get(i);
+      ResponseFuture responseFuture = new ResponseFuture(batchPart.getId(), batchPart.getReturnType(),
+        jsonb, batchPart.getResponseCallback());
       responseListenerRegistry.register(responseFuture);
       futureBatchElements[i] = futureBatchElement
         .handle((response, throwable) -> toBatchElement(responseFuture, response, throwable));
@@ -114,7 +121,6 @@ public class NettyHttpJsonRpcSender {
     simpleChannelPool.acquire().addListener((FutureListener<Channel>) acquiredFuture -> {
       if (acquiredFuture.isSuccess()) {
         Channel channel = acquiredFuture.getNow();
-
         FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
           uri.getRawPath());
         httpRequest.headers().set(HttpHeaderNames.HOST, uri.getHost());

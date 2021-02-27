@@ -51,7 +51,7 @@ public class TestEnvironment {
   }
 
   // matchers
-  public static class AwaitBatchPartWithId extends TypeSafeMatcher<NettyBatch.AwaitBatchPart> {
+  public static class AwaitBatchPartWithId extends TypeSafeMatcher<NettyBatch.BatchPart<?>> {
     private final String id;
 
     private AwaitBatchPartWithId(String id) {
@@ -59,7 +59,7 @@ public class TestEnvironment {
     }
 
     @Override
-    protected boolean matchesSafely(NettyBatch.AwaitBatchPart item) {
+    protected boolean matchesSafely(NettyBatch.BatchPart item) {
       return item.getId().equals(id);
     }
 
@@ -68,12 +68,12 @@ public class TestEnvironment {
       description.appendText(String.format("id must be equal to %s", id));
     }
 
-    public static TypeSafeMatcher<NettyBatch.AwaitBatchPart> awaitBatchPartWithId(String id) {
+    public static TypeSafeMatcher<NettyBatch.BatchPart<?>> awaitBatchPartWithId(String id) {
       return new AwaitBatchPartWithId(id);
     }
   }
 
-  public static class AwaitBatchPartWithReturnType extends TypeSafeMatcher<NettyBatch.AwaitBatchPart> {
+  public static class AwaitBatchPartWithReturnType extends TypeSafeMatcher<NettyBatch.BatchPart<?>> {
     private final Type type;
 
     private AwaitBatchPartWithReturnType(Type type) {
@@ -81,7 +81,7 @@ public class TestEnvironment {
     }
 
     @Override
-    protected boolean matchesSafely(NettyBatch.AwaitBatchPart item) {
+    protected boolean matchesSafely(NettyBatch.BatchPart item) {
       return item.getReturnType().equals(type);
     }
 
@@ -90,7 +90,7 @@ public class TestEnvironment {
       description.appendText(String.format("type must be equal to %s", type));
     }
 
-    public static TypeSafeMatcher<NettyBatch.AwaitBatchPart> awaitBatchPartWithReturnType(Type type) {
+    public static TypeSafeMatcher<NettyBatch.BatchPart<?>> awaitBatchPartWithReturnType(Type type) {
       return new AwaitBatchPartWithReturnType(type);
     }
   }

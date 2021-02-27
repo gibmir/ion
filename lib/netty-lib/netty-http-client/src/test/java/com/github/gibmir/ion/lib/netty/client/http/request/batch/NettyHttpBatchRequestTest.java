@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.http.request.batch;
 
+import com.github.gibmir.ion.api.client.batch.request.builder.ResponseCallback;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
 import com.github.gibmir.ion.lib.netty.client.http.environment.TestEnvironment.TestProcedure0;
 import com.github.gibmir.ion.lib.netty.client.http.environment.TestEnvironment.TestProcedure1;
@@ -39,13 +40,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithNoArgPositionalRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addRequest(TEST_ID, TestProcedure0.class).build();
+      .addRequest(TEST_ID, TestProcedure0.class, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addRequest(TEST_ID, TestProcedure0.class);
+      .addRequest(TEST_ID, TestProcedure0.class, responseCallback);
   }
 
   @Test
@@ -59,13 +62,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithOneArgPositionalRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG).build();
+      .addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG);
+      .addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG, responseCallback);
   }
 
   @Test
@@ -79,13 +84,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithOneArgNamedRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG).build();
+      .addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG);
+      .addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG, responseCallback);
   }
 
   @Test
@@ -99,13 +106,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithTwoArgPositionalRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG).build();
+      .addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG);
+      .addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG, responseCallback);
   }
 
   @Test
@@ -119,13 +128,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithTwoArgNamedRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG).build();
+      .addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG);
+      .addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG, responseCallback);
   }
 
   @Test
@@ -139,13 +150,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithThreeArgPositionalRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addPositionalRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG).build();
+      .addPositionalRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addPositionalRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG);
+      .addPositionalRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, responseCallback);
   }
 
   @Test
@@ -159,13 +172,15 @@ class NettyHttpBatchRequestTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testCreateWithThreeArgNamedRequest() {
+    ResponseCallback<String> responseCallback = mock(ResponseCallback.class);
     NettyHttpBatchRequest nettyHttpBatchRequest = builder
-      .addNamedRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG).build();
+      .addNamedRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, responseCallback).build();
     assertThat(nettyHttpBatchRequest.charset(), equalTo(TEST_CHARSET));
     assertThat(nettyHttpBatchRequest.jsonb(), equalTo(jsonb));
     verify(batchRequestAggregator, atMostOnce())
-      .addNamedRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG);
+      .addNamedRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, responseCallback);
   }
 
   @Test

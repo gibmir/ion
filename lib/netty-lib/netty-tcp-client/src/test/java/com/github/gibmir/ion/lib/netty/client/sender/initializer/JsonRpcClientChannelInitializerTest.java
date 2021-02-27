@@ -29,7 +29,7 @@ class JsonRpcClientChannelInitializerTest {
     JsonRpcClientChannelInitializer jsonRpcClientChannelInitializer =
       JsonRpcClientChannelInitializer.builder(new JsonRpcRequestEncoder(),
         new JsonRpcResponseDecoder(jsonb, TestEnvironment.TEST_CHARSET),
-        new JsonRpcResponseHandler(jsonb, TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
+        new JsonRpcResponseHandler(TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY))
         .withLogging(new LoggingHandler(LogLevel.ERROR))
         .withSsl(mock(SslHandler.class))
         .build();
@@ -49,8 +49,8 @@ class JsonRpcClientChannelInitializerTest {
     JsonRpcClientChannelInitializer jsonRpcClientChannelInitializer = JsonRpcClientChannelInitializer.builder(new JsonRpcRequestEncoder(),
       new JsonRpcResponseDecoder(jsonb,
         TestEnvironment.TEST_CHARSET),
-      new JsonRpcResponseHandler(jsonb,
-        TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY)).build();
+      new JsonRpcResponseHandler(
+              TestEnvironment.TEST_EMPTY_RESPONSE_LISTENER_REGISTRY)).build();
     pipeline.addLast(jsonRpcClientChannelInitializer);
     assertNull(pipeline.get(LoggingHandler.class));
     assertNotNull(pipeline.get(JsonRpcRequestEncoder.class));

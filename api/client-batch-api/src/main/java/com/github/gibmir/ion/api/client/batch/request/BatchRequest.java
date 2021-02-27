@@ -1,9 +1,5 @@
 package com.github.gibmir.ion.api.client.batch.request;
 
-import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
-
-import java.util.concurrent.CompletableFuture;
-
 /**
  * Represents a batch requests.
  */
@@ -12,11 +8,9 @@ public interface BatchRequest {
   /**
    * Makes a batch call.
    * <p>
-   * If exception occurred while sending batch then {@link CompletableFuture result future} will
-   * {@link CompletableFuture#completeExceptionally(Throwable) complete exceptionally}.
+   * If exception occurred while sending batch then it will be thrown.
    * <p>
    *
-   * @return batch response
    * @implSpec You must follow the json-rpc 2.0 specification.
    * Example request from specification:
    * <pre>{@code
@@ -42,5 +36,5 @@ public interface BatchRequest {
    * }
    * </pre>
    */
-  CompletableFuture<BatchResponse> call();
+  void call();
 }

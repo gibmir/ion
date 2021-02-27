@@ -1,6 +1,5 @@
 package com.github.gibmir.ion.lib.netty.client.common.sender;
 
-import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.NettyBatch;
@@ -19,6 +18,6 @@ public interface JsonRpcSender extends Closeable {
   void send(NotificationDto request, Jsonb jsonb, Charset charset,
             SocketAddress socketAddress);
 
-  CompletableFuture<BatchResponse> send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
+  void send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
                                         SocketAddress socketAddress);
 }

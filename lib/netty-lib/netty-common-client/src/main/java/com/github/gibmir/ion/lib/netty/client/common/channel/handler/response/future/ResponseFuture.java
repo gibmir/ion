@@ -1,34 +1,34 @@
 package com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future;
 
+import com.github.gibmir.ion.api.client.batch.request.builder.ResponseCallback;
 import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 
+import javax.json.Json;
+import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
+import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
+import java.io.Reader;
 import java.lang.reflect.Type;
-import java.util.concurrent.CompletableFuture;
 
 public class ResponseFuture implements JsonRpcResponseProcessor {
   private final Jsonb responseJsonb;
   private final String id;
   private final Type returnType;
-  private final CompletableFuture<Object> responseFuture;
+  private final ResponseCallback<?> responseCallback;
 
-  public ResponseFuture(String id, Type returnType, CompletableFuture<Object> responseFuture,
-                        Jsonb responseJsonb) {
+  public ResponseFuture(String id, Type returnType, Jsonb responseJsonb, ResponseCallback<?> responseCallback) {
     this.id = id;
     this.returnType = returnType;
-    this.responseFuture = responseFuture;
     this.responseJsonb = responseJsonb;
+    this.responseCallback = responseCallback;
   }
 
   public String getId() {
     return id;
-  }
-
-  public CompletableFuture<Object> getFuture() {
-    return responseFuture;
   }
 
   public Jsonb getResponseJsonb() {
@@ -40,19 +40,15 @@ public class ResponseFuture implements JsonRpcResponseProcessor {
   }
 
   public void completeExceptionally(Throwable throwable) {
-    responseFuture.completeExceptionally(throwable);
+    responseCallback.onResponse(null, throwable);
   }
 
-  public void complete(Object value) {
-    responseFuture.complete(value);
-  }
-
-  public void complete(JsonValue value) {
-    responseFuture.complete(responseJsonb.fromJson(value.toString(), returnType));
+  public void complete(String responseJson) {
+    responseCallback.onResponse(responseJsonb.fromJson(responseJson, returnType), null);
   }
 
   @Override
   public void process(ErrorResponse errorResponse) {
-    responseFuture.completeExceptionally(new JsonRpcProcessingException(errorResponse));
+    responseCallback.onResponse(null, new JsonRpcProcessingException(errorResponse));
   }
 }

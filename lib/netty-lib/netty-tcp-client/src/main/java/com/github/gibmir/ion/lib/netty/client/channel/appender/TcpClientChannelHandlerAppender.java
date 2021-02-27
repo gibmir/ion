@@ -25,6 +25,6 @@ public class TcpClientChannelHandlerAppender implements ChannelHandlerAppender {
   @Override
   public void appendTo(ChannelPipeline channelPipeline) {
     channelPipeline.addLast(new JsonRpcRequestEncoder(), new JsonRpcResponseDecoder(jsonb, charset),
-      new JsonRpcResponseHandler(jsonb, responseListenerRegistry));
+      new JsonRpcResponseHandler(responseListenerRegistry));
   }
 }

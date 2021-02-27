@@ -1,5 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.common.request.batch;
 
+import com.github.gibmir.ion.api.client.batch.request.builder.ResponseCallback;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.Mockito.mock;
 
 class BatchRequestAggregatorTest {
 
@@ -34,112 +36,124 @@ class BatchRequestAggregatorTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAdd() {
-    batchRequestAggregator.addRequest(TEST_ID, TestProcedure0.class);
+    batchRequestAggregator.addRequest(TEST_ID, TestProcedure0.class, mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddPositionalWithOneArg() {
-    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG);
+    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG,
+      mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddPositionalWithTwoArg() {
-    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG);
+    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG,
+      mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddPositionalWithThreeArg() {
-    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG);
+    batchRequestAggregator.addPositionalRequest(TEST_ID, TestProcedure3.class,
+      TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddNamedWithOneArg() {
-    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG);
+    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure1.class, TEST_FIRST_ARG, mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddNamedWithTwoArg() {
-    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG);
+    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure2.class, TEST_FIRST_ARG, TEST_SECOND_ARG,
+      mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testAddNamedWithThreeArg() {
-    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure3.class, TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG);
+    batchRequestAggregator.addNamedRequest(TEST_ID, TestProcedure3.class,
+      TEST_FIRST_ARG, TEST_SECOND_ARG, TEST_THIRD_ARG, mock(ResponseCallback.class));
     //check requests
     List<JsonRpcRequest> requests = batchRequestAggregator.getRequests();
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(RequestDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(1));
-    assertThat(awaitBatchParts, hasItem(allOf(
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(1));
+    assertThat(batchParts, hasItem(allOf(
       awaitBatchPartWithId(TEST_ID),
       awaitBatchPartWithReturnType(String.class)
     )));
@@ -153,8 +167,8 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 
   @Test
@@ -165,8 +179,8 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 
   @Test
@@ -177,8 +191,8 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 
   @Test
@@ -189,8 +203,8 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 
   @Test
@@ -201,8 +215,8 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 
   @Test
@@ -213,7 +227,7 @@ class BatchRequestAggregatorTest {
     assertThat(requests, hasSize(1));
     assertThat(requests, hasItem(instanceOf(NotificationDto.class)));
     //check await parts
-    List<NettyBatch.AwaitBatchPart> awaitBatchParts = batchRequestAggregator.getAwaitBatchParts();
-    assertThat(awaitBatchParts, hasSize(0));
+    List<NettyBatch.BatchPart<?>> batchParts = batchRequestAggregator.getAwaitBatchParts();
+    assertThat(batchParts, hasSize(0));
   }
 }

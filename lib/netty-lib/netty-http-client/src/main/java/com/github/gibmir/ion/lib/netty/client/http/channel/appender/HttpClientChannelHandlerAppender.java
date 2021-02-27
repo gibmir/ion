@@ -26,6 +26,6 @@ public class HttpClientChannelHandlerAppender implements ChannelHandlerAppender 
   public void appendTo(ChannelPipeline channelPipeline) {
     channelPipeline.addLast(new HttpRequestEncoder(),
       new HttpResponseDecoder(), new HttpJsonRpcResponseDecoder(jsonb, charset),
-      new JsonRpcResponseHandler(jsonb, responseListenerRegistry));
+      new JsonRpcResponseHandler(responseListenerRegistry));
   }
 }

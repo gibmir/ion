@@ -11,11 +11,9 @@ import javax.json.bind.Jsonb;
 
 public class JsonRpcResponseHandler extends ChannelInboundHandlerAdapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcResponseHandler.class);
-  private final Jsonb jsonb;
   private final ResponseListenerRegistry responseListenerRegistry;
 
-  public JsonRpcResponseHandler(Jsonb jsonb, ResponseListenerRegistry responseListenerRegistry) {
-    this.jsonb = jsonb;
+  public JsonRpcResponseHandler(ResponseListenerRegistry responseListenerRegistry) {
     this.responseListenerRegistry = responseListenerRegistry;
   }
 
@@ -23,7 +21,7 @@ public class JsonRpcResponseHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
     if (msg instanceof JsonValue) {
-      responseListenerRegistry.notifyListenerWith((JsonValue) msg, jsonb);
+      responseListenerRegistry.notifyListenerWith((JsonValue) msg);
     }
   }
 

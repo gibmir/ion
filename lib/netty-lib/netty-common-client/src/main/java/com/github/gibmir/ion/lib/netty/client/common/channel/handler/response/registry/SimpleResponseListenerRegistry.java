@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import javax.json.bind.Jsonb;
 import java.util.Map;
 
 public class SimpleResponseListenerRegistry implements ResponseListenerRegistry {
@@ -36,7 +35,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
   }
 
   @Override
-  public void notifyListenerWith(JsonValue jsonValue, Jsonb defaultJsonb) {
+  public void notifyListenerWith(JsonValue jsonValue) {
     try {
       switch (jsonValue.getValueType()) {
         case OBJECT:
@@ -48,10 +47,10 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
           }
           return;
         default:
-          LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError());
+          LOGGER.error("Error [{}] occurred during response deserialization. ", Errors.INVALID_RPC.getError());
       }
     } catch (Exception parseException) {
-      LOGGER.error("Error [{}] occurred while deserialize response. ", Errors.INVALID_RPC.getError()
+      LOGGER.error("Error [{}] occurred during response deserialization. ", Errors.INVALID_RPC.getError()
         .appendMessage(parseException.getMessage()));
     }
   }
@@ -59,7 +58,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
   private void processRequest(JsonObject jsonObject) {
     JsonValue idValue = jsonObject.get(SerializationProperties.ID_KEY);
     if (idValue == null) {
-      LOGGER.error("Error [{}] occurred while deserialize response. Id was not present ",
+      LOGGER.error("Error [{}] occurred during response deserialization. Id was not present ",
         Errors.INVALID_RPC.getError());
       return;
     }
@@ -87,10 +86,11 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
     if (jsonObject.get(SerializationProperties.PROTOCOL_KEY) == null) {
       ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("Protocol was not present"))
         .processWith(responseFuture);
+      return;
     }
     JsonValue resultValue = jsonObject.get(SerializationProperties.RESULT_KEY);
     if (resultValue != null) {
-      responseFuture.complete(resultValue);
+      responseFuture.complete(resultValue.toString());
     } else {
       JsonValue error = jsonObject.get(SerializationProperties.ERROR_KEY);
       if (error != null) {
@@ -98,7 +98,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
           .fromJson(jsonObject.toString(), ErrorResponse.class)
           .processWith(responseFuture);
       } else {
-        ErrorResponse.withNullId(Errors.INVALID_RPC.getError().appendMessage("There is no body"))
+        ErrorResponse.withId(id, Errors.INVALID_RPC.getError().appendMessage("There is no body"))
           .processWith(responseFuture);
       }
     }

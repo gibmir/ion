@@ -32,6 +32,10 @@ public class ErrorResponse extends AbstractJsonRpcResponse implements JsonRpcRes
     return new ErrorResponse(JSON_RPC_NULL_ID, jsonRpcError);
   }
 
+  public static ErrorResponse withId(String id, JsonRpcError jsonRpcError) {
+    return new ErrorResponse(id, jsonRpcError);
+  }
+
   public static ErrorResponse fromJsonRpcError(String id, JsonRpcError jsonRpcError) {
     return new ErrorResponse(id, jsonRpcError);
   }
