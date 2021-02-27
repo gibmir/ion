@@ -1,9 +1,5 @@
 package com.github.gibmir.ion.lib.netty.client.http.sender;
 
-import com.github.gibmir.ion.api.client.batch.response.BatchResponse;
-import com.github.gibmir.ion.api.client.batch.response.element.BatchElement;
-import com.github.gibmir.ion.api.client.batch.response.element.error.ErrorBatchElement;
-import com.github.gibmir.ion.api.client.batch.response.element.success.SuccessBatchElement;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
@@ -29,7 +25,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -72,50 +67,17 @@ public class NettyHttpJsonRpcSender {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public CompletableFuture<BatchResponse> send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
-                                               URI uri) {
+  public void send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset, URI uri) {
     List<NettyBatch.BatchPart<?>> batchParts = nettyBatch.getBatchParts();
-    int size = batchParts.size();
-    CompletableFuture<BatchElement>[] futureBatchElements = new CompletableFuture[size];
-    for (int i = 0; i < size; i++) {
-      CompletableFuture<Object> futureBatchElement = new CompletableFuture<>();
-      NettyBatch.BatchPart<?> batchPart = batchParts.get(i);
+    for (NettyBatch.BatchPart<?> batchPart : batchParts) {
       ResponseFuture responseFuture = new ResponseFuture(batchPart.getId(), batchPart.getReturnType(),
         jsonb, batchPart.getResponseCallback());
       responseListenerRegistry.register(responseFuture);
-      futureBatchElements[i] = futureBatchElement
-        .handle((response, throwable) -> toBatchElement(responseFuture, response, throwable));
     }
-
-    CompletableFuture<Void> batchAwaitFuture = CompletableFuture.allOf(futureBatchElements);
-    try {
-      sendTo(uri, jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
-    } catch (Exception e) {
-      LOGGER.error("Exception occurred white sending a request", e);
-      batchAwaitFuture.completeExceptionally(e);
-    }
-    return batchAwaitFuture.thenApply(whenResponsesReceived -> handleResult(futureBatchElements));
-  }
-
-  private static BatchResponse handleResult(CompletableFuture<BatchElement>[] futureBatchElements) {
-    List<BatchElement> batchElements = new ArrayList<>(futureBatchElements.length);
-    for (CompletableFuture<BatchElement> futureBatchElement : futureBatchElements) {
-      batchElements.add(/*already completed*/futureBatchElement.join());
-    }
-    return new BatchResponse(batchElements);
-  }
-
-  private static BatchElement toBatchElement(ResponseFuture responseFuture, Object response, Throwable throwable) {
-    String id = responseFuture.getId();
-    if (throwable != null) {
-      return new ErrorBatchElement(id, throwable);
-    }
-    return new SuccessBatchElement(id, response);
+    sendTo(uri, jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
   }
 
   private void sendTo(URI uri, byte[] payload) {
-
     InetSocketAddress socketAddress = new InetSocketAddress(uri.getHost(), uri.getPort());
     ChannelPool simpleChannelPool = nettyChannelPool.get(socketAddress);
     simpleChannelPool.acquire().addListener((FutureListener<Channel>) acquiredFuture -> {
