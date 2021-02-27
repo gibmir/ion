@@ -214,7 +214,10 @@ Build the batch request with factory:
 
 ```
 BatchRequest batchRequest = requestFactory.batch()
-     .addPositionalRequest("first-batch-part-id", TestStringProcedure.class, "procedure argument")
+     .addPositionalRequest("first-batch-part-id", TestStringProcedure.class, "procedure argument",
+        (response,exception) -> /*custom response callback*/)
+     .addNamedRequest("second-batch-part-id", TestStringProcedure.class, "procedure argument",
+        (response,exception) -> /*custom response callback*/)
      .build();
 ```
 
