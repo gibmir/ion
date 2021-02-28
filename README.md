@@ -246,7 +246,8 @@ JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
 Finally, you can register your procedure processor:
 
 ```
-jsonRpcServer.registerProcedureProcessor(TestStringProcedure.class,/*TestStringProcedure implementation*/ String::toUpperCase);
+ProcedureProcessorFactory procedureProcessorFactory = jsonRpcServer.getProcedureProcessorFactory();
+jsonRpcServer.register(procedureProcessorFactory.create(TestStringProcedure.class, String::toUpperCase));
 ```
 
 ## SSL
