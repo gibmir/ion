@@ -1,9 +1,5 @@
 package com.github.gibmir.ion.api.server.cache.processor.factory;
 
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
-import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
 import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
@@ -31,52 +27,50 @@ public class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
   public static final String CALL_METHOD_NAME = "call";
 
-  public static <R, P extends JsonRemoteProcedure0<R>> JsonRpcRequestProcessor createProcessor0(Class<P> procedure,
-                                                                                                P service) {
+  public static JsonRpcRequestProcessor createProcessor0(Class<?> procedure,
+                                                         Object service, Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(procedure);
-      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
     }
   }
 
-  public static <T, R, P extends JsonRemoteProcedure1<T, R>> JsonRpcRequestProcessor createProcessor1(
-    Class<P> procedure, P service) {
+  public static JsonRpcRequestProcessor createProcessor1(Class<?> procedure, Object service, Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(procedure);
-      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
     }
   }
 
-  public static <T1, T2, R, P extends JsonRemoteProcedure2<T1, T2, R>> JsonRpcRequestProcessor createProcessor2(
-    Class<P> procedure, P service) {
+  public static JsonRpcRequestProcessor createProcessor2(Class<?> procedure, Object service, Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(procedure);
-      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
     }
   }
 
-  public static <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> JsonRpcRequestProcessor createProcessor3(
-    Class<P> procedure, P service) {
+  public static JsonRpcRequestProcessor createProcessor3(Class<?> procedure, Object service, Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(procedure);
-      return createProcessor(procedure, service, jsonRemoteProcedureSignature);
+      return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
     } catch (Exception e) {
       throw new IllegalArgumentException("Exception occurred while preparing request processor for [" + procedure + ']',
         e);
     }
   }
 
-  private static <T> JsonRpcRequestProcessor createProcessor(
-    Class<T> procedure, T service, JsonRemoteProcedureSignature jsonRemoteProcedureSignature)
+  private static JsonRpcRequestProcessor createProcessor(Class<?> procedure, Object service,
+                                                         JsonRemoteProcedureSignature jsonRemoteProcedureSignature,
+                                                         Jsonb jsonb)
     throws NoSuchMethodException, IllegalAccessException {
     LOGGER.trace("Procedure signature was resolved {}. Starting method handle creation", jsonRemoteProcedureSignature);
     MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
@@ -85,7 +79,7 @@ public class JsonRpcRequestProcessorFactory {
     NamedMethodHandle namedMethodHandle = new NamedMethodHandle(methodHandle.asSpreader(Object[].class,
       jsonRemoteProcedureSignature.getParametersCount()), jsonRemoteProcedureSignature.getParameterNames(),
       jsonRemoteProcedureSignature.getGenericTypes());
-    return new MethodHandleJsonRpcRequestProcessor<>(namedMethodHandle, service);
+    return new MethodHandleJsonRpcRequestProcessor<>(namedMethodHandle, service, jsonb);
   }
 
   public static class NamedMethodHandle {
@@ -109,10 +103,12 @@ public class JsonRpcRequestProcessorFactory {
     public static final Logger LOGGER = LoggerFactory.getLogger(MethodHandleJsonRpcRequestProcessor.class);
     private final NamedMethodHandle namedMethodHandle;
     private final S service;
+    private final Jsonb jsonb;
 
-    public MethodHandleJsonRpcRequestProcessor(NamedMethodHandle namedMethodHandle, S service) {
+    public MethodHandleJsonRpcRequestProcessor(NamedMethodHandle namedMethodHandle, S service, Jsonb jsonb) {
       this.namedMethodHandle = namedMethodHandle;
       this.service = service;
+      this.jsonb = jsonb;
     }
 
     @Override
@@ -126,11 +122,11 @@ public class JsonRpcRequestProcessorFactory {
       switch (paramsValue.getValueType()) {
         case ARRAY:
           responseConsumer.accept(process(RequestDto.positional(id, procedureName,
-            getArgumentsFromArray(jsonb, paramsValue, namedMethodHandle.argumentTypes.length))));
+            getArgumentsFromArray(this.jsonb, paramsValue, namedMethodHandle.argumentTypes.length))));
           return;
         case OBJECT:
           responseConsumer.accept(process(RequestDto.positional(id, procedureName,
-            getArgumentsFromMap(jsonb, paramsValue))));
+            getArgumentsFromMap(this.jsonb, paramsValue))));
           return;
         default:
           responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, Errors.INVALID_METHOD_PARAMETERS.getError()

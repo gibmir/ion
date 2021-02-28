@@ -47,7 +47,7 @@ public class ProcedureScanner {
   }
 
   @SuppressWarnings("unchecked")
-  public static <R> JsonRemoteProcedureSignature resolveSignature0(Class<? extends JsonRemoteProcedure0<R>> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature0(Class<?> procedureClass) {
     int parametersCount = 0;
     //unchecked array
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
@@ -69,7 +69,7 @@ public class ProcedureScanner {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T, R> JsonRemoteProcedureSignature resolveSignature1(Class<? extends JsonRemoteProcedure1<T, R>> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature1(Class<?> procedureClass) {
     int parametersCount = 1;
     String procedureName = getProcedureName(procedureClass);
     //unchecked array
@@ -93,7 +93,7 @@ public class ProcedureScanner {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T1, T2, R> JsonRemoteProcedureSignature resolveSignature2(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature2(Class<?> procedureClass) {
     int parametersCount = 2;
     String procedureName = getProcedureName(procedureClass);
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
@@ -119,7 +119,7 @@ public class ProcedureScanner {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T1, T2, T3, R> JsonRemoteProcedureSignature resolveSignature3(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature3(Class<?> procedureClass) {
     int parametersCount = 3;
     String procedureName = getProcedureName(procedureClass);
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),

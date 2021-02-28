@@ -8,10 +8,12 @@ import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
+import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.NettyProcedureProcessorFactory;
 import com.github.gibmir.ion.lib.netty.server.http.channel.appender.HttpJsonRpcServerChannelHandlerAppender;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
@@ -58,9 +60,10 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
     serverBootstrap.group(bossGroup, workerGroup)
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
       .childHandler(jsonRpcChannelInitializer);
+    ProcedureProcessorFactory procedureProcessorFactory = new NettyProcedureProcessorFactory(jsonb, charset);
     serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration));
     LOGGER.info("Ion http json-rpc 2.0 server is ready to run");
-    return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry);
+    return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
   }
 
   private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(ServerProcessor serverProcessor,
