@@ -5,7 +5,6 @@ import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.api.schema.type.TypeParameter;
 import com.github.gibmir.ion.api.schema.type.Types;
 import com.github.gibmir.ion.maven.plugin.IonPluginMojo;
-import com.github.gibmir.ion.maven.plugin.service.ServiceGenerationUtils;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -27,6 +26,8 @@ public class TypeGenerationUtils {
   public static final String GETTER_METHOD_PREFIX = "get";
   public static final String SETTER_METHOD_PREFIX = "set";
   public static final String PARAMETRIZATION_SEPARATOR = "<";
+  public static final String PROCEDURE_RETURN_CODE_BLOCK = "return $L;";
+  public static final String SETTER_CODE_BLOCK = "this.$L = $L;";
 
   public static void loadTypes(Stack<TypeDeclaration> typeLoadingStack, String packageName, Path path) throws IOException {
     while (!typeLoadingStack.isEmpty()) {
@@ -87,7 +88,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createSetter(String typeName, Type fieldType) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.SETTER_CODE_BLOCK, typeName, typeName)
+      .addCode(SETTER_CODE_BLOCK, typeName, typeName)
       .addParameter(ParameterSpec.builder(fieldType, IonPluginMojo.asFieldName(typeName)).build())
       .build();
   }
@@ -95,7 +96,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createSetter(String typeName, ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.SETTER_CODE_BLOCK, typeName, typeName)
+      .addCode(SETTER_CODE_BLOCK, typeName, typeName)
       .addParameter(ParameterSpec.builder(fieldTypeName, IonPluginMojo.asFieldName(typeName)).build())
       .build();
   }
@@ -103,7 +104,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createSetter(String typeName, ParameterizedTypeName fieldTypeName) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.SETTER_CODE_BLOCK, typeName, typeName)
+      .addCode(SETTER_CODE_BLOCK, typeName, typeName)
       .addParameter(ParameterSpec.builder(fieldTypeName, IonPluginMojo.asFieldName(typeName)).build())
       .build();
   }
@@ -129,7 +130,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.PROCEDURE_RETURN_CODE_BLOCK, typeName)
+      .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
       .returns(fieldTypeName)
       .build();
   }
@@ -137,7 +138,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, ParameterizedTypeName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.PROCEDURE_RETURN_CODE_BLOCK, typeName)
+      .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
       .returns(fieldTypeName)
       .build();
   }
@@ -145,7 +146,7 @@ public class TypeGenerationUtils {
   private static MethodSpec createGetter(String typeName, Type fieldType) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
-      .addCode(ServiceGenerationUtils.PROCEDURE_RETURN_CODE_BLOCK, typeName)
+      .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
       .returns(fieldType)
       .build();
   }

@@ -1,14 +1,14 @@
 package com.github.gibmir.ion.lib.schema;
 
 import com.github.gibmir.ion.api.schema.Schema;
-import com.github.gibmir.ion.api.schema.service.Service;
+import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class SchemaBean implements Schema {
-  private Service[] services;
+  private List<Procedure> procedures;
   private Map<String, TypeDeclaration> types;
 
   public SchemaBean() {
@@ -16,9 +16,9 @@ public class SchemaBean implements Schema {
   }
 
   public SchemaBean(Map<String, TypeDeclaration> types,
-                    Service... services) {
-    this.services = services;
+                    List<Procedure> procedures) {
     this.types = types;
+    this.procedures = procedures;
   }
 
   @Override
@@ -27,14 +27,14 @@ public class SchemaBean implements Schema {
   }
 
   @Override
-  public Service[] getServices() {
-    return services;
+  public List<Procedure> getProcedures() {
+    return procedures;
   }
 
   @Override
   public String toString() {
     return "SchemaBean{" +
-      "services=" + Arrays.toString(services) +
+      "procedures=" + procedures +
       ", types=" + types +
       '}';
   }

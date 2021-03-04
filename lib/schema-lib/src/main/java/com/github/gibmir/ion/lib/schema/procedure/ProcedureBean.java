@@ -1,6 +1,6 @@
-package com.github.gibmir.ion.lib.schema.service.procedure;
+package com.github.gibmir.ion.lib.schema.procedure;
 
-import com.github.gibmir.ion.api.schema.service.procedure.Procedure;
+import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.lib.schema.SchemaElementBean;
 

@@ -31,27 +31,22 @@
       }
     }
   },
-  "services": {
-    "testService": {
-      "description": "Service is a set of procedures",
-      "procedures": {
-        "testProcedure": {
-          "description": "This is test procedure",
-          "arguments": {
-            "testArgument": {
-              "type": "testType<string>",
-              "description": "test argument argument"
-            },
-            "testComposedArgument": {
-              "type": "testComposedType",
-              "description": "test composed argument"
-            }
-          },
-          "return": {
-            "type": "string",
-            "description": "test return argument"
-          }
+  "procedures": {
+    "testProcedure": {
+      "description": "This is test procedure",
+      "arguments": {
+        "testArgument": {
+          "type": "testType<string>",
+          "description": "test argument argument"
+        },
+        "testComposedArgument": {
+          "type": "testComposedType",
+          "description": "test composed argument"
         }
+      },
+      "return": {
+        "type": "string",
+        "description": "test return argument"
       }
     }
   }

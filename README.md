@@ -87,27 +87,22 @@ Project Ion provides own json schema API. It consists of two sections. First sec
 
 <b>Note that type with name customTypeName has parametrized property.</b>
 
-Second section is services description:
+Second section is procedures description:
 
 ```json
 {
-  "services": {
-    "customServiceName": {
-      "description": "Your custom service description",
-      "procedures": {
-        "customProcedureName": {
-          "description": "Your custom service procedure description",
-          "arguments": {
-            "customProcedureArgumentName": {
-              "type": "customTypeName",
-              "description": "Your custom procedure argument description"
-            }
-          },
-          "return": {
-            "type": "string",
-            "description": "Your custom procedure return argument description"
-          }
+  "procedures": {
+    "customProcedureName": {
+      "description": "Your custom service procedure description",
+      "arguments": {
+        "customProcedureArgumentName": {
+          "type": "customTypeName",
+          "description": "Your custom procedure argument description"
         }
+      },
+      "return": {
+        "type": "string",
+        "description": "Your custom procedure return argument description"
       }
     }
   }
@@ -129,23 +124,18 @@ Full schema looks like:
       }
     }
   },
-  "services": {
-    "customServiceName": {
-      "description": "Your custom service description",
-      "procedures": {
-        "customProcedureName": {
-          "description": "Your custom service procedure description",
-          "arguments": {
-            "customProcedureArgumentName": {
-              "type": "customTypeName",
-              "description": "Your custom procedure argument description"
-            }
-          },
-          "return": {
-            "type": "string",
-            "description": "Your custom procedure return argument description"
-          }
+  "procedures": {
+    "customProcedureName": {
+      "description": "Your custom service procedure description",
+      "arguments": {
+        "customProcedureArgumentName": {
+          "type": "customTypeName",
+          "description": "Your custom procedure argument description"
         }
+      },
+      "return": {
+        "type": "string",
+        "description": "Your custom procedure return argument description"
       }
     }
   }

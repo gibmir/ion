@@ -1,14 +1,12 @@
 package com.github.gibmir.ion.maven.plugin;
 
 import com.github.gibmir.ion.api.schema.Schema;
-import com.github.gibmir.ion.api.schema.service.Service;
-import com.github.gibmir.ion.api.schema.service.procedure.Procedure;
+import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.lib.schema.SchemaBean;
 import com.github.gibmir.ion.maven.plugin.exceptions.IonPluginException;
 import com.github.gibmir.ion.maven.plugin.procedure.ProcedureGenerationUtils;
 import com.github.gibmir.ion.maven.plugin.reader.IonSchemaReader;
-import com.github.gibmir.ion.maven.plugin.service.ServiceGenerationUtils;
 import com.github.gibmir.ion.maven.plugin.type.TypeGenerationUtils;
 import com.squareup.javapoet.JavaFile;
 import org.apache.maven.plugin.AbstractMojo;
@@ -21,6 +19,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
@@ -44,7 +43,6 @@ public class IonPluginMojo extends AbstractMojo {
   public static final String SEPARATOR = FileSystems.getDefault().getSeparator();
   public static final String TYPES_PATH_SUFFIX = "types";
   public static final String PROCEDURES_PATH_SUFFIX = "procedures";
-  public static final String SERVICES_PATH_SUFFIX = "services";
   @Parameter(property = "scan", defaultValue = "${project.build.resources[0].directory}")
   private String scanDirectoryPath;
   @Parameter(property = "codeGen", defaultValue = "${project.build.directory}")
@@ -79,19 +77,17 @@ public class IonPluginMojo extends AbstractMojo {
         .collect(Collectors.toList());
       List<Schema> schemaList = new ArrayList<>(schemas.size());
       for (JsonValue schemaJson : schemas) {
-        Map<String, TypeDeclaration> typeDeclarations = IonSchemaReader.readTypes(schemaJson);
+        JsonObject schemaObject = schemaJson.asJsonObject();
+        Map<String, TypeDeclaration> typeDeclarations = IonSchemaReader.readTypes(schemaObject);
         Stack<TypeDeclaration> loadingStack = TypeGenerationUtils.buildLoadingStack(typeDeclarations);
-        TypeGenerationUtils.loadTypes(loadingStack, packageName, Path.of(codeGenerationString + SEPARATOR + TYPES_PATH_SUFFIX));
-        Service[] services = IonSchemaReader.readServices(schemaJson);
-        for (Service service : services) {
-          for (Procedure serviceProcedure : service.getServiceProcedures()) {
-            JavaFile.builder(packageName, ProcedureGenerationUtils.asTypeSpecification(serviceProcedure)).build()
-              .writeTo(Path.of(codeGenerationString + SEPARATOR + PROCEDURES_PATH_SUFFIX));
-          }
-          JavaFile.builder(packageName, ServiceGenerationUtils.asTypeSpecification(service)).build()
-            .writeTo(Path.of(codeGenerationString + SEPARATOR + SERVICES_PATH_SUFFIX));
+        TypeGenerationUtils.loadTypes(loadingStack, packageName,
+          Path.of(codeGenerationString + SEPARATOR + TYPES_PATH_SUFFIX));
+        List<Procedure> procedures = IonSchemaReader.readProcedures(schemaObject);
+        for (Procedure procedure : procedures) {
+          JavaFile.builder(packageName, ProcedureGenerationUtils.asTypeSpecification(procedure)).build()
+            .writeTo(Path.of(codeGenerationString + SEPARATOR + PROCEDURES_PATH_SUFFIX));
         }
-        Schema schema = new SchemaBean(typeDeclarations, services);
+        Schema schema = new SchemaBean(typeDeclarations, procedures);
         schemaList.add(schema);
       }
       LOGGER.info("Goal was executed. Schemas {}", schemaList);

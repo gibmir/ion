@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.schema.service.procedure;
+package com.github.gibmir.ion.api.schema.procedure;
 
 import com.github.gibmir.ion.api.schema.SchemaElement;
 import com.github.gibmir.ion.api.schema.type.PropertyType;

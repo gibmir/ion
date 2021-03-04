@@ -1,11 +1,10 @@
 package com.github.gibmir.ion.maven.plugin.reader;
 
-import com.github.gibmir.ion.api.schema.service.Service;
+import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.api.schema.type.TypeParameter;
-import com.github.gibmir.ion.lib.schema.service.ServiceBean;
-import com.github.gibmir.ion.lib.schema.service.procedure.ProcedureBean;
+import com.github.gibmir.ion.lib.schema.procedure.ProcedureBean;
 import com.github.gibmir.ion.lib.schema.type.PropertyTypeBean;
 import com.github.gibmir.ion.lib.schema.type.TypeDeclarationBean;
 import com.github.gibmir.ion.lib.schema.type.TypeParameterBean;
@@ -22,7 +21,6 @@ import java.util.Set;
 
 public class IonSchemaReader {
   public static final String SCHEMA_TYPES_KEY = "types";
-  public static final String SCHEMA_SERVICES_KEY = "services";
   public static final String DESCRIPTION_KEY = "description";
   public static final String DEFAULT_DESCRIPTION = "empty description";
   public static final String ID_KEY = "id";
@@ -37,10 +35,9 @@ public class IonSchemaReader {
   private IonSchemaReader() {
   }
 
-  public static Map<String, TypeDeclaration> readTypes(JsonValue jsonSchema) {
+  public static Map<String, TypeDeclaration> readTypes(JsonObject schema) {
     Map<String, TypeDeclaration> namePerDeclaration = new HashMap<>();
-    JsonObject schemaObject = jsonSchema.asJsonObject();
-    JsonValue typesJson = schemaObject.get(SCHEMA_TYPES_KEY);
+    JsonValue typesJson = schema.get(SCHEMA_TYPES_KEY);
     if (typesJson != null) {
       JsonObject typesObject = typesJson.asJsonObject();
       Set<String> typeNames = typesObject.keySet();
@@ -61,30 +58,13 @@ public class IonSchemaReader {
     return namePerDeclaration;
   }
 
-  public static Service[] readServices(JsonValue jsonSchema) {
-    List<Service> services = new ArrayList<>();
-    JsonObject schemaObject = jsonSchema.asJsonObject();
-    JsonObject servicesObject = schemaObject.get(SCHEMA_SERVICES_KEY).asJsonObject();
-    Set<String> serviceNames = servicesObject.keySet();
-    for (String serviceName : serviceNames) {
-      JsonObject serviceObject = servicesObject.get(serviceName).asJsonObject();
-      String serviceId = serviceObject.getString(ID_KEY, DEFAULT_ID);
-      String serviceDescription = serviceObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION);
-      List<ProcedureBean> procedures = getProcedures(serviceObject);
-      ProcedureBean[] procedureBeans = new ProcedureBean[procedures.size()];
-      services.add(new ServiceBean(serviceId, serviceName, serviceDescription, procedures.toArray(procedureBeans)));
-    }
-    Service[] servicesArray = new Service[services.size()];
-    return services.toArray(servicesArray);
-  }
-
-  private static List<ProcedureBean> getProcedures(JsonObject serviceObject) {
-    JsonValue proceduresValue = serviceObject.get(PROCEDURES_KEY);
+  public static List<Procedure> readProcedures(JsonObject schema) {
+    JsonValue proceduresValue = schema.get(PROCEDURES_KEY);
     if (proceduresValue != null) {
       JsonObject proceduresJsonObject = proceduresValue.asJsonObject();
       Set<String> procedureNames = proceduresJsonObject.keySet();
       int proceduresCount = procedureNames.size();
-      List<ProcedureBean> procedureBeans = new ArrayList<>(proceduresCount);
+      List<Procedure> procedureBeans = new ArrayList<>(proceduresCount);
       for (String procedureName : procedureNames) {
         JsonObject procedureObject = proceduresJsonObject.get(procedureName).asJsonObject();
         JsonObject returnTypeObject = procedureObject.get(RETURN_TYPE_KEY).asJsonObject();
