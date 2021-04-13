@@ -4,7 +4,6 @@ import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonObject;
-import javax.json.bind.Jsonb;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -20,13 +19,23 @@ class ProcedureProcessorRegistryTest {
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
   public static final JsonRpcRequestProcessor TEST_JSON_RPC_REQUEST_PROCESSOR = new JsonRpcRequestProcessor() {
     @Override
-    public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
+    public void process(String id, String procedureName, JsonObject jsonObject,
                         Consumer<JsonRpcResponse> responseConsumer) {
 
     }
 
     @Override
-    public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
+    public void process(String procedureName, JsonObject jsonObject) {
+
+    }
+
+    @Override
+    public JsonRpcResponse processRequest(String id, String procedureName, String argumentsJson) {
+      return null;
+    }
+
+    @Override
+    public void processNotification(String procedureName, String argumentsJson) {
 
     }
   };

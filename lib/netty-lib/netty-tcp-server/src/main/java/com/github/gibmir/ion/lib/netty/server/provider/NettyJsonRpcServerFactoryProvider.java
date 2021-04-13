@@ -11,7 +11,9 @@ import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryPro
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
-import com.github.gibmir.ion.lib.netty.server.common.channel.handler.appender.JsonRpcServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.common.configuration.decoder.FrameDecoderConfig;
+import com.github.gibmir.ion.lib.netty.server.appender.JsonRpcServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.encoder.ResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
 import com.github.gibmir.ion.lib.netty.server.common.processor.NettyProcedureProcessorFactory;
@@ -55,8 +57,11 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
     EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     NettyServerConfigurationUtils.appendLoggingTo(serverBootstrap,
       NettyServerConfigurationUtils.resolveLogLevel(configuration));
+    FrameDecoderConfig frameDecoderConfig = NettyServerConfigurationUtils.resolveFrameDecoderConfig(configuration);
+    int encoderFrameLength = NettyServerConfigurationUtils.resolveEncoderFrameLength(configuration);
     JsonRpcChannelInitializer jsonRpcChannelInitializer =
-      createJsonRpcServerChannelInitializer(serverProcessor, configuration, charset, jsonb);
+      createJsonRpcServerChannelInitializer(serverProcessor, configuration, charset, jsonb, frameDecoderConfig,
+        encoderFrameLength);
     serverBootstrap.group(bossGroup, workerGroup)
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
       .childHandler(jsonRpcChannelInitializer);
@@ -68,9 +73,11 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
 
   private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(ServerProcessor serverProcessor,
                                                                                  Configuration configuration,
-                                                                                 Charset charset, Jsonb jsonb) {
+                                                                                 Charset charset, Jsonb jsonb,
+                                                                                 FrameDecoderConfig frameDecoderConfig,
+                                                                                 int encoderFrameLength) {
     ChannelHandlerAppender channelHandlerAppender = new JsonRpcServerChannelHandlerAppender(serverProcessor, charset,
-      jsonb);
+      jsonb, frameDecoderConfig, encoderFrameLength, LoggerFactory.getLogger(ResponseEncoder.class));
     return new JsonRpcChannelInitializer(NettyServerConfigurationUtils.decorateWithSsl(channelHandlerAppender,
       configuration));
   }

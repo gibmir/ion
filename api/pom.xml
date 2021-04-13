@@ -21,6 +21,7 @@
         <module>client-request-api</module>
         <module>client-batch-api</module>
         <module>schema-api</module>
+        <module>message-api</module>
     </modules>
 
     <dependencies>

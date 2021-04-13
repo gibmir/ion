@@ -112,7 +112,7 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
-    public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
+    public void process(String id, String procedureName, JsonObject jsonObject,
                         Consumer<JsonRpcResponse> responseConsumer) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
       if (paramsValue == null) {
@@ -135,8 +135,49 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
-    public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
+    public void process(String procedureName, JsonObject jsonObject) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
+      if (paramsValue == null) {
+        process(NotificationDto.empty(procedureName));
+        return;
+      }
+      int argumentsCount = namedMethodHandle.argumentTypes.length;
+      switch (paramsValue.getValueType()) {
+        case ARRAY:
+          process(NotificationDto.positional(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
+          return;
+        case OBJECT:
+          //named processing
+          process(NotificationDto.positional(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
+          return;
+        default:
+          LOGGER.error("Exception [{}] occurred while processing notification",
+            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Unsupported request Type"));
+      }
+    }
+
+    @Override
+    public JsonRpcResponse processRequest(String id, String procedureName, String argumentsJson) {
+      JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
+      if (paramsValue == null) {
+        return process(RequestDto.positional(id, procedureName, EMPTY_ARGS));
+      }
+      switch (paramsValue.getValueType()) {
+        case ARRAY:
+          return process(RequestDto.positional(id, procedureName,
+            getArgumentsFromArray(this.jsonb, paramsValue, namedMethodHandle.argumentTypes.length)));
+        case OBJECT:
+          return process(RequestDto.positional(id, procedureName,
+            getArgumentsFromMap(this.jsonb, paramsValue)));
+        default:
+          return ErrorResponse.fromJsonRpcError(id, Errors.INVALID_METHOD_PARAMETERS.getError()
+            .appendMessage("Unsupported request Type"));
+      }
+    }
+
+    @Override
+    public void processNotification(String procedureName, String argumentsJson) {
+      JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
       if (paramsValue == null) {
         process(NotificationDto.empty(procedureName));
         return;

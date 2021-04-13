@@ -15,6 +15,7 @@ import com.github.gibmir.ion.lib.netty.client.request.factory.NettyTcpRequestFac
 import com.github.gibmir.ion.lib.netty.client.sender.NettyTcpJsonRpcSender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.common.configuration.decoder.FrameDecoderConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.pool.ChannelPoolMap;
@@ -51,8 +52,10 @@ public class NettyTcpRequestFactoryProvider implements RequestFactoryProvider {
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
     Charset charset = ConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
+    FrameDecoderConfig frameDecoderConfig = NettyClientConfigurationUtils.resolveFrameDecoderConfig(configuration);
+    int encoderFrameLength = NettyClientConfigurationUtils.resolveEncoderFrameLength(configuration);
     ChannelInitializer<Channel> channelInitializer = createJsonRpcNettyChannelInitializer(configuration,
-      responseListenerRegistry, charset, jsonb);
+      responseListenerRegistry, charset, jsonb, frameDecoderConfig, encoderFrameLength);
     ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool =
       new NettyChannelPool(NettyClientConfigurationUtils.createEventLoopGroup(configuration),
         NettyClientConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
@@ -63,10 +66,13 @@ public class NettyTcpRequestFactoryProvider implements RequestFactoryProvider {
 
   private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(Configuration configuration,
                                                                                   ResponseListenerRegistry responseListenerRegistry,
-                                                                                  Charset charset, Jsonb jsonb) {
+                                                                                  Charset charset, Jsonb jsonb,
+                                                                                  FrameDecoderConfig frameDecoderConfig,
+                                                                                  int encoderFrameLength) {
     ChannelHandlerAppender channelHandlerAppender = NettyClientConfigurationUtils.appendSsl(configuration,
       NettyClientConfigurationUtils.appendLogging(configuration,
-      new TcpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb)));
+      new TcpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb, frameDecoderConfig,
+        encoderFrameLength)));
     return new JsonRpcChannelInitializer(channelHandlerAppender);
   }
 

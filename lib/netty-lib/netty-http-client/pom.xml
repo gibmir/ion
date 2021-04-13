@@ -21,5 +21,10 @@
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>netty-common-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>netty-common-http</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

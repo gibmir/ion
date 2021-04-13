@@ -11,10 +11,14 @@ import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryPro
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.common.http.configuration.NettyHttpConfigurationUtils;
+import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.encoder.ResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
 import com.github.gibmir.ion.lib.netty.server.common.processor.NettyProcedureProcessorFactory;
-import com.github.gibmir.ion.lib.netty.server.http.channel.appender.HttpJsonRpcServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.server.http.channel.appender.HttpServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.server.http.configuration.HttpRequestDecoderConfiguration;
+import com.github.gibmir.ion.lib.netty.server.http.configuration.NettyHttpServerConfigurationUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import org.slf4j.Logger;
@@ -55,8 +59,10 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
     EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     NettyServerConfigurationUtils.appendLoggingTo(serverBootstrap,
       NettyServerConfigurationUtils.resolveLogLevel(configuration));
-    JsonRpcChannelInitializer jsonRpcChannelInitializer =
-      createJsonRpcServerChannelInitializer(serverProcessor, configuration, charset, jsonb);
+    HttpRequestDecoderConfiguration decoderConfiguration = NettyHttpServerConfigurationUtils.resolveDecoratorConfig(configuration);
+    int maxContentLength = NettyHttpConfigurationUtils.resolveMaxContentLength(configuration);
+    JsonRpcChannelInitializer jsonRpcChannelInitializer = createChannelInitializer(serverProcessor, configuration,
+      charset, jsonb, maxContentLength, decoderConfiguration);
     serverBootstrap.group(bossGroup, workerGroup)
       .channel(NettyServerConfigurationUtils.resolveChannelClass(configuration))
       .childHandler(jsonRpcChannelInitializer);
@@ -66,11 +72,13 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
     return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
   }
 
-  private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(ServerProcessor serverProcessor,
-                                                                                 Configuration configuration,
-                                                                                 Charset charset, Jsonb jsonb) {
-    ChannelHandlerAppender channelHandlerAppender = new HttpJsonRpcServerChannelHandlerAppender(serverProcessor, jsonb,
-      charset);
+  private static JsonRpcChannelInitializer createChannelInitializer(ServerProcessor serverProcessor,
+                                                                    Configuration configuration,
+                                                                    Charset charset, Jsonb jsonb,
+                                                                    int aggregatorMaxContentLength,
+                                                                    HttpRequestDecoderConfiguration decoderConfiguration) {
+    ChannelHandlerAppender channelHandlerAppender = new HttpServerChannelHandlerAppender(serverProcessor, jsonb,
+      charset, LoggerFactory.getLogger(ResponseEncoder.class), aggregatorMaxContentLength, decoderConfiguration);
     return new JsonRpcChannelInitializer(NettyServerConfigurationUtils.decorateWithSsl(channelHandlerAppender,
       configuration));
   }

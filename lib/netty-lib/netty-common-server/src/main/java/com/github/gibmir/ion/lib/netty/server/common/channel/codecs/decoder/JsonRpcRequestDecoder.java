@@ -1,15 +1,17 @@
 package com.github.gibmir.ion.lib.netty.server.common.channel.codecs.decoder;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class JsonRpcRequestDecoder extends ByteToMessageDecoder {
+/**
+ * Decodes {@code byte[]} into {@link JsonValue} with configured {@link Jsonb}
+ */
+public class JsonRpcRequestDecoder extends MessageToMessageDecoder<byte[]> {
   private final Jsonb jsonb;
   private final Charset charset;
 
@@ -19,9 +21,7 @@ public class JsonRpcRequestDecoder extends ByteToMessageDecoder {
   }
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-    byte[] bytes = new byte[in.writerIndex()];
-    in.readBytes(bytes);
-    out.add(jsonb.fromJson(new String(bytes, charset), JsonValue.class));
+  protected void decode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) {
+    out.add(jsonb.fromJson(new String(msg, charset), JsonValue.class));
   }
 }

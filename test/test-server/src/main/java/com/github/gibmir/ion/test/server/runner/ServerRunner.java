@@ -4,11 +4,10 @@ import com.github.gibmir.ion.api.server.JsonRpcServer;
 import com.github.gibmir.ion.api.server.factory.JsonRpcServerFactory;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
-import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
+import com.github.gibmir.ion.test.common.procedure.TestStringProcedure;
 
 public class ServerRunner {
   public static void main(String[] args) {
-    //todo Unexpected char -1 at (line no=1, column no=243, offset=242)
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
     ProcedureProcessorFactory procedureProcessorFactory = jsonRpcServer.getProcedureProcessorFactory();

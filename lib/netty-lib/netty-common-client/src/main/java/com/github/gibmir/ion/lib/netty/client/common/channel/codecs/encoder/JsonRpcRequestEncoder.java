@@ -8,6 +8,8 @@ public class JsonRpcRequestEncoder extends MessageToByteEncoder<byte[]> {
 
   @Override
   protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) {
-    out.writeBytes(msg);
+    int writerIndex = out.writerIndex();
+    out.setBytes(writerIndex, msg);
+    out.writerIndex(writerIndex + msg.length);
   }
 }

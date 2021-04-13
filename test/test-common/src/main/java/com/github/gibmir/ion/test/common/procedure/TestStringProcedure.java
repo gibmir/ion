@@ -1,4 +1,4 @@
-package com.github.gimbir.ion.test.common.procedure;
+package com.github.gibmir.ion.test.common.procedure;
 
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.named.Named;

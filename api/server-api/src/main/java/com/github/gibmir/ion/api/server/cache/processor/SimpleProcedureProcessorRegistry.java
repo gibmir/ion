@@ -30,10 +30,10 @@ public class SimpleProcedureProcessorRegistry implements ProcedureProcessorRegis
                       Consumer<JsonRpcResponse> responseConsumer) {
     processorMap.compute(procedureName, (procedure, jsonRpcRequestProcessor) -> {
       if (jsonRpcRequestProcessor != null) {
-        jsonRpcRequestProcessor.process(id, procedureName, jsonObject, jsonb, responseConsumer);
+        jsonRpcRequestProcessor.process(id, procedure, jsonObject, responseConsumer);
       } else {
         JsonRpcError jsonRpcError = Errors.REQUEST_METHOD_NOT_FOUND.getError()
-          .appendMessage("[" + procedureName + "] is unsupported");
+          .appendMessage("[" + procedure + "] is unsupported");
         responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, jsonRpcError));
       }
       return jsonRpcRequestProcessor;
@@ -44,15 +44,16 @@ public class SimpleProcedureProcessorRegistry implements ProcedureProcessorRegis
   public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
     processorMap.compute(procedureName, (procedure, jsonRpcRequestProcessor) -> {
       if (jsonRpcRequestProcessor != null) {
-        jsonRpcRequestProcessor.process(procedureName, jsonObject, jsonb);
+        jsonRpcRequestProcessor.process(procedure, jsonObject);
       } else {
         JsonRpcError jsonRpcError = Errors.REQUEST_METHOD_NOT_FOUND.getError()
-          .appendMessage("[" + procedureName + "] is unsupported");
+          .appendMessage("[" + procedure + "] is unsupported");
         LOGGER.error("Error [{}] occurred while processing notification", jsonRpcError);
       }
       return jsonRpcRequestProcessor;
     });
   }
+
 
   @Override
   public void register(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor) {

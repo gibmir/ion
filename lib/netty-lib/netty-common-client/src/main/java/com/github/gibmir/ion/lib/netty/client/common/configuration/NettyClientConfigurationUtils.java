@@ -7,6 +7,7 @@ import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.fu
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.logging.LoggingAppenderDecorator;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ssl.SslAppenderDecorator;
+import com.github.gibmir.ion.lib.netty.common.configuration.decoder.FrameDecoderConfig;
 import com.github.gibmir.ion.lib.netty.common.configuration.group.NettyGroupType;
 import com.github.gibmir.ion.lib.netty.common.configuration.logging.NettyLogLevel;
 import com.github.gibmir.ion.lib.netty.common.configuration.ssl.NettySslProvider;
@@ -262,5 +263,52 @@ public class NettyClientConfigurationUtils {
       }
     }
     return channelHandlerAppender;
+  }
+
+
+  //frame decoder
+  public static final String NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH =
+    ROOT_PREFIX + "netty.client.frame.decoder.max.frame.length";
+  public static final String NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_OFFSET =
+    ROOT_PREFIX + "netty.client.frame.decoder.length.field.offset";
+  public static final String NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_LENGTH =
+    ROOT_PREFIX + "netty.client.frame.decoder.length.field.length";
+  public static final String NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_ADJUSTMENT =
+    ROOT_PREFIX + "netty.client.frame.decoder.length.field.adjustment";
+  public static final String NETTY_CLIENT_FRAME_DECODER_LENGTH_STRIP_BITES =
+    ROOT_PREFIX + "netty.client.frame.decoder.length.strip.bites";
+
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH = 1048576;
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_OFFSET = 0;
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_LENGTH = 4;
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_ADJUSTMENT = 0;
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_STRIP_BITES = 4;
+
+  /**
+   * @see io.netty.handler.codec.bytes.ByteArrayDecoder for defaults
+   */
+  public static FrameDecoderConfig resolveFrameDecoderConfig(Configuration configuration) {
+    int maxFrameLength = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH);
+    int fieldOffset = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_OFFSET, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_OFFSET);
+    int fieldLength = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_LENGTH, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_LENGTH);
+    int adjustment = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_ADJUSTMENT, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_ADJUSTMENT);
+    int stripBites = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_LENGTH_STRIP_BITES, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_STRIP_BITES);
+    return new FrameDecoderConfig(maxFrameLength, fieldOffset, fieldLength, adjustment, stripBites);
+  }
+
+  //frame encoder
+
+  public static final String NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH =
+    ROOT_PREFIX + "netty.client.frame.encoder.length.field.length";
+  public static final Integer DEFAULT_NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH = 4;
+
+  public static int resolveEncoderFrameLength(Configuration configuration) {
+    return configuration.getOptionalValue(NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH, Integer.class)
+      .orElse(DEFAULT_NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH);
   }
 }

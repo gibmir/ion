@@ -11,10 +11,13 @@ import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.re
 import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPool;
 import com.github.gibmir.ion.lib.netty.client.common.configuration.NettyClientConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.http.channel.appender.HttpClientChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.client.http.configuration.HttpResponseDecoderConfiguration;
+import com.github.gibmir.ion.lib.netty.client.http.configuration.NettyHttpClientConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.http.request.factory.NettyHttpRequestFactory;
 import com.github.gibmir.ion.lib.netty.client.http.sender.NettyHttpJsonRpcSender;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.common.http.configuration.NettyHttpConfigurationUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.pool.ChannelPoolMap;
@@ -51,8 +54,10 @@ public class NettyHttpRequestFactoryProvider implements RequestFactoryProvider {
     ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
     Charset charset = ConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
+    int maxContentLength = NettyHttpConfigurationUtils.resolveMaxContentLength(configuration);
+    HttpResponseDecoderConfiguration httpResponseDecoderConfiguration = NettyHttpClientConfigurationUtils.resolveDecoratorConfig(configuration);
     ChannelInitializer<Channel> channelInitializer = createJsonRpcNettyChannelInitializer(configuration,
-      responseListenerRegistry, charset, jsonb);
+      responseListenerRegistry, charset, jsonb, maxContentLength, httpResponseDecoderConfiguration);
     ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool =
       new NettyChannelPool(NettyClientConfigurationUtils.createEventLoopGroup(configuration),
         NettyClientConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
@@ -63,10 +68,14 @@ public class NettyHttpRequestFactoryProvider implements RequestFactoryProvider {
 
   private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(Configuration configuration,
                                                                                   ResponseListenerRegistry responseListenerRegistry,
-                                                                                  Charset charset, Jsonb jsonb) {
+                                                                                  Charset charset, Jsonb jsonb,
+                                                                                  int maxContentLength,
+                                                                                  HttpResponseDecoderConfiguration decoderConfiguration) {
+    HttpClientChannelHandlerAppender appender = new HttpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb,
+      decoderConfiguration, maxContentLength);
     ChannelHandlerAppender channelHandlerAppender = NettyClientConfigurationUtils.appendSsl(configuration,
       NettyClientConfigurationUtils.appendLogging(configuration,
-        new HttpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb)));
+        appender));
     return new JsonRpcChannelInitializer(channelHandlerAppender);
   }
 }

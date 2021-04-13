@@ -21,6 +21,7 @@
         <module>netty-common-server</module>
         <module>netty-tcp-server</module>
         <module>netty-http-server</module>
+        <module>netty-common-http</module>
     </modules>
     <properties>
         <netty.version>4.1.50.Final</netty.version>

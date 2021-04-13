@@ -4,7 +4,7 @@ import com.github.gibmir.ion.api.client.batch.request.BatchRequest;
 import com.github.gibmir.ion.api.client.factory.RequestFactory;
 import com.github.gibmir.ion.api.client.factory.provider.RequestFactoryProvider;
 import com.github.gibmir.ion.api.client.request.Request1;
-import com.github.gimbir.ion.test.common.procedure.TestStringProcedure;
+import com.github.gibmir.ion.test.common.procedure.TestStringProcedure;
 
 import java.time.Duration;
 import java.time.LocalTime;

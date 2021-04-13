@@ -20,7 +20,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.gibmir.ion.test.server.runner.ServerRunner</mainClass>
+                            <mainClass>com.github.gibmir.ion.test.client.runner.ClientRunner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

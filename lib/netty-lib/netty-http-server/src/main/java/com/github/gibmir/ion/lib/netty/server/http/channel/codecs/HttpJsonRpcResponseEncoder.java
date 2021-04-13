@@ -7,10 +7,13 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class HttpJsonRpcResponseEncoder extends MessageToMessageEncoder<byte[]> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpJsonRpcResponseEncoder.class);
 
   @Override
   protected void encode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) {
@@ -18,6 +21,7 @@ public class HttpJsonRpcResponseEncoder extends MessageToMessageEncoder<byte[]> 
     fullHttpResponse.content().clear().writeBytes(msg);
     fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, msg.length);
     fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+    LOGGER.debug("Http message was successfully created");
     out.add(fullHttpResponse);
   }
 }
