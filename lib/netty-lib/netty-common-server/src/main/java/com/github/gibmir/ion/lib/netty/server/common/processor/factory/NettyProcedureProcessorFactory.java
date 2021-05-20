@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.lib.netty.server.common.processor;
+package com.github.gibmir.ion.lib.netty.server.common.processor.factory;
 
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
@@ -6,6 +6,10 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ProcedureProcessor0;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ProcedureProcessor1;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ProcedureProcessor2;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ProcedureProcessor3;
 
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;

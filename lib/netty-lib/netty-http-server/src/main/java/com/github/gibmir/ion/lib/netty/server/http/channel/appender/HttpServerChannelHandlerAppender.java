@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.server.http.channel.appender;
 
-import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.decoder.JsonRpcRequestDecoder;
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.decoder.RequestMessageDecoder;

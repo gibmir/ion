@@ -1,9 +1,11 @@
-package com.github.gibmir.ion.api.server.cache.processor;
+package com.github.gibmir.ion.lib.netty.server.common.processor.registry;
 
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
+import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,11 +14,11 @@ import javax.json.bind.Jsonb;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class SimpleProcedureProcessorRegistry implements ProcedureProcessorRegistry {
-  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleProcedureProcessorRegistry.class);
+public class NettyProcedureProcessorRegistry implements ProcedureProcessorRegistry {
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyProcedureProcessorRegistry.class);
   private final Map<String, JsonRpcRequestProcessor> processorMap;
 
-  public SimpleProcedureProcessorRegistry(Map<String, JsonRpcRequestProcessor> processorMap) {
+  public NettyProcedureProcessorRegistry(Map<String, JsonRpcRequestProcessor> processorMap) {
     this.processorMap = processorMap;
   }
 

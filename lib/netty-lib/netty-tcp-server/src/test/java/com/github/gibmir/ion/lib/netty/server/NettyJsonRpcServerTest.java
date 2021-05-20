@@ -2,7 +2,6 @@ package com.github.gibmir.ion.lib.netty.server;
 
 import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.manager.ComposedProcedureManager;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
@@ -154,7 +153,7 @@ class NettyJsonRpcServerTest {
       () -> nettyJsonRpcServer.register(List.of(procedureProcessor0, procedureProcessor1, procedureProcessor2,
         procedureProcessor3)));
     assertNotNull(procedureManager);
-    assertThat(procedureManager, instanceOf(ComposedProcedureManager.class));
+    assertThat(procedureManager, instanceOf(ProcedureManager.class));
     verify(processorRegistry, times(1))
       .register(eq(NettyServerTestEnvironment.TestApi0.class.getName()), any(JsonRpcRequestProcessor.class));
     verify(processorRegistry, times(1))
@@ -172,7 +171,7 @@ class NettyJsonRpcServerTest {
     ProcedureManager procedureManager = assertDoesNotThrow(() -> nettyJsonRpcServer.register(procedureProcessor0,
       procedureProcessor1, procedureProcessor2, procedureProcessor3));
     assertNotNull(procedureManager);
-    assertThat(procedureManager, instanceOf(ComposedProcedureManager.class));
+    assertThat(procedureManager, instanceOf(ProcedureManager.class));
     verify(processorRegistry, times(1))
       .register(eq(NettyServerTestEnvironment.TestApi0.class.getName()), any(JsonRpcRequestProcessor.class));
     verify(processorRegistry, times(1))

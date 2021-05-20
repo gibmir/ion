@@ -2,6 +2,7 @@ package com.github.gibmir.ion.lib.netty.server.common.processor;
 
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.factory.NettyProcedureProcessorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

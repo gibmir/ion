@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.server.cache.processor;
+package com.github.gibmir.ion.lib.netty.server.common.processor;
 
 import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
@@ -12,6 +12,8 @@ import com.github.gibmir.ion.api.message.ExceptionMessage;
 import com.github.gibmir.ion.api.message.Message;
 import com.github.gibmir.ion.api.message.NotificationMessage;
 import com.github.gibmir.ion.api.message.RequestMessage;
+import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

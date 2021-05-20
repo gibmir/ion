@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.server.cache.processor.factory;
+package com.github.gibmir.ion.lib.netty.server.common.processor.factory;
 
 import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;

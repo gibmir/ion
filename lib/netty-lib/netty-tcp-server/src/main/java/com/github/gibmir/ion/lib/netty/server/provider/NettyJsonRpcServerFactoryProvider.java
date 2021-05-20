@@ -4,8 +4,8 @@ import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
-import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
-import com.github.gibmir.ion.api.server.cache.processor.SimpleProcedureProcessorRegistry;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
+import com.github.gibmir.ion.lib.netty.server.common.processor.registry.NettyProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
@@ -16,7 +16,7 @@ import com.github.gibmir.ion.lib.netty.server.appender.JsonRpcServerChannelHandl
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.encoder.ResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
-import com.github.gibmir.ion.lib.netty.server.common.processor.NettyProcedureProcessorFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.factory.NettyProcedureProcessorFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
 
   private NettyJsonRpcServerFactory createJsonRpcServerFactory() {
     ProcedureProcessorRegistry procedureProcessorRegistry =
-      new SimpleProcedureProcessorRegistry(new ConcurrentHashMap<>());
+      new NettyProcedureProcessorRegistry(new ConcurrentHashMap<>());
     ServerProcessor serverProcessor = new ServerProcessor(procedureProcessorRegistry);
     Configuration configuration = ConfigurationProvider.load().provide();
     Charset charset = ServerConfigurationUtils.createCharsetWith(configuration);

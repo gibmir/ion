@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.netty.server.common.channel.handler;
 
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
-import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

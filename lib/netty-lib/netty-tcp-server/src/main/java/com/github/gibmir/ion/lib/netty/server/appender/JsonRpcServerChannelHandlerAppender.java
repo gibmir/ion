@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.server.appender;
 
-import com.github.gibmir.ion.api.server.cache.processor.ServerProcessor;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.common.configuration.decoder.FrameDecoderConfig;
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.decoder.JsonRpcRequestDecoder;
@@ -13,7 +13,6 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;

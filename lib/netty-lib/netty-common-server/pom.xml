@@ -31,6 +31,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>message-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
             <artifactId>netty-common-lib</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

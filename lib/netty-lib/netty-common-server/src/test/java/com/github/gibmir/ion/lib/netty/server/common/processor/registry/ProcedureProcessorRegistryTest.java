@@ -1,6 +1,8 @@
-package com.github.gibmir.ion.api.server.cache.processor;
+package com.github.gibmir.ion.lib.netty.server.common.processor.registry;
 
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
+import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonObject;
@@ -13,6 +15,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
 
 class ProcedureProcessorRegistryTest {
 
@@ -44,7 +47,8 @@ class ProcedureProcessorRegistryTest {
   @Test
   void testGetProcedureProcessor() {
     HashMap<String, JsonRpcRequestProcessor> processorMap = new HashMap<>();
-    ProcedureProcessorRegistry processorRegistry = new SimpleProcedureProcessorRegistry(processorMap);
+
+    ProcedureProcessorRegistry processorRegistry = new NettyProcedureProcessorRegistry(processorMap);
     assertThat(processorRegistry.getProcedureProcessorFor(TEST_PROCEDURE_NAME), is(nullValue()));
 
     assertDoesNotThrow(() -> processorMap.put(TEST_PROCEDURE_NAME, TEST_JSON_RPC_REQUEST_PROCESSOR));
@@ -56,7 +60,7 @@ class ProcedureProcessorRegistryTest {
   void testRegister() {
     Map<String, JsonRpcRequestProcessor> processorMap = new HashMap<>();
 
-    ProcedureProcessorRegistry processorRegistry = new SimpleProcedureProcessorRegistry(processorMap);
+    ProcedureProcessorRegistry processorRegistry = new NettyProcedureProcessorRegistry(processorMap);
     processorRegistry.register(TEST_PROCEDURE_NAME, TEST_JSON_RPC_REQUEST_PROCESSOR);
 
     assertThat(processorMap.isEmpty(), is(false));
@@ -67,7 +71,7 @@ class ProcedureProcessorRegistryTest {
   @Test
   void testUnregister() {
     Map<String, JsonRpcRequestProcessor> processorMap = new HashMap<>();
-    ProcedureProcessorRegistry processorRegistry = new SimpleProcedureProcessorRegistry(processorMap);
+    ProcedureProcessorRegistry processorRegistry = new NettyProcedureProcessorRegistry(processorMap);
     assertDoesNotThrow(() -> processorRegistry.unregister(TEST_PROCEDURE_NAME));
     processorRegistry.register(TEST_PROCEDURE_NAME, TEST_JSON_RPC_REQUEST_PROCESSOR);
 
