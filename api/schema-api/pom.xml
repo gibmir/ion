@@ -12,11 +12,6 @@
     <artifactId>schema-api</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.everit.json</groupId>
-            <artifactId>org.everit.json.schema</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>core-api</artifactId>
             <version>${project.parent.version}</version>
