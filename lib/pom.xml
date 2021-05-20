@@ -12,7 +12,6 @@
     <artifactId>lib</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>discovery-lib</module>
         <module>configuration-lib</module>
         <module>netty-lib</module>
         <module>schema-lib</module>
