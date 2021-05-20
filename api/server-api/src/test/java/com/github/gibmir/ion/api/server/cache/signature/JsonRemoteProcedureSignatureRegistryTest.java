@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.server.cache.signature;
 
 import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
-import com.github.gibmir.ion.api.core.procedure.signature.ParameterizedJsonRemoteProcedureSignature;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodType;
@@ -13,13 +13,26 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 class JsonRemoteProcedureSignatureRegistryTest {
 
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
-  public static final ParameterizedJsonRemoteProcedureSignature PROCEDURE_SIGNATURE =
-    new ParameterizedJsonRemoteProcedureSignature("", new String[0], new Type[0], String.class,
-      MethodType.methodType(String.class), 1);
+  public static JsonRemoteProcedureSignature PROCEDURE_SIGNATURE;
+
+  @BeforeAll
+  static void beforeAll() {
+    PROCEDURE_SIGNATURE = mock(JsonRemoteProcedureSignature.class);
+    doAnswer(__ -> "").when(PROCEDURE_SIGNATURE).getProcedureName();
+    String[] parameterNames = new String[0];
+    doAnswer(__ -> parameterNames).when(PROCEDURE_SIGNATURE).getParameterNames();
+    Type[] parameterTypes = new Type[0];
+    doAnswer(__ -> parameterTypes).when(PROCEDURE_SIGNATURE).getParameterNames();
+    doAnswer(__ -> String.class).when(PROCEDURE_SIGNATURE).getReturnType();
+    doAnswer(__ -> MethodType.methodType(String.class)).when(PROCEDURE_SIGNATURE).getMethodType();
+    doAnswer(__ -> 1).when(PROCEDURE_SIGNATURE).getParametersCount();
+  }
 
   @Test
   void testGetProcedureSignature() {

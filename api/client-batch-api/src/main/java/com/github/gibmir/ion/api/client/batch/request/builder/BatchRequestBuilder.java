@@ -7,6 +7,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 
 public interface BatchRequestBuilder<B extends BatchRequestBuilder<B>> {
+
   /**
    * Add request without args to {@link BatchRequest the batch}.
    *
