@@ -54,5 +54,10 @@
             <version>${javax.json-api.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>scanner</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

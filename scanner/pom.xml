@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>netty-lib</artifactId>
+        <artifactId>ion</artifactId>
         <groupId>com.github.gibmir.ion</groupId>
         <version>0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>netty-common-server</artifactId>
-    <description>Provides common ion netty server classes</description>
+    <artifactId>scanner</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -18,25 +17,12 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>core-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>server-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>netty-common-lib</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>scanner</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

@@ -12,6 +12,7 @@
         <module>lib</module>
         <module>test</module>
         <module>ion-maven-plugin</module>
+        <module>scanner</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +30,7 @@
         <org.everit.json.schema.version>1.5.1</org.everit.json.schema.version>
         <testcontainers.version>1.14.3</testcontainers.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
+        <yasson.version>1.0.1</yasson.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>

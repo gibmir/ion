@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.api.server.scan;
 
-import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
-import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.scanner.ProcedureScanner;
+import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.server.environment.ServerTestEnvironment;
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +66,7 @@ class ProcedureScannerTest {
 
   @Test
   //raw type exception testing
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"rawtypes"})
   void testResolveRawSignature1() {
     assertThrows(IllegalArgumentException.class,
       () -> {
@@ -78,7 +78,7 @@ class ProcedureScannerTest {
 
   @Test
   //raw type exception testing
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"rawtypes"})
   void testResolveRawSignature2() {
     assertThrows(IllegalArgumentException.class, () -> {
       Class rawTestProcedure2Class = ServerTestEnvironment.RawTestProcedure2.class;
@@ -89,7 +89,7 @@ class ProcedureScannerTest {
 
   @Test
   //raw type exception testing
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"rawtypes"})
   void testResolveRawSignature3() {
     assertThrows(IllegalArgumentException.class, () -> {
       Class rawTestProcedure3Class = ServerTestEnvironment.RawTestProcedure3.class;

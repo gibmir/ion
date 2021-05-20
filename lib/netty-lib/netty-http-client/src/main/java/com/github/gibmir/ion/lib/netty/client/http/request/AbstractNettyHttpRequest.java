@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.http.request;
 
-import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.lib.netty.client.http.sender.NettyHttpJsonRpcSender;
 
 import javax.json.bind.Jsonb;

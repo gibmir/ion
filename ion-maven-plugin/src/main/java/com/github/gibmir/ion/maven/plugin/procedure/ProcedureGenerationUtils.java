@@ -5,7 +5,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.api.core.procedure.named.Named;
-import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.maven.plugin.IonPluginMojo;

@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.api.server.cache.signature;
 
-import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

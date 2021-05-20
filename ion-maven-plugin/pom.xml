@@ -98,5 +98,10 @@
             <artifactId>javax.json</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>scanner</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

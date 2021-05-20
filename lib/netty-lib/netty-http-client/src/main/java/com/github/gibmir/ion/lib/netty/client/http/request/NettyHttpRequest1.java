@@ -1,8 +1,8 @@
 package com.github.gibmir.ion.lib.netty.client.http.request;
 
 import com.github.gibmir.ion.api.client.request.Request1;
-import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
-import com.github.gibmir.ion.api.core.procedure.signature.JsonRemoteProcedureSignature;
+import com.github.gibmir.ion.scanner.ProcedureScanner;
+import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.lib.netty.client.http.sender.NettyHttpJsonRpcSender;

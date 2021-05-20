@@ -5,7 +5,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
-import com.github.gibmir.ion.api.core.procedure.scan.ProcedureScanner;
+import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
 import com.github.gibmir.ion.lib.netty.client.http.request.NettyHttpRequest0;
 import com.github.gibmir.ion.lib.netty.client.http.request.NettyHttpRequest1;

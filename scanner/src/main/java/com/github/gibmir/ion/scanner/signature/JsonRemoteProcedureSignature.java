@@ -1,4 +1,4 @@
-package com.github.gibmir.ion.api.core.procedure.signature;
+package com.github.gibmir.ion.scanner.signature;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Type;
