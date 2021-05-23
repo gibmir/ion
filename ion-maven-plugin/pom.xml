@@ -91,7 +91,7 @@
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>1.0</version>
+            <version>${yasson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>

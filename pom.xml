@@ -31,6 +31,7 @@
         <testcontainers.version>1.14.3</testcontainers.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
         <yasson.version>1.0.1</yasson.version>
+        <snakeyaml.version>1.26</snakeyaml.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>
@@ -109,6 +110,11 @@
                 <groupId>javax.json</groupId>
                 <artifactId>javax.json-api</artifactId>
                 <version>${javax.json-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

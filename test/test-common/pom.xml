@@ -36,7 +36,6 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-api</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>
