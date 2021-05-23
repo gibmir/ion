@@ -5,13 +5,7 @@ import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
-import java.io.Reader;
 import java.lang.reflect.Type;
 
 public class ResponseFuture implements JsonRpcResponseProcessor {

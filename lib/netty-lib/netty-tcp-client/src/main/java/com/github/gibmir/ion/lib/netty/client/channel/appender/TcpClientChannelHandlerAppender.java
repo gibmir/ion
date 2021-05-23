@@ -1,7 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.channel.appender;
 
 import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.decoder.JsonRpcResponseDecoder;
-import com.github.gibmir.ion.lib.netty.client.common.channel.codecs.encoder.JsonRpcRequestEncoder;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.JsonRpcResponseHandler;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
