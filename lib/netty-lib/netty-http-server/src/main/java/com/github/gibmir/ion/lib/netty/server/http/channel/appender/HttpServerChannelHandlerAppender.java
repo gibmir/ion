@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 
-public class HttpServerChannelHandlerAppender implements ChannelHandlerAppender {
+public final class HttpServerChannelHandlerAppender implements ChannelHandlerAppender {
   private final ServerProcessor serverProcessor;
   private final Jsonb jsonb;
   private final Charset charset;
@@ -26,9 +26,10 @@ public class HttpServerChannelHandlerAppender implements ChannelHandlerAppender 
   private final int aggregatorMaxContentLength;
   private final HttpRequestDecoderConfiguration httpRequestDecoderConfiguration;
 
-  public HttpServerChannelHandlerAppender(ServerProcessor serverProcessor, Jsonb jsonb,
-                                          Charset charset, Logger responseEncoderLogger, int aggregatorMaxContentLength,
-                                          HttpRequestDecoderConfiguration httpRequestDecoderConfiguration) {
+  public HttpServerChannelHandlerAppender(final ServerProcessor serverProcessor, final Jsonb jsonb,
+                                          final Charset charset, final Logger responseEncoderLogger,
+                                          final int aggregatorMaxContentLength,
+                                          final HttpRequestDecoderConfiguration httpRequestDecoderConfiguration) {
     this.serverProcessor = serverProcessor;
     this.jsonb = jsonb;
     this.charset = charset;
@@ -38,7 +39,7 @@ public class HttpServerChannelHandlerAppender implements ChannelHandlerAppender 
   }
 
   @Override
-  public void appendTo(ChannelPipeline channelPipeline) {
+  public void appendTo(final ChannelPipeline channelPipeline) {
     channelPipeline
       //decoders
       //Decodes incoming http request

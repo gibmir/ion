@@ -14,37 +14,37 @@ import com.github.gibmir.ion.lib.netty.server.common.processor.ProcedureProcesso
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 
-public class NettyProcedureProcessorFactory implements ProcedureProcessorFactory {
+public final class NettyProcedureProcessorFactory implements ProcedureProcessorFactory {
 
   private final Jsonb defaultJsonb;
   private final Charset defaultCharset;
 
-  public NettyProcedureProcessorFactory(Jsonb defaultJsonb, Charset defaultCharset) {
+  public NettyProcedureProcessorFactory(final Jsonb defaultJsonb, final Charset defaultCharset) {
     this.defaultJsonb = defaultJsonb;
     this.defaultCharset = defaultCharset;
   }
 
   @Override
-  public <R, P extends JsonRemoteProcedure0<R>> ProcedureProcessor<P> create(Class<P> procedureClass,
-                                                                             P procedureImpl) {
+  public <R, P extends JsonRemoteProcedure0<R>> ProcedureProcessor<P> create(final Class<P> procedureClass,
+                                                                             final P procedureImpl) {
     return new ProcedureProcessor0<>(procedureClass, procedureImpl, defaultJsonb, defaultCharset);
   }
 
   @Override
-  public <T, R, P extends JsonRemoteProcedure1<T, R>> ProcedureProcessor<P> create(Class<P> procedureClass,
-                                                                                   P procedureImpl) {
+  public <T, R, P extends JsonRemoteProcedure1<T, R>> ProcedureProcessor<P> create(final Class<P> procedureClass,
+                                                                                   final P procedureImpl) {
     return new ProcedureProcessor1<>(procedureClass, procedureImpl, defaultJsonb, defaultCharset);
   }
 
   @Override
-  public <T1, T2, R, P extends JsonRemoteProcedure2<T1, T2, R>> ProcedureProcessor<P> create(Class<P> procedureClass,
-                                                                                             P procedureImpl) {
+  public <T1, T2, R, P extends JsonRemoteProcedure2<T1, T2, R>> ProcedureProcessor<P> create(final Class<P> procedureClass,
+                                                                                             final P procedureImpl) {
     return new ProcedureProcessor2<>(procedureClass, procedureImpl, defaultJsonb, defaultCharset);
   }
 
   @Override
   public <T1, T2, T3, R, P extends JsonRemoteProcedure3<T1, T2, T3, R>> ProcedureProcessor<P> create(
-    Class<P> procedureClass, P procedureImpl) {
+    final Class<P> procedureClass, final P procedureImpl) {
     return new ProcedureProcessor3<>(procedureClass, procedureImpl, defaultJsonb, defaultCharset);
   }
 }

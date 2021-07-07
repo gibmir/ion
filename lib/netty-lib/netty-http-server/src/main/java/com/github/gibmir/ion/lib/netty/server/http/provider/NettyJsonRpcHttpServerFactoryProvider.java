@@ -28,7 +28,7 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFactoryProvider {
+public final class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFactoryProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcHttpServerFactoryProvider.class);
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
 
@@ -59,7 +59,7 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
     EventLoopGroup workerGroup = NettyServerConfigurationUtils.createEventLoopGroup(configuration);
     NettyServerConfigurationUtils.appendLoggingTo(serverBootstrap,
       NettyServerConfigurationUtils.resolveLogLevel(configuration));
-    HttpRequestDecoderConfiguration decoderConfiguration = NettyHttpServerConfigurationUtils.resolveDecoratorConfig(configuration);
+    HttpRequestDecoderConfiguration decoderConfiguration = NettyHttpServerConfigurationUtils.resolveDecoderConfig(configuration);
     int maxContentLength = NettyHttpConfigurationUtils.resolveMaxContentLength(configuration);
     JsonRpcChannelInitializer jsonRpcChannelInitializer = createChannelInitializer(serverProcessor, configuration,
       charset, jsonb, maxContentLength, decoderConfiguration);
@@ -72,11 +72,11 @@ public class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServerFacto
     return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
   }
 
-  private static JsonRpcChannelInitializer createChannelInitializer(ServerProcessor serverProcessor,
-                                                                    Configuration configuration,
-                                                                    Charset charset, Jsonb jsonb,
-                                                                    int aggregatorMaxContentLength,
-                                                                    HttpRequestDecoderConfiguration decoderConfiguration) {
+  private static JsonRpcChannelInitializer createChannelInitializer(final ServerProcessor serverProcessor,
+                                                                    final Configuration configuration,
+                                                                    final Charset charset, final Jsonb jsonb,
+                                                                    final int aggregatorMaxContentLength,
+                                                                    final HttpRequestDecoderConfiguration decoderConfiguration) {
     ChannelHandlerAppender channelHandlerAppender = new HttpServerChannelHandlerAppender(serverProcessor, jsonb,
       charset, LoggerFactory.getLogger(ResponseEncoder.class), aggregatorMaxContentLength, decoderConfiguration);
     return new JsonRpcChannelInitializer(NettyServerConfigurationUtils.decorateWithSsl(channelHandlerAppender,

@@ -9,20 +9,31 @@ public class BatchResponseDto implements JsonRpcResponse {
   public BatchResponseDto() {
   }
 
-  public BatchResponseDto(JsonRpcResponse[] jsonRpcResponses) {
+  public BatchResponseDto(final JsonRpcResponse[] jsonRpcResponses) {
     this.jsonRpcResponses = jsonRpcResponses;
   }
 
-  public JsonRpcResponse[] getJsonRpcResponses() {
+  /**
+   * @return batch responses
+   */
+  public final JsonRpcResponse[] getJsonRpcResponses() {
     return jsonRpcResponses;
   }
 
-  public void setJsonRpcResponses(JsonRpcResponse[] jsonRpcResponses) {
+  /**
+   * @param jsonRpcResponses batch responses
+   */
+  public void setJsonRpcResponses(final JsonRpcResponse[] jsonRpcResponses) {
     this.jsonRpcResponses = jsonRpcResponses;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @param jsonRpcResponseProcessor processor to process response
+   */
   @Override
-  public void processWith(JsonRpcResponseProcessor jsonRpcResponseProcessor) {
+  public void processWith(final JsonRpcResponseProcessor jsonRpcResponseProcessor) {
     jsonRpcResponseProcessor.process(this);
   }
 }

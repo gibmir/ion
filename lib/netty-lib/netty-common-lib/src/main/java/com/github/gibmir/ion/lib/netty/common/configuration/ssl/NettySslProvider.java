@@ -9,7 +9,7 @@ public enum NettySslProvider implements Supplier<SslProvider> {
 
   private final SslProvider sslProvider;
 
-  NettySslProvider(SslProvider sslProvider) {
+  NettySslProvider(final SslProvider sslProvider) {
     this.sslProvider = sslProvider;
   }
 

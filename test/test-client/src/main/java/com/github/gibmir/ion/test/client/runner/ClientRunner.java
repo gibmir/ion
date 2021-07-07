@@ -12,8 +12,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ClientRunner {
-  public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
+public final class ClientRunner {
+  private ClientRunner() {
+  }
+
+  /**
+   * @param args cmd line args
+   */
+  public static void main(final String[] args) throws ExecutionException, InterruptedException, TimeoutException {
     RequestFactory requestFactory = RequestFactoryProvider.load().provide();
     sendBatch(requestFactory);
     sendNotification(requestFactory);
@@ -21,7 +27,7 @@ public class ClientRunner {
     sendNamedRequest(requestFactory, 1);
   }
 
-  private static void sendRequest(RequestFactory requestFactory, int times)
+  private static void sendRequest(final RequestFactory requestFactory, final int times)
     throws InterruptedException, ExecutionException, TimeoutException {
     Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
     LocalTime start = LocalTime.now();
@@ -35,14 +41,14 @@ public class ClientRunner {
     System.out.println(Duration.between(start, LocalTime.now()) + ":" + counter);
   }
 
-  private static void sendNotification(RequestFactory requestFactory) {
+  private static void sendNotification(final RequestFactory requestFactory) {
     Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
     request.positionalNotificationCall("notification message");
     request.namedNotificationCall("notification message");
     System.out.println("notification was sent");
   }
 
-  private static void sendNamedRequest(RequestFactory requestFactory, int times)
+  private static void sendNamedRequest(final RequestFactory requestFactory, final int times)
     throws InterruptedException, ExecutionException, TimeoutException {
     Request1<String, String> request = requestFactory.singleArg(TestStringProcedure.class);
     LocalTime start = LocalTime.now();
@@ -56,7 +62,7 @@ public class ClientRunner {
     System.out.println(Duration.between(start, LocalTime.now()) + ":" + counter);
   }
 
-  private static void sendBatch(RequestFactory requestFactory) {
+  private static void sendBatch(final RequestFactory requestFactory) {
     BatchRequest batchRequest = requestFactory.batch()
       .addPositionalRequest("first-batch", TestStringProcedure.class, "argument",
         ((response, processingException) -> System.out.println(response + ":" + processingException)))

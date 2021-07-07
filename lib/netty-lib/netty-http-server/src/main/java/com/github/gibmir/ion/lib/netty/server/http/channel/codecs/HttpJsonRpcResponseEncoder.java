@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class HttpJsonRpcResponseEncoder extends MessageToMessageEncoder<byte[]> {
+public final class HttpJsonRpcResponseEncoder extends MessageToMessageEncoder<byte[]> {
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpJsonRpcResponseEncoder.class);
 
   @Override
-  protected void encode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) {
+  protected void encode(final ChannelHandlerContext ctx, final byte[] msg, final List<Object> out) {
     FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
     fullHttpResponse.content().clear().writeBytes(msg);
     fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, msg.length);

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Mojo(name = "ionise", defaultPhase = LifecyclePhase.GENERATE_SOURCES,
   requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 @Execute(goal = "ionise", phase = LifecyclePhase.GENERATE_SOURCES)
-public class IonPluginMojo extends AbstractMojo {
+public final class IonPluginMojo extends AbstractMojo {
   private static final Logger LOGGER = LoggerFactory.getLogger(IonPluginMojo.class);
   private static final Jsonb JSONB = JsonbProvider.provider().create().build();
   public static final String JSON_FILE_EXTENSION = "json";
@@ -50,16 +50,33 @@ public class IonPluginMojo extends AbstractMojo {
   @Parameter(property = "package", defaultValue = "ionised")
   private String packageName;
 
-
-  public static String asClassName(String name) {
+  /**
+   * Represents name as class name for code generation.
+   *
+   * @param name procedure or type name
+   * @return class name
+   */
+  public static String asClassName(final String name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
-  public static String asFieldName(String name) {
+  /**
+   * Represents name as field name for code generation.
+   *
+   * @param name procedure or type name
+   * @return field name
+   */
+  public static String asFieldName(final String name) {
     return name.substring(0, 1).toLowerCase() + name.substring(1);
   }
 
-  public static String asAnnotationMember(String name) {
+  /**
+   * Represents name as annotation parameter for code generation.
+   *
+   * @param name procedure or type name
+   * @return annotation parameter
+   */
+  public static String asAnnotationMember(final String name) {
     return '"' + name + '"';
   }
 
@@ -104,7 +121,7 @@ public class IonPluginMojo extends AbstractMojo {
     }
   }
 
-  private static String readSchemaAsString(Path path) {
+  private static String readSchemaAsString(final Path path) {
     try {
       return Files.readString(path);
     } catch (IOException e) {

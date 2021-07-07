@@ -6,5 +6,8 @@ import com.github.gibmir.ion.api.schema.SchemaElement;
  * @implSpec must implements {@link Object#equals(Object)} and {@link Object#hashCode()}
  */
 public interface PropertyType extends SchemaElement {
+  /**
+   * @return type name
+   */
   String getTypeName();
 }

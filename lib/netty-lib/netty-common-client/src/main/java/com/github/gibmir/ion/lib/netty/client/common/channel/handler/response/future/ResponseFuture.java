@@ -8,41 +8,61 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
 
-public class ResponseFuture implements JsonRpcResponseProcessor {
+public final class ResponseFuture implements JsonRpcResponseProcessor {
   private final Jsonb responseJsonb;
   private final String id;
   private final Type returnType;
   private final ResponseCallback<?> responseCallback;
 
-  public ResponseFuture(String id, Type returnType, Jsonb responseJsonb, ResponseCallback<?> responseCallback) {
+  public ResponseFuture(final String id, final Type returnType, final Jsonb responseJsonb,
+                        final ResponseCallback<?> responseCallback) {
     this.id = id;
     this.returnType = returnType;
     this.responseJsonb = responseJsonb;
     this.responseCallback = responseCallback;
   }
 
+  /**
+   * @return request id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * @return serializer
+   */
   public Jsonb getResponseJsonb() {
     return responseJsonb;
   }
 
+  /**
+   * @return return type
+   */
   public Type getReturnType() {
     return returnType;
   }
 
-  public void completeExceptionally(Throwable throwable) {
+  /**
+   * Completes future with specified exception.
+   *
+   * @param throwable processing exception
+   */
+  public void completeExceptionally(final Throwable throwable) {
     responseCallback.onResponse(null, throwable);
   }
 
-  public void complete(String responseJson) {
+  /**
+   * Completes future with response json.
+   *
+   * @param responseJson response json
+   */
+  public void complete(final String responseJson) {
     responseCallback.onResponse(responseJsonb.fromJson(responseJson, returnType), null);
   }
 
   @Override
-  public void process(ErrorResponse errorResponse) {
+  public void process(final ErrorResponse errorResponse) {
     responseCallback.onResponse(null, new JsonRpcProcessingException(errorResponse));
   }
 }

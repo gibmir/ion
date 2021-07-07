@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Optional;
 
-public class ConfigurationUtils {
+public final class ConfigurationUtils {
   public static final String ROOT_PREFIX = "ion";
   public static final char DOT_SEPARATOR = '.';
   //jsonb string properties
@@ -42,15 +42,28 @@ public class ConfigurationUtils {
   private ConfigurationUtils() {
   }
 
-  public static Jsonb createJsonbWith(Configuration configuration) {
+  /**
+   * Creates {@link Jsonb} with provided config.
+   *
+   * @param configuration application config
+   * @return {@link Jsonb}
+   */
+  public static Jsonb createJsonbWith(final Configuration configuration) {
     return JsonbBuilder.newBuilder().withConfig(readJsonbConfigFrom(configuration)).build();
   }
 
-  public static JsonbConfig readJsonbConfigFrom(Configuration configuration) {
+  /**
+   * Reads jsonb config from application config.
+   *
+   * @param configuration application config
+   * @return {@link JsonbConfig}
+   */
+  public static JsonbConfig readJsonbConfigFrom(final Configuration configuration) {
     JsonbConfig jsonbConfig = new JsonbConfig();
     configuration.getOptionalValue(JSONB_ENCODING, String.class).ifPresent(jsonbConfig::withEncoding);
     configuration.getOptionalValue(JSONB_BINARY_DATA_STRATEGY, String.class).ifPresent(jsonbConfig::withBinaryDataStrategy);
-    configuration.getOptionalValue(JSONB_PROPERTY_NAMING_STRATEGY, String.class).ifPresent(jsonbConfig::withPropertyNamingStrategy);
+    configuration.getOptionalValue(JSONB_PROPERTY_NAMING_STRATEGY, String.class)
+      .ifPresent(jsonbConfig::withPropertyNamingStrategy);
     configuration.getOptionalValue(JSONB_PROPERTY_ORDER_STRATEGY, String.class).ifPresent(jsonbConfig::withPropertyOrderStrategy);
     setDateFormat(configuration, jsonbConfig);
     configuration.getOptionalValue(JSONB_FORMATTING, Boolean.class).ifPresent(jsonbConfig::withFormatting);
@@ -58,14 +71,20 @@ public class ConfigurationUtils {
     return jsonbConfig;
   }
 
-  private static void setDateFormat(Configuration configuration, JsonbConfig jsonbConfig) {
+  private static void setDateFormat(final Configuration configuration, final JsonbConfig jsonbConfig) {
     Optional<Locale> optionalLocale = configuration.getOptionalValue(JSONB_LOCALE, String.class).map(Locale::new);
     optionalLocale.ifPresent(jsonbConfig::withLocale);
     configuration.getOptionalValue(JSONB_DATE_FORMAT, String.class)
       .ifPresent(dateFormat -> optionalLocale.ifPresent(locale -> jsonbConfig.withDateFormat(dateFormat, locale)));
   }
 
-  public static Charset readCharsetFrom(Configuration configuration) {
+  /**
+   * Reads charset from config.
+   *
+   * @param configuration application config
+   * @return charset
+   */
+  public static Charset readCharsetFrom(final Configuration configuration) {
     return configuration.getOptionalValue(REQUEST_CHARSET_PROPERTY, String.class)
       .map(Charset::forName).orElse(ConfigurationUtils.DEFAULT_CHARSET);
   }

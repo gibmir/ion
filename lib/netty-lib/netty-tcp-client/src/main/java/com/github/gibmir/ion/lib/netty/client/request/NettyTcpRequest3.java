@@ -17,9 +17,9 @@ import java.util.concurrent.CompletableFuture;
 public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<NettyTcpRequest3<T1, T2, T3, R>>
   implements Request3<T1, T2, T3, R> {
 
-  public NettyTcpRequest3(JsonRpcSender defaultJsonRpcNettySender, SocketAddress defaultSocketAddress,
-                          Jsonb defaultJsonb, Charset defaultCharset,
-                          JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyTcpRequest3(final JsonRpcSender defaultJsonRpcNettySender, final SocketAddress defaultSocketAddress,
+                          final Jsonb defaultJsonb, final Charset defaultCharset,
+                          final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
@@ -27,7 +27,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest3<T1, T2, T3, R> socketAddress(SocketAddress socketAddress) {
+  public NettyTcpRequest3<T1, T2, T3, R> socketAddress(final SocketAddress socketAddress) {
     return new NettyTcpRequest3<>(defaultJsonRpcSender, socketAddress, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
@@ -35,7 +35,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest3<T1, T2, T3, R> jsonb(Jsonb jsonb) {
+  public NettyTcpRequest3<T1, T2, T3, R> jsonb(final Jsonb jsonb) {
     return new NettyTcpRequest3<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -44,7 +44,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest3<T1, T2, T3, R> charset(Charset charset) {
+  public NettyTcpRequest3<T1, T2, T3, R> charset(final Charset charset) {
     return new NettyTcpRequest3<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -53,7 +53,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2, T3 arg3) {
+  public CompletableFuture<R> positionalCall(final String id, final T1 arg1, final T2 arg2, final T3 arg3) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2, arg3}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
@@ -62,7 +62,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2, T3 arg3) {
+  public CompletableFuture<R> namedCall(final String id, final T1 arg1, final T2 arg2, final T3 arg3) {
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
@@ -76,7 +76,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public void positionalNotificationCall(T1 arg1, T2 arg2, T3 arg3) {
+  public void positionalNotificationCall(final T1 arg1, final T2 arg2, final T3 arg3) {
     defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2, arg3}), jsonb, charset, defaultSocketAddress);
   }
@@ -85,7 +85,7 @@ public class NettyTcpRequest3<T1, T2, T3, R> extends AbstractNettyTcpRequest<Net
    * {@inheritDoc}
    */
   @Override
-  public void namedNotificationCall(T1 arg1, T2 arg2, T3 arg3) {
+  public void namedNotificationCall(final T1 arg1, final T2 arg2, final T3 arg3) {
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);

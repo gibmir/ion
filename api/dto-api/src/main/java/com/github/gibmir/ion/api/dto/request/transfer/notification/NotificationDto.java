@@ -12,29 +12,49 @@ public class NotificationDto extends AbstractJsonRpcRequest {
   }
 
   /**
-   * <b>use static fabrics to prevent types miscast</b>
+   * <b>use static fabrics to prevent types miscast</b>.
    *
    * @see NotificationDto#positional(String, Object[])
    * @see NotificationDto#named(String, Map)
    * @see NotificationDto#empty(String)
    */
-  public NotificationDto(String procedureName, Object[] args) {
+  public NotificationDto(final String procedureName, final Object[] args) {
     super(procedureName, args);
   }
 
-  private NotificationDto(String procedureName, Object args) {
+  private NotificationDto(final String procedureName, final Object args) {
     super(procedureName, args);
   }
 
-  public static NotificationDto named(String methodName, Map<String, Object> namedArgs) {
+  /**
+   * Static factory for named method parameters.
+   *
+   * @param methodName method name
+   * @param namedArgs  arguments
+   * @return notification
+   */
+  public static NotificationDto named(final String methodName, final Map<String, Object> namedArgs) {
     return new NotificationDto(methodName, namedArgs);
   }
 
-  public static NotificationDto positional(String methodName, Object[] positionalArgs) {
+  /**
+   * Static factory for positional method parameters.
+   *
+   * @param methodName     method name
+   * @param positionalArgs arguments
+   * @return notification
+   */
+  public static NotificationDto positional(final String methodName, final Object[] positionalArgs) {
     return new NotificationDto(methodName, positionalArgs);
   }
 
-  public static NotificationDto empty(String methodName) {
+  /**
+   * Static factory for method without parameters.
+   *
+   * @param methodName method name
+   * @return notification
+   */
+  public static NotificationDto empty(final String methodName) {
     return new NotificationDto(methodName, EMPTY_PAYLOAD);
   }
 }

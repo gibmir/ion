@@ -1,10 +1,19 @@
 package com.github.gibmir.ion.api.message;
 
 public interface ExceptionMessage extends Message {
+  /**
+   * @return request id
+   */
   String getId();
 
+  /**
+   * @return exception code
+   */
   int getCode();
 
+  /**
+   * @return exception message
+   */
   String getMessage();
 
   @Override

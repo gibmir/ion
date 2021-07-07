@@ -7,6 +7,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.AbstractJsonRpcResponse;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class ErrorResponse extends AbstractJsonRpcResponse implements JsonRpcResponse {
+  public static final int UNKNOWN_ERROR_CODE = -32000;
   @JsonbProperty("error")
   private JsonRpcError jsonRpcError;
 
@@ -14,52 +15,90 @@ public class ErrorResponse extends AbstractJsonRpcResponse implements JsonRpcRes
     super();
   }
 
-  public ErrorResponse(String id, JsonRpcError jsonRpcError) {
+  public ErrorResponse(final String id, final JsonRpcError jsonRpcError) {
     super(id);
     this.jsonRpcError = jsonRpcError;
   }
 
-  public static ErrorResponse fromThrowable(String id, Throwable throwable) {
-    return new ErrorResponse(id, new JsonRpcError(-32000, throwable.getMessage()));
+  /**
+   * Static factory to create error response from exception.
+   *
+   * @param id        response id
+   * @param throwable cause
+   * @return error response
+   */
+  public static ErrorResponse fromThrowable(final String id, final Throwable throwable) {
+    return new ErrorResponse(id, new JsonRpcError(UNKNOWN_ERROR_CODE, throwable.getMessage()));
   }
 
-  public static ErrorResponse withNullId(Throwable throwable) {
-    return new ErrorResponse(JSON_RPC_NULL_ID, new JsonRpcError(-32000, throwable.toString() +
-      ". Error message: " + throwable.getMessage()));
+  /**
+   * Static factory to create error response from exception.
+   *
+   * @param throwable cause
+   * @return error response
+   */
+  public static ErrorResponse withNullId(final Throwable throwable) {
+    return new ErrorResponse(JSON_RPC_NULL_ID, new JsonRpcError(UNKNOWN_ERROR_CODE, throwable.toString()
+      + ". Error message: " + throwable.getMessage()));
   }
 
-  public static ErrorResponse withNullId(JsonRpcError jsonRpcError) {
+  /**
+   * Static factory to create error response from exception.
+   *
+   * @param jsonRpcError cause
+   * @return error response
+   */
+  public static ErrorResponse withNullId(final JsonRpcError jsonRpcError) {
     return new ErrorResponse(JSON_RPC_NULL_ID, jsonRpcError);
   }
 
-  public static ErrorResponse withId(String id, JsonRpcError jsonRpcError) {
+  /**
+   * Static factory to create error response from exception.
+   *
+   * @param id           response id
+   * @param jsonRpcError cause
+   * @return error response
+   */
+  public static ErrorResponse fromJsonRpcError(final String id, final JsonRpcError jsonRpcError) {
     return new ErrorResponse(id, jsonRpcError);
   }
 
-  public static ErrorResponse fromJsonRpcError(String id, JsonRpcError jsonRpcError) {
-    return new ErrorResponse(id, jsonRpcError);
-  }
-
+  /**
+   * @return error
+   */
   public JsonRpcError getJsonRpcError() {
     return jsonRpcError;
   }
 
-  public void setJsonRpcError(JsonRpcError jsonRpcError) {
+  /**
+   * Sets json rpc error.
+   *
+   * @param jsonRpcError error
+   */
+  public void setJsonRpcError(final JsonRpcError jsonRpcError) {
     this.jsonRpcError = jsonRpcError;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @param jsonRpcResponseProcessor processor to process response
+   */
   @Override
-  public void processWith(JsonRpcResponseProcessor jsonRpcResponseProcessor) {
+  public void processWith(final JsonRpcResponseProcessor jsonRpcResponseProcessor) {
     jsonRpcResponseProcessor.process(this);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
     String error = jsonRpcError != null ? jsonRpcError.toString() : "";
-    return '{' +
-      " jsonrpc: " + jsonRpcProtocolVersion + ',' +
-      " id: " + id + ',' +
-      " error: " + error +
-      '}';
+    return '{'
+      + " jsonrpc: " + getJsonRpcProtocolVersion() + ','
+      + " id: " + getId() + ','
+      + " error: " + error
+      + '}';
   }
 }

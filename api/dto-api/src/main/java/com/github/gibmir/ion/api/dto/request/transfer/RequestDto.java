@@ -3,38 +3,54 @@ package com.github.gibmir.ion.api.dto.request.transfer;
 import java.util.Map;
 
 public class RequestDto extends AbstractJsonRpcRequest {
-  protected String id;
+  private String id;
 
   public RequestDto() {
     super();
   }
 
-  private RequestDto(String id, String procedureName, Object args) {
+  private RequestDto(final String id, final String procedureName, final Object args) {
     super(procedureName, args);
     this.id = id;
   }
 
-  public static RequestDto named(String id, String methodName, Map<String, Object> namedArgs) {
+  /**
+   * Static factory for named method parameters.
+   *
+   * @param id         request id
+   * @param methodName method name
+   * @param namedArgs  arguments
+   * @return request
+   */
+  public static RequestDto named(final String id, final String methodName, final Map<String, Object> namedArgs) {
     return new RequestDto(id, methodName, namedArgs);
   }
 
-  public static RequestDto positional(String id, String methodName, Object[] positionalArgs) {
+  /**
+   * Static factory for positional method parameters.
+   *
+   * @param id             request id
+   * @param methodName     method name
+   * @param positionalArgs arguments
+   * @return notification
+   */
+  public static RequestDto positional(final String id, final String methodName, final Object[] positionalArgs) {
     return new RequestDto(id, methodName, positionalArgs);
   }
 
-  public Object getArgs() {
-    return args;
-  }
-
-  public void setArgs(Object args) {
-    this.args = args;
-  }
-
+  /**
+   * @return request id
+   */
   public String getId() {
     return id;
   }
 
-  public void setId(String id) {
+  /**
+   * Sets request id.
+   *
+   * @param id request id
+   */
+  public void setId(final String id) {
     this.id = id;
   }
 }

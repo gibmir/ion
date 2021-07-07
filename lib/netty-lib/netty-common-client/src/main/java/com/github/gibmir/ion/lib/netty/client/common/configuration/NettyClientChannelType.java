@@ -10,10 +10,13 @@ public enum NettyClientChannelType {
 
   private final Class<? extends Channel> channelClass;
 
-  NettyClientChannelType(Class<? extends Channel> channelClass) {
+  NettyClientChannelType(final Class<? extends Channel> channelClass) {
     this.channelClass = channelClass;
   }
 
+  /**
+   * @return netty socket channel class
+   */
   public Class<? extends Channel> resolveChannelClass() {
     return channelClass;
   }

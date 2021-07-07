@@ -7,7 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 public interface Schema {
+  /**
+   * @return user defined types
+   */
   Map<String, TypeDeclaration> getTypes();
 
+  /**
+   * @return user defined procedures
+   */
   List<Procedure> getProcedures();
 }

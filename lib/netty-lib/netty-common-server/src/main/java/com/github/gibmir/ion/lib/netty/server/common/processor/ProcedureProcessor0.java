@@ -9,7 +9,8 @@ import java.nio.charset.Charset;
 public class ProcedureProcessor0<R, P extends JsonRemoteProcedure0<R>>
   extends AbstractProcedureProcessor<P> implements ProcedureProcessor<P> {
 
-  public ProcedureProcessor0(Class<P> procedure, P processor, Jsonb defaultJsonb, Charset defaultCharset) {
+  public ProcedureProcessor0(final Class<P> procedure, final P processor, final Jsonb defaultJsonb,
+                             final Charset defaultCharset) {
     super(procedure, processor, defaultJsonb, defaultCharset);
   }
 }

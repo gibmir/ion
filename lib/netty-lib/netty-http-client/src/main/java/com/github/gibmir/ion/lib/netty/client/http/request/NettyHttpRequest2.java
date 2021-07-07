@@ -17,8 +17,8 @@ import java.util.concurrent.CompletableFuture;
 public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<NettyHttpRequest2<T1, T2, R>>
   implements Request2<T1, T2, R> {
 
-  public NettyHttpRequest2(NettyHttpJsonRpcSender defaultJsonRpcSender, URI defaultUri, Jsonb jsonb,
-                           Charset charset, JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyHttpRequest2(final NettyHttpJsonRpcSender defaultJsonRpcSender, final URI defaultUri, final Jsonb jsonb,
+                           final Charset charset, final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(defaultJsonRpcSender, defaultUri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
@@ -26,7 +26,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public NettyHttpRequest2<T1, T2, R> jsonb(Jsonb jsonb) {
+  public NettyHttpRequest2<T1, T2, R> jsonb(final Jsonb jsonb) {
     return new NettyHttpRequest2<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
@@ -34,7 +34,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public NettyHttpRequest2<T1, T2, R> charset(Charset charset) {
+  public NettyHttpRequest2<T1, T2, R> charset(final Charset charset) {
     return new NettyHttpRequest2<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
@@ -42,7 +42,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2) {
+  public CompletableFuture<R> positionalCall(final String id, final T1 arg1, final T2 arg2) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), uri);
   }
@@ -51,7 +51,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2) {
+  public CompletableFuture<R> namedCall(final String id, final T1 arg1, final T2 arg2) {
     Map<String, Object> argsMap = new WeakHashMap<>(2);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
@@ -64,7 +64,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public void positionalNotificationCall(T1 arg1, T2 arg2) {
+  public void positionalNotificationCall(final T1 arg1, final T2 arg2) {
     defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, uri);
   }
@@ -73,7 +73,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public void namedNotificationCall(T1 arg1, T2 arg2) {
+  public void namedNotificationCall(final T1 arg1, final T2 arg2) {
     Map<String, Object> argsMap = new WeakHashMap<>(2);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
@@ -86,7 +86,7 @@ public class NettyHttpRequest2<T1, T2, R> extends AbstractNettyHttpRequest<Netty
    * {@inheritDoc}
    */
   @Override
-  public NettyHttpRequest2<T1, T2, R> uri(URI uri) {
+  public NettyHttpRequest2<T1, T2, R> uri(final URI uri) {
     return new NettyHttpRequest2<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 }

@@ -12,16 +12,16 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 
-public class HttpClientChannelHandlerAppender implements ChannelHandlerAppender {
+public final class HttpClientChannelHandlerAppender implements ChannelHandlerAppender {
   private final ResponseListenerRegistry responseListenerRegistry;
   private final Charset charset;
   private final Jsonb jsonb;
   private final HttpResponseDecoderConfiguration decoderConfiguration;
   private final int maxContentLength;
 
-  public HttpClientChannelHandlerAppender(ResponseListenerRegistry responseListenerRegistry, Charset charset,
-                                          Jsonb jsonb, HttpResponseDecoderConfiguration decoderConfiguration,
-                                          int maxContentLength) {
+  public HttpClientChannelHandlerAppender(final ResponseListenerRegistry responseListenerRegistry, final Charset charset,
+                                          final Jsonb jsonb, final HttpResponseDecoderConfiguration decoderConfiguration,
+                                          final int maxContentLength) {
     this.responseListenerRegistry = responseListenerRegistry;
     this.charset = charset;
     this.jsonb = jsonb;
@@ -30,7 +30,7 @@ public class HttpClientChannelHandlerAppender implements ChannelHandlerAppender 
   }
 
   @Override
-  public void appendTo(ChannelPipeline channelPipeline) {
+  public void appendTo(final ChannelPipeline channelPipeline) {
     channelPipeline
       .addLast("client codec", new HttpClientCodec(decoderConfiguration.getMaxInitialLineLength(),
         decoderConfiguration.getMaxHeaderSize(), decoderConfiguration.getMaxChunkSize()))

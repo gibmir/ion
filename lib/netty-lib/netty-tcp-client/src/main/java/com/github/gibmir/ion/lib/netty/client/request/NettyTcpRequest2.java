@@ -17,8 +17,9 @@ import java.util.concurrent.CompletableFuture;
 public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTcpRequest2<T1, T2, R>>
   implements Request2<T1, T2, R> {
 
-  public NettyTcpRequest2(JsonRpcSender defaultJsonRpcNettySender, SocketAddress defaultSocketAddress,
-                          Jsonb defaultJsonb, Charset defaultCharset, JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyTcpRequest2(final JsonRpcSender defaultJsonRpcNettySender, final SocketAddress defaultSocketAddress,
+                          final Jsonb defaultJsonb, final Charset defaultCharset,
+                          final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
@@ -26,7 +27,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest2<T1, T2, R> socketAddress(SocketAddress socketAddress) {
+  public NettyTcpRequest2<T1, T2, R> socketAddress(final SocketAddress socketAddress) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, socketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -35,7 +36,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest2<T1, T2, R> jsonb(Jsonb jsonb) {
+  public NettyTcpRequest2<T1, T2, R> jsonb(final Jsonb jsonb) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -44,7 +45,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest2<T1, T2, R> charset(Charset charset) {
+  public NettyTcpRequest2<T1, T2, R> charset(final Charset charset) {
     return new NettyTcpRequest2<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -53,7 +54,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> positionalCall(String id, T1 arg1, T2 arg2) {
+  public CompletableFuture<R> positionalCall(final String id, final T1 arg1, final T2 arg2) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
@@ -62,7 +63,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> namedCall(String id, T1 arg1, T2 arg2) {
+  public CompletableFuture<R> namedCall(final String id, final T1 arg1, final T2 arg2) {
     Map<String, Object> argsMap = new WeakHashMap<>(2);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);
@@ -75,7 +76,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public void positionalNotificationCall(T1 arg1, T2 arg2) {
+  public void positionalNotificationCall(final T1 arg1, final T2 arg2) {
     defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2}), jsonb, charset, defaultSocketAddress);
   }
@@ -84,7 +85,7 @@ public class NettyTcpRequest2<T1, T2, R> extends AbstractNettyTcpRequest<NettyTc
    * {@inheritDoc}
    */
   @Override
-  public void namedNotificationCall(T1 arg1, T2 arg2) {
+  public void namedNotificationCall(final T1 arg1, final T2 arg2) {
     Map<String, Object> argsMap = new WeakHashMap<>(2);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg1);

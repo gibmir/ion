@@ -16,8 +16,9 @@ public abstract class AbstractNettyHttpRequest<Request extends ConfigurableNetty
   protected final JsonRemoteProcedureSignature jsonRemoteProcedureSignature;
 
 
-  protected AbstractNettyHttpRequest(NettyHttpJsonRpcSender defaultJsonRpcSender, URI defaultUri, Jsonb jsonb,
-                                     Charset charset, JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  protected AbstractNettyHttpRequest(final NettyHttpJsonRpcSender defaultJsonRpcSender, final URI defaultUri,
+                                     final Jsonb jsonb, final Charset charset,
+                                     final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     this.defaultJsonRpcSender = defaultJsonRpcSender;
     this.uri = defaultUri;
     this.jsonb = jsonb;
@@ -26,17 +27,17 @@ public abstract class AbstractNettyHttpRequest<Request extends ConfigurableNetty
   }
 
   @Override
-  public Jsonb jsonb() {
+  public final Jsonb jsonb() {
     return jsonb;
   }
 
   @Override
-  public Charset charset() {
+  public final Charset charset() {
     return charset;
   }
 
   @Override
-  public URI uri() {
+  public final URI uri() {
     return uri;
   }
 }

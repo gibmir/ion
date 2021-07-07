@@ -21,11 +21,20 @@ import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
 
-public class ProcedureGenerationUtils {
+public final class ProcedureGenerationUtils {
 
   public static final String NAMED_ANNOTATION_NAME_PARAM = "name";
 
-  public static TypeSpec asTypeSpecification(Procedure procedure) {
+  private ProcedureGenerationUtils() {
+  }
+
+  /**
+   * Represents procedure as type specification.
+   *
+   * @param procedure procedure
+   * @return type specification
+   */
+  public static TypeSpec asTypeSpecification(final Procedure procedure) {
     String procedureName = procedure.getName();
     AnnotationSpec annotationSpec = AnnotationSpec.builder(Named.class)
       .addMember(NAMED_ANNOTATION_NAME_PARAM, IonPluginMojo.asAnnotationMember(procedureName)).build();
@@ -58,8 +67,9 @@ public class ProcedureGenerationUtils {
     return procedureTypeSpecBuilder.build();
   }
 
-  private static void prepareOneArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType argumentType,
-                                             ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+  private static void prepareOneArgProcedure(final TypeSpec.Builder procedureTypeSpecBuilder,
+                                             final PropertyType argumentType, final ClassName returnClassName,
+                                             final MethodSpec.Builder callMethodSpec) {
     String firstArgumentTypeName = argumentType.getTypeName();
     String argumentName = argumentType.getName();
     TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
@@ -72,8 +82,9 @@ public class ProcedureGenerationUtils {
     callMethodSpec.addParameter(parameterSpec);
   }
 
-  private static void prepareTwoArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
-                                             ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+  private static void prepareTwoArgProcedure(final TypeSpec.Builder procedureTypeSpecBuilder,
+                                             final PropertyType[] argumentTypes, final ClassName returnClassName,
+                                             final MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
     String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
     TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
@@ -92,8 +103,9 @@ public class ProcedureGenerationUtils {
         .build());
   }
 
-  private static void prepareThreeArgProcedure(TypeSpec.Builder procedureTypeSpecBuilder, PropertyType[] argumentTypes,
-                                               ClassName returnClassName, MethodSpec.Builder callMethodSpec) {
+  private static void prepareThreeArgProcedure(final TypeSpec.Builder procedureTypeSpecBuilder,
+                                               final PropertyType[] argumentTypes, final ClassName returnClassName,
+                                               final MethodSpec.Builder callMethodSpec) {
     String firstArgumentName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getName();
     String firstArgumentTypeName = argumentTypes[ProcedureScanner.FIRST_PROCEDURE_PARAMETER].getTypeName();
     TypeName firstArgumentClassName = resolveClassName(firstArgumentTypeName);
@@ -119,7 +131,7 @@ public class ProcedureGenerationUtils {
         .build());
   }
 
-  private static TypeName resolveClassName(String argumentTypeName) {
+  private static TypeName resolveClassName(final String argumentTypeName) {
     if (TypeGenerationUtils.isParametrizedProperty(argumentTypeName)) {
       ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(argumentTypeName);
       return parametrizedTypeTree.buildTypeName();

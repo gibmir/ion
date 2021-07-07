@@ -21,18 +21,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class NettyJsonRpcServer implements JsonRpcServer {
+public final class NettyJsonRpcServer implements JsonRpcServer {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcServer.class);
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
   private final ProcedureProcessorFactory procedureProcessorFactory;
 
-  public NettyJsonRpcServer(ProcedureProcessorRegistry procedureProcessorRegistry,
-                            ProcedureProcessorFactory procedureProcessorFactory) {
+  public NettyJsonRpcServer(final ProcedureProcessorRegistry procedureProcessorRegistry,
+                            final ProcedureProcessorFactory procedureProcessorFactory) {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
     this.procedureProcessorFactory = procedureProcessorFactory;
   }
 
-  private ProcedureManager registerProcedureProcessor0(Class<?> procedureClass, Object procedureImpl, Jsonb jsonb) {
+  private ProcedureManager registerProcedureProcessor0(final Class<?> procedureClass, final Object procedureImpl,
+                                                       final Jsonb jsonb) {
     String procedureName = ProcedureScanner.getProcedureName(procedureClass);
     LOGGER.debug("Procedure [{}] registration was started. Procedure impl {}", procedureName,
       procedureImpl);
@@ -41,7 +42,8 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
   }
 
-  private ProcedureManager registerProcedureProcessor1(Class<?> procedureClass, Object procedureImpl, Jsonb jsonb) {
+  private ProcedureManager registerProcedureProcessor1(final Class<?> procedureClass, final Object procedureImpl,
+                                                       final Jsonb jsonb) {
     String procedureName = ProcedureScanner.getProcedureName(procedureClass);
     LOGGER.debug("Procedure [{}] registration was started. Procedure impl {}", procedureName,
       procedureImpl);
@@ -50,7 +52,8 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
   }
 
-  private ProcedureManager registerProcedureProcessor2(Class<?> procedureClass, Object procedureImpl, Jsonb jsonb) {
+  private ProcedureManager registerProcedureProcessor2(final Class<?> procedureClass, final Object procedureImpl,
+                                                       final Jsonb jsonb) {
     String procedureName = ProcedureScanner.getProcedureName(procedureClass);
     LOGGER.debug("Procedure [{}] registration was started. Procedure impl {}", procedureName,
       procedureImpl);
@@ -59,7 +62,8 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
   }
 
-  private ProcedureManager registerProcedureProcessor3(Class<?> procedureClass, Object procedureImpl, Jsonb jsonb) {
+  private ProcedureManager registerProcedureProcessor3(final Class<?> procedureClass, final Object procedureImpl,
+                                                       final Jsonb jsonb) {
     String procedureName = ProcedureScanner.getProcedureName(procedureClass);
     LOGGER.debug("Procedure [{}] registration was started. Procedure impl {}", procedureName,
       procedureImpl);
@@ -74,7 +78,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
   }
 
   @Override
-  public ProcedureManager register(ProcedureProcessor<?>... procedureProcessors) {
+  public ProcedureManager register(final ProcedureProcessor<?>... procedureProcessors) {
     LOGGER.debug("Procedure processors registration was started. Processors count [{}]", procedureProcessors.length);
     List<ProcedureManager> managers = new ArrayList<>(procedureProcessors.length);
     for (ProcedureProcessor<?> procedureProcessor : procedureProcessors) {
@@ -84,7 +88,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
   }
 
   @Override
-  public ProcedureManager register(Collection<ProcedureProcessor<?>> procedureProcessors) {
+  public ProcedureManager register(final Collection<ProcedureProcessor<?>> procedureProcessors) {
     int processorsCount = procedureProcessors.size();
     LOGGER.debug("Procedure processors registration was started. Processors count [{}]", processorsCount);
     List<ProcedureManager> managers = new ArrayList<>(processorsCount);
@@ -94,7 +98,7 @@ public class NettyJsonRpcServer implements JsonRpcServer {
     return new ComposedProcedureManager(managers);
   }
 
-  private ProcedureManager register(ProcedureProcessor<?> procedureProcessor) {
+  private ProcedureManager register(final ProcedureProcessor<?> procedureProcessor) {
     Class<?> procedure = procedureProcessor.getProcedure();
     Object processor = procedureProcessor.getProcessor();
     Jsonb jsonb = procedureProcessor.jsonb();

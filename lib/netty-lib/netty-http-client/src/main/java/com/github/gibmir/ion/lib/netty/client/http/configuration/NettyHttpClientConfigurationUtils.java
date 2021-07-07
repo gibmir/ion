@@ -1,11 +1,13 @@
 package com.github.gibmir.ion.lib.netty.client.http.configuration;
 
 import com.github.gibmir.ion.api.configuration.Configuration;
-import io.netty.handler.codec.http.HttpRequestDecoder;
 
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
-public class NettyHttpClientConfigurationUtils {
+public final class NettyHttpClientConfigurationUtils {
+  private NettyHttpClientConfigurationUtils() {
+  }
+
   //decoder
   //int
   public static final String NETTY_CLIENT_HTTP_MAX_INITIAL_LENGTH =
@@ -21,9 +23,10 @@ public class NettyHttpClientConfigurationUtils {
   public static final int DEFAULT_MAX_CHUNK_SIZE = 8192;
 
   /**
-   * @see HttpRequestDecoder#HttpRequestDecoder() default values
+   * @param configuration application config
+   * @return response decoder config
    */
-  public static HttpResponseDecoderConfiguration resolveDecoratorConfig(Configuration configuration) {
+  public static HttpResponseDecoderConfiguration resolveDecoratorConfig(final Configuration configuration) {
     Integer maxInitialLength = configuration.getOptionalValue(NETTY_CLIENT_HTTP_MAX_INITIAL_LENGTH, Integer.class)
       .orElse(DEFAULT_MAX_INITIAL_LENGTH);
     Integer maxHeaderSize = configuration.getOptionalValue(NETTY_CLIENT_HTTP_MAX_HEADER_SIZE, Integer.class)

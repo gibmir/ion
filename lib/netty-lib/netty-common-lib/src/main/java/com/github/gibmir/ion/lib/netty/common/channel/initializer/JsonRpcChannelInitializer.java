@@ -4,15 +4,15 @@ import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.Chann
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 
-public class JsonRpcChannelInitializer extends ChannelInitializer<Channel> {
+public final class JsonRpcChannelInitializer extends ChannelInitializer<Channel> {
   private final ChannelHandlerAppender channelHandlerAppender;
 
-  public JsonRpcChannelInitializer(ChannelHandlerAppender channelHandlerAppender) {
+  public JsonRpcChannelInitializer(final ChannelHandlerAppender channelHandlerAppender) {
     this.channelHandlerAppender = channelHandlerAppender;
   }
 
   @Override
-  protected void initChannel(Channel ch) {
+  protected void initChannel(final Channel ch) {
     channelHandlerAppender.appendTo(ch.pipeline());
   }
 }

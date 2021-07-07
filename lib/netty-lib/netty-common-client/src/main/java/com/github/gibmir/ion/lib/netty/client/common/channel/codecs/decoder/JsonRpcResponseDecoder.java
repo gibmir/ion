@@ -8,17 +8,17 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class JsonRpcResponseDecoder extends MessageToMessageDecoder<byte[]> {
+public final class JsonRpcResponseDecoder extends MessageToMessageDecoder<byte[]> {
   private final Jsonb jsonb;
   private final Charset charset;
 
-  public JsonRpcResponseDecoder(Jsonb jsonb, Charset charset) {
+  public JsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset) {
     this.jsonb = jsonb;
     this.charset = charset;
   }
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) {
+  protected void decode(final ChannelHandlerContext ctx, final byte[] msg, final List<Object> out) {
     out.add(jsonb.fromJson(new String(msg, charset), JsonValue.class));
   }
 }

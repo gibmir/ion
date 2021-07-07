@@ -16,6 +16,7 @@ public interface JsonRpcServer {
    * Register procedure processors from provided vararg.
    *
    * @param procedureProcessors processors vararg. <b>must not be {@code null}</b>
+   * @return procedure manager
    */
   ProcedureManager register(ProcedureProcessor<?>... procedureProcessors);
 
@@ -23,6 +24,7 @@ public interface JsonRpcServer {
    * Register procedure processors from provided collection.
    *
    * @param procedureProcessors processors collection. <b>must not be {@code null}</b>
+   * @return procedure manager
    */
   ProcedureManager register(Collection<ProcedureProcessor<?>> procedureProcessors);
 }

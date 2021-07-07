@@ -32,7 +32,7 @@ import java.time.Duration;
 
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
-public class NettyClientConfigurationUtils {
+public final class NettyClientConfigurationUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyClientConfigurationUtils.class);
 
   private NettyClientConfigurationUtils() {
@@ -44,7 +44,11 @@ public class NettyClientConfigurationUtils {
   //string properties
   public static final String NETTY_CLIENT_SOCKET_ADDRESS_HOST = ROOT_PREFIX + ".netty.client.socket.address.host";
 
-  public static SocketAddress createSocketAddressWith(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return socket address from specified configuration
+   */
+  public static SocketAddress createSocketAddressWith(final Configuration configuration) {
     String socketAddressHost = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_HOST, String.class);
 
     Integer socketAddressPort = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_PORT, Integer.class);
@@ -56,7 +60,11 @@ public class NettyClientConfigurationUtils {
   //string properties
   public static final String NETTY_CLIENT_URI = ROOT_PREFIX + ".netty.client.uri";
 
-  public static URI createUriWith(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return uri from config
+   */
+  public static URI createUriWith(final Configuration configuration) {
     String uri = configuration.getValue(NETTY_CLIENT_URI, String.class);
 
     LOGGER.info("Socket address was received. URI {}", uri);
@@ -67,7 +75,11 @@ public class NettyClientConfigurationUtils {
   //string properties
   public static final String NETTY_CLIENT_CHANNEL_TYPE = ROOT_PREFIX + ".netty.client.channel.type";
 
-  public static Class<? extends Channel> resolveChannelClass(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return channel class
+   */
+  public static Class<? extends Channel> resolveChannelClass(final Configuration configuration) {
     Class<? extends Channel> channelClass = configuration.getOptionalValue(NETTY_CLIENT_CHANNEL_TYPE, String.class)
       .map(NettyClientChannelType::valueOf)
       .orElse(NettyClientChannelType.NIO)
@@ -84,7 +96,11 @@ public class NettyClientConfigurationUtils {
   //defaults
   public static final Integer DEFAULT_NETTY_CLIENT_GROUP_THREADS_COUNT = Runtime.getRuntime().availableProcessors();
 
-  public static EventLoopGroup createEventLoopGroup(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return event loop group
+   */
+  public static EventLoopGroup createEventLoopGroup(final Configuration configuration) {
     NettyGroupType nettyGroupType = configuration.getOptionalValue(NETTY_CLIENT_GROUP_TYPE, String.class)
       .map(NettyGroupType::valueOf)
       .orElse(NettyGroupType.NIO);
@@ -94,7 +110,7 @@ public class NettyClientConfigurationUtils {
     return createGroup(nettyGroupType, threadsCount);
   }
 
-  private static EventLoopGroup createGroup(NettyGroupType nettyGroupType, Integer threadsCount) {
+  private static EventLoopGroup createGroup(final NettyGroupType nettyGroupType, final Integer threadsCount) {
     switch (nettyGroupType) {
       case EPOLL:
         return new EpollEventLoopGroup(threadsCount);
@@ -108,7 +124,11 @@ public class NettyClientConfigurationUtils {
   //string properties
   public static final String NETTY_CLIENT_LOG_LEVEL = ROOT_PREFIX + ".netty.client.log.level";
 
-  public static NettyLogLevel resolveLogLevel(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return resolved log level
+   */
+  public static NettyLogLevel resolveLogLevel(final Configuration configuration) {
     NettyLogLevel nettyLogLevel = configuration.getOptionalValue(NETTY_CLIENT_LOG_LEVEL, String.class)
       .map(NettyLogLevel::valueOf)
       .orElse(NettyLogLevel.DISABLED);
@@ -116,7 +136,13 @@ public class NettyClientConfigurationUtils {
     return nettyLogLevel;
   }
 
-  public static ChannelHandlerAppender appendLogging(Configuration configuration, ChannelHandlerAppender channelHandlerAppender) {
+  /**
+   * @param configuration          application configuration
+   * @param channelHandlerAppender handler appender
+   * @return decorated channel handler
+   */
+  public static ChannelHandlerAppender appendLogging(final Configuration configuration,
+                                                     final ChannelHandlerAppender channelHandlerAppender) {
     NettyLogLevel level = NettyClientConfigurationUtils.resolveLogLevel(configuration);
     if (/*if logging is not disabled*/!NettyLogLevel.DISABLED.equals(level)) {
       return LoggingAppenderDecorator.decorate(channelHandlerAppender, level.get());
@@ -140,7 +166,11 @@ public class NettyClientConfigurationUtils {
   //defaults
   public static final int DEFAULT_EVICTION_TIMEOUT = 60_000;
 
-  public static Cache<String, ResponseFuture> createResponseFuturesCache(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return response futures cache
+   */
+  public static Cache<String, ResponseFuture> createResponseFuturesCache(final Configuration configuration) {
     Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
     Integer evictionTimeout = configuration.getOptionalValue(NETTY_CLIENT_RESPONSE_CACHE_EVICTION_TIMEOUT, Integer.class)
       .orElse(DEFAULT_EVICTION_TIMEOUT);
@@ -169,7 +199,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_PROVIDER =
     ROOT_PREFIX + ".netty.client.ssl.provider";
 
-  public static NettySslProvider resolveSslProvider(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return resolved ssl provider
+   */
+  public static NettySslProvider resolveSslProvider(final Configuration configuration) {
     NettySslProvider nettySslProvider = configuration.getOptionalValue(NETTY_CLIENT_SSL_PROVIDER, String.class)
       .map(NettySslProvider::valueOf).orElse(NettySslProvider.DISABLED);
     LOGGER.info("Netty ssl provider was resolved [{}]", nettySslProvider);
@@ -180,7 +214,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_TRUST_STORE_PATH =
     ROOT_PREFIX + ".netty.client.ssl.trust.path";
 
-  public static File resolveTrustStore(Configuration configuration) {
+  /**
+   * @param configuration application configuration
+   * @return resolved trust store
+   */
+  public static File resolveTrustStore(final Configuration configuration) {
     String trustManagerCertPathString = configuration.getValue(NETTY_CLIENT_SSL_TRUST_STORE_PATH, String.class);
     LOGGER.info("Trust store path was resolved [{}]", trustManagerCertPathString);
     if (trustManagerCertPathString == null) {
@@ -194,7 +232,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_KEY_MANAGER_CERT_PATH =
     ROOT_PREFIX + ".netty.client.ssl.key.store.path";
 
-  public static File resolveKeyStore(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return resolved key store
+   */
+  public static File resolveKeyStore(final Configuration configuration) {
     String keyManagerCertPathString = configuration.getValue(NETTY_CLIENT_SSL_KEY_MANAGER_CERT_PATH, String.class);
     LOGGER.info("Key store path was resolved [{}]", keyManagerCertPathString);
     if (keyManagerCertPathString == null) {
@@ -208,7 +250,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_KEY_PATH =
     ROOT_PREFIX + ".netty.client.ssl.key.path";
 
-  public static File resolveKey(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return key
+   */
+  public static File resolveKey(final Configuration configuration) {
     String keyManagerCertPathString = configuration.getValue(NETTY_CLIENT_SSL_KEY_PATH, String.class);
     LOGGER.info("Key path was resolved [{}]", keyManagerCertPathString);
     if (keyManagerCertPathString == null) {
@@ -222,7 +268,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_KEY_PASSWORD =
     ROOT_PREFIX + ".netty.client.ssl.key.password";
 
-  public static String resolveKeyPassword(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return resolved key password
+   */
+  public static String resolveKeyPassword(final Configuration configuration) {
     String keyPassword = configuration.getValue(NETTY_CLIENT_SSL_KEY_PASSWORD, String.class);
     if (keyPassword == null) {
       LOGGER.info("Key password is null");
@@ -237,7 +287,11 @@ public class NettyClientConfigurationUtils {
   public static final String NETTY_CLIENT_SSL_AUTH_MODE =
     ROOT_PREFIX + ".netty.client.ssl.auth";
 
-  public static ClientAuth resolveClientAuth(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return resolved client auth
+   */
+  public static ClientAuth resolveClientAuth(final Configuration configuration) {
     ClientAuth clientAuth = configuration.getOptionalValue(NETTY_CLIENT_SSL_AUTH_MODE, String.class)
       .map(ClientAuth::valueOf)
       .orElse(ClientAuth.NONE);
@@ -245,7 +299,13 @@ public class NettyClientConfigurationUtils {
     return clientAuth;
   }
 
-  public static ChannelHandlerAppender appendSsl(Configuration configuration, ChannelHandlerAppender channelHandlerAppender) {
+  /**
+   * @param configuration          application config
+   * @param channelHandlerAppender handler appender
+   * @return handler appender decorated with ssl
+   */
+  public static ChannelHandlerAppender appendSsl(final Configuration configuration,
+                                                 final ChannelHandlerAppender channelHandlerAppender) {
     NettySslProvider sslProvider = NettyClientConfigurationUtils.resolveSslProvider(configuration);
     if (/*if ssl is enabled*/!sslProvider.equals(NettySslProvider.DISABLED)) {
       try {
@@ -285,9 +345,11 @@ public class NettyClientConfigurationUtils {
   public static final Integer DEFAULT_NETTY_CLIENT_FRAME_DECODER_LENGTH_STRIP_BITES = 4;
 
   /**
+   * @param configuration application config
+   * @return resolved frame decoder config
    * @see io.netty.handler.codec.bytes.ByteArrayDecoder for defaults
    */
-  public static FrameDecoderConfig resolveFrameDecoderConfig(Configuration configuration) {
+  public static FrameDecoderConfig resolveFrameDecoderConfig(final Configuration configuration) {
     int maxFrameLength = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH, Integer.class)
       .orElse(DEFAULT_NETTY_CLIENT_FRAME_DECODER_MAX_FRAME_LENGTH);
     int fieldOffset = configuration.getOptionalValue(NETTY_CLIENT_FRAME_DECODER_LENGTH_FIELD_OFFSET, Integer.class)
@@ -307,7 +369,11 @@ public class NettyClientConfigurationUtils {
     ROOT_PREFIX + "netty.client.frame.encoder.length.field.length";
   public static final Integer DEFAULT_NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH = 4;
 
-  public static int resolveEncoderFrameLength(Configuration configuration) {
+  /**
+   * @param configuration application config
+   * @return resolved encoder frame length
+   */
+  public static int resolveEncoderFrameLength(final Configuration configuration) {
     return configuration.getOptionalValue(NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH, Integer.class)
       .orElse(DEFAULT_NETTY_CLIENT_FRAME_ENCODER_LENGTH_FIELD_LENGTH);
   }

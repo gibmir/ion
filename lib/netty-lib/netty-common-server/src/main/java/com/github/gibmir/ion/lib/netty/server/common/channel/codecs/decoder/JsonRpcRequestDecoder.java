@@ -9,19 +9,19 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * Decodes {@code byte[]} into {@link JsonValue} with configured {@link Jsonb}
+ * Decodes {@code byte[]} into {@link JsonValue} with configured {@link Jsonb}.
  */
-public class JsonRpcRequestDecoder extends MessageToMessageDecoder<byte[]> {
+public final class JsonRpcRequestDecoder extends MessageToMessageDecoder<byte[]> {
   private final Jsonb jsonb;
   private final Charset charset;
 
-  public JsonRpcRequestDecoder(Jsonb jsonb, Charset charset) {
+  public JsonRpcRequestDecoder(final Jsonb jsonb, final Charset charset) {
     this.jsonb = jsonb;
     this.charset = charset;
   }
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) {
+  protected void decode(final ChannelHandlerContext ctx, final byte[] msg, final List<Object> out) {
     out.add(jsonb.fromJson(new String(msg, charset), JsonValue.class));
   }
 }

@@ -27,7 +27,7 @@ import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
-public class NettyTcpRequestFactoryProvider implements RequestFactoryProvider {
+public final class NettyTcpRequestFactoryProvider implements RequestFactoryProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyTcpRequestFactoryProvider.class);
   private static volatile NettyTcpRequestFactory nettyTcpRequestFactoryInstance;
 
@@ -64,18 +64,17 @@ public class NettyTcpRequestFactoryProvider implements RequestFactoryProvider {
       NettyClientConfigurationUtils.createSocketAddressWith(configuration), jsonb, charset);
   }
 
-  private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(Configuration configuration,
-                                                                                  ResponseListenerRegistry responseListenerRegistry,
-                                                                                  Charset charset, Jsonb jsonb,
-                                                                                  FrameDecoderConfig frameDecoderConfig,
-                                                                                  int encoderFrameLength) {
+  private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(final Configuration configuration,
+                                                                                  final ResponseListenerRegistry responseListenerRegistry,
+                                                                                  final Charset charset, final Jsonb jsonb,
+                                                                                  final FrameDecoderConfig frameDecoderConfig,
+                                                                                  final int encoderFrameLength) {
     ChannelHandlerAppender channelHandlerAppender = NettyClientConfigurationUtils.appendSsl(configuration,
       NettyClientConfigurationUtils.appendLogging(configuration,
-      new TcpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb, frameDecoderConfig,
-        encoderFrameLength)));
+        new TcpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb, frameDecoderConfig,
+          encoderFrameLength)));
     return new JsonRpcChannelInitializer(channelHandlerAppender);
   }
-
 
 
 }

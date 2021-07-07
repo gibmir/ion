@@ -23,12 +23,23 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
-public class JsonRpcRequestProcessorFactory {
+public final class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
   public static final String CALL_METHOD_NAME = "call";
 
-  public static JsonRpcRequestProcessor createProcessor0(Class<?> procedure,
-                                                         Object service, Jsonb jsonb) {
+  private JsonRpcRequestProcessorFactory() {
+  }
+
+  /**
+   * Creates processor for procedure without args.
+   *
+   * @param procedure procedure API class
+   * @param service   procedure impl
+   * @param jsonb     serializer
+   * @return request processor
+   */
+  public static JsonRpcRequestProcessor createProcessor0(final Class<?> procedure, final Object service,
+                                                         final Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(procedure);
       return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
@@ -38,7 +49,16 @@ public class JsonRpcRequestProcessorFactory {
     }
   }
 
-  public static JsonRpcRequestProcessor createProcessor1(Class<?> procedure, Object service, Jsonb jsonb) {
+  /**
+   * Creates processor for procedure with one arg.
+   *
+   * @param procedure procedure API class
+   * @param service   procedure impl
+   * @param jsonb     serializer
+   * @return request processor
+   */
+  public static JsonRpcRequestProcessor createProcessor1(final Class<?> procedure, final Object service,
+                                                         final Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(procedure);
       return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
@@ -48,7 +68,16 @@ public class JsonRpcRequestProcessorFactory {
     }
   }
 
-  public static JsonRpcRequestProcessor createProcessor2(Class<?> procedure, Object service, Jsonb jsonb) {
+  /**
+   * Creates processor for procedure with two arg.
+   *
+   * @param procedure procedure API class
+   * @param service   procedure impl
+   * @param jsonb     serializer
+   * @return request processor
+   */
+  public static JsonRpcRequestProcessor createProcessor2(final Class<?> procedure, final Object service,
+                                                         final Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(procedure);
       return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
@@ -58,7 +87,16 @@ public class JsonRpcRequestProcessorFactory {
     }
   }
 
-  public static JsonRpcRequestProcessor createProcessor3(Class<?> procedure, Object service, Jsonb jsonb) {
+  /**
+   * Creates processor for procedure with three arg.
+   *
+   * @param procedure procedure API class
+   * @param service   procedure impl
+   * @param jsonb     serializer
+   * @return request processor
+   */
+  public static JsonRpcRequestProcessor createProcessor3(final Class<?> procedure, final Object service,
+                                                         final Jsonb jsonb) {
     try {
       JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(procedure);
       return createProcessor(procedure, service, jsonRemoteProcedureSignature, jsonb);
@@ -68,9 +106,9 @@ public class JsonRpcRequestProcessorFactory {
     }
   }
 
-  private static JsonRpcRequestProcessor createProcessor(Class<?> procedure, Object service,
-                                                         JsonRemoteProcedureSignature jsonRemoteProcedureSignature,
-                                                         Jsonb jsonb)
+  private static JsonRpcRequestProcessor createProcessor(final Class<?> procedure, final Object service,
+                                                         final JsonRemoteProcedureSignature jsonRemoteProcedureSignature,
+                                                         final Jsonb jsonb)
     throws NoSuchMethodException, IllegalAccessException {
     LOGGER.trace("Procedure signature was resolved {}. Starting method handle creation", jsonRemoteProcedureSignature);
     MethodHandles.Lookup publicLookup = MethodHandles.publicLookup();
@@ -87,13 +125,21 @@ public class JsonRpcRequestProcessorFactory {
     private final String[] parameterNames;
     private final Type[] argumentTypes;
 
-    public NamedMethodHandle(MethodHandle methodHandle, String[] parameterNames, Type[] argumentTypes) {
+    public NamedMethodHandle(final MethodHandle methodHandle, final String[] parameterNames,
+                             final Type[] argumentTypes) {
       this.methodHandle = methodHandle;
       this.parameterNames = parameterNames;
       this.argumentTypes = argumentTypes;
     }
 
-    public Object invokeWithArguments(Object... args) throws Throwable {
+    /**
+     * Invokes method with {@link MethodHandle}.
+     *
+     * @param args method arguments
+     * @return invocation result
+     * @throws Throwable if method throws exception
+     */
+    public Object invokeWithArguments(final Object... args) throws Throwable {
       return methodHandle.invokeWithArguments(args);
     }
   }
@@ -105,15 +151,16 @@ public class JsonRpcRequestProcessorFactory {
     private final S service;
     private final Jsonb jsonb;
 
-    public MethodHandleJsonRpcRequestProcessor(NamedMethodHandle namedMethodHandle, S service, Jsonb jsonb) {
+    MethodHandleJsonRpcRequestProcessor(final NamedMethodHandle namedMethodHandle, final S service,
+                                        final Jsonb jsonb) {
       this.namedMethodHandle = namedMethodHandle;
       this.service = service;
       this.jsonb = jsonb;
     }
 
     @Override
-    public void process(String id, String procedureName, JsonObject jsonObject,
-                        Consumer<JsonRpcResponse> responseConsumer) {
+    public void process(final String id, final String procedureName, final JsonObject jsonObject,
+                        final Consumer<JsonRpcResponse> responseConsumer) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
       if (paramsValue == null) {
         responseConsumer.accept(process(RequestDto.positional(id, procedureName, EMPTY_ARGS)));
@@ -135,7 +182,7 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
-    public void process(String procedureName, JsonObject jsonObject) {
+    public void process(final String procedureName, final JsonObject jsonObject) {
       JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
       if (paramsValue == null) {
         process(NotificationDto.empty(procedureName));
@@ -157,7 +204,7 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
-    public JsonRpcResponse processRequest(String id, String procedureName, String argumentsJson) {
+    public JsonRpcResponse processRequest(final String id, final String procedureName, final String argumentsJson) {
       JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
       if (paramsValue == null) {
         return process(RequestDto.positional(id, procedureName, EMPTY_ARGS));
@@ -176,7 +223,7 @@ public class JsonRpcRequestProcessorFactory {
     }
 
     @Override
-    public void processNotification(String procedureName, String argumentsJson) {
+    public void processNotification(final String procedureName, final String argumentsJson) {
       JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
       if (paramsValue == null) {
         process(NotificationDto.empty(procedureName));
@@ -197,7 +244,7 @@ public class JsonRpcRequestProcessorFactory {
       }
     }
 
-    private Object[] getArgumentsFromArray(Jsonb jsonb, JsonValue paramsValue, int argumentsCount) {
+    private Object[] getArgumentsFromArray(final Jsonb jsonb, final JsonValue paramsValue, final int argumentsCount) {
       Object[] arguments = new Object[argumentsCount];
       JsonArray jsonParamsArray = paramsValue.asJsonArray();
       for (int i = 0; i < argumentsCount; i++) {
@@ -206,7 +253,7 @@ public class JsonRpcRequestProcessorFactory {
       return arguments;
     }
 
-    private Object[] getArgumentsFromMap(Jsonb jsonb, JsonValue paramsValue) {
+    private Object[] getArgumentsFromMap(final Jsonb jsonb, final JsonValue paramsValue) {
       JsonObject jsonObject = paramsValue.asJsonObject();
       int argumentsCount = namedMethodHandle.parameterNames.length;
       Object[] arguments = new Object[argumentsCount];
@@ -218,7 +265,7 @@ public class JsonRpcRequestProcessorFactory {
     }
 
 
-    public JsonRpcResponse process(RequestDto positionalRequest) {
+    public JsonRpcResponse process(final RequestDto positionalRequest) {
       try {
         return invokeMethod(positionalRequest);
       } catch (Throwable throwable) {
@@ -228,13 +275,13 @@ public class JsonRpcRequestProcessorFactory {
       }
     }
 
-    private JsonRpcResponse invokeMethod(RequestDto jsonRpcRequest) throws Throwable {
+    private JsonRpcResponse invokeMethod(final RequestDto jsonRpcRequest) throws Throwable {
       final Object result = namedMethodHandle.invokeWithArguments(service, jsonRpcRequest.getArgs());
       return SuccessResponse.createWithStringId(jsonRpcRequest.getId(), result);
     }
 
 
-    public void process(NotificationDto notificationRequest) {
+    public void process(final NotificationDto notificationRequest) {
       try {
         invokeMethod(notificationRequest);
       } catch (Throwable throwable) {
@@ -243,7 +290,7 @@ public class JsonRpcRequestProcessorFactory {
       }
     }
 
-    private void invokeMethod(NotificationDto notificationRequest) throws Throwable {
+    private void invokeMethod(final NotificationDto notificationRequest) throws Throwable {
       final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
       if (result != null) {
         LOGGER.warn("Result isn't null for notification request to procedure [{}]", notificationRequest.getProcedureName());

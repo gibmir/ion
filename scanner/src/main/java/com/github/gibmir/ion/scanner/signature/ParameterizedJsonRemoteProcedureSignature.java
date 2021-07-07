@@ -12,9 +12,9 @@ public class ParameterizedJsonRemoteProcedureSignature implements JsonRemoteProc
   private final MethodType methodType;
   private final int parametersCount;
 
-  public ParameterizedJsonRemoteProcedureSignature(String procedureName, String[] parameterNames,
-                                                   Type[] genericTypes, Type returnType, MethodType methodType,
-                                                   int parametersCount) {
+  public ParameterizedJsonRemoteProcedureSignature(final String procedureName, final String[] parameterNames,
+                                                   final Type[] genericTypes, final Type returnType,
+                                                   final MethodType methodType, final int parametersCount) {
     this.procedureName = procedureName;
     this.parameterNames = parameterNames;
     this.genericTypes = genericTypes;
@@ -24,44 +24,43 @@ public class ParameterizedJsonRemoteProcedureSignature implements JsonRemoteProc
   }
 
   @Override
-  public String getProcedureName() {
+  public final String getProcedureName() {
     return procedureName;
   }
 
   @Override
-  public String[] getParameterNames() {
+  public final String[] getParameterNames() {
     return parameterNames;
   }
 
   @Override
-  public Type[] getGenericTypes() {
+  public final Type[] getGenericTypes() {
     return genericTypes;
   }
 
   @Override
-  public Type getReturnType() {
+  public final Type getReturnType() {
     return returnType;
   }
 
   @Override
-  public MethodType getMethodType() {
+  public final MethodType getMethodType() {
     return methodType;
   }
 
   @Override
-  public int getParametersCount() {
+  public final int getParametersCount() {
     return parametersCount;
   }
 
   @Override
-  public String toString() {
-    return "ParameterizedJsonRemoteProcedureSignature{" +
-      "procedureName='" + procedureName + '\'' +
-      ", parameterNames=" + Arrays.toString(parameterNames) +
-      ", genericTypes=" + Arrays.toString(genericTypes) +
-      ", returnType=" + returnType +
-      ", methodType=" + methodType +
-      ", parametersCount=" + parametersCount +
-      '}';
+  public final String toString() {
+    return "ParameterizedJsonRemoteProcedureSignature{"
+      + "procedureName='" + procedureName + '\''
+      + ", parameterNames=" + Arrays.toString(parameterNames)
+      + ", genericTypes=" + Arrays.toString(genericTypes)
+      + ", returnType=" + returnType
+      + ", methodType=" + methodType
+      + ", parametersCount=" + parametersCount + '}';
   }
 }

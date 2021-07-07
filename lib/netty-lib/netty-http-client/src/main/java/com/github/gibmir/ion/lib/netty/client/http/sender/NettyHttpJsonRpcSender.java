@@ -28,20 +28,32 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyHttpJsonRpcSender {
+public final class NettyHttpJsonRpcSender {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyHttpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
 
-  public NettyHttpJsonRpcSender(ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool,
-                                ResponseListenerRegistry responseListenerRegistry) {
+  public NettyHttpJsonRpcSender(final ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool,
+                                final ResponseListenerRegistry responseListenerRegistry) {
     this.responseListenerRegistry = responseListenerRegistry;
     this.nettyChannelPool = nettyChannelPool;
   }
 
+  /**
+   * Sends request.
+   *
+   * @param id         request id
+   * @param request    request dto
+   * @param jsonb      serializer
+   * @param charset    encoding
+   * @param returnType response type
+   * @param uri        server uri
+   * @param <R>        return type
+   * @return future result
+   */
   @SuppressWarnings("unchecked")
-  public <R> CompletableFuture<R> send(String id, RequestDto request, Jsonb jsonb, Charset charset,
-                                       Type returnType, URI uri) {
+  public <R> CompletableFuture<R> send(final String id, final RequestDto request, final Jsonb jsonb,
+                                       final Charset charset, final Type returnType, final URI uri) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     try {
       responseListenerRegistry.register(new ResponseFuture(id, returnType, jsonb,
@@ -59,7 +71,15 @@ public class NettyHttpJsonRpcSender {
     return responseFuture.thenApply(response -> (R) response);
   }
 
-  public void send(NotificationDto request, Jsonb jsonb, Charset charset, URI uri) {
+  /**
+   * Sends notification.
+   *
+   * @param request notification dto
+   * @param jsonb   serializer
+   * @param charset encoding
+   * @param uri     server uri
+   */
+  public void send(final NotificationDto request, final Jsonb jsonb, final Charset charset, final URI uri) {
     try {
       sendTo(uri, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
@@ -67,7 +87,15 @@ public class NettyHttpJsonRpcSender {
     }
   }
 
-  public void send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset, URI uri) {
+  /**
+   * Sends batch request.
+   *
+   * @param nettyBatch batch
+   * @param jsonb      serializer
+   * @param charset    encoding
+   * @param uri        server uri
+   */
+  public void send(final NettyBatch nettyBatch, final Jsonb jsonb, final Charset charset, final URI uri) {
     List<NettyBatch.BatchPart<?>> batchParts = nettyBatch.getBatchParts();
     for (NettyBatch.BatchPart<?> batchPart : batchParts) {
       ResponseFuture responseFuture = new ResponseFuture(batchPart.getId(), batchPart.getReturnType(),
@@ -77,7 +105,7 @@ public class NettyHttpJsonRpcSender {
     sendTo(uri, jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
   }
 
-  private void sendTo(URI uri, byte[] payload) {
+  private void sendTo(final URI uri, final byte[] payload) {
     InetSocketAddress socketAddress = new InetSocketAddress(uri.getHost(), uri.getPort());
     ChannelPool simpleChannelPool = nettyChannelPool.get(socketAddress);
     simpleChannelPool.acquire().addListener((FutureListener<Channel>) acquiredFuture -> {

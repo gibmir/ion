@@ -14,11 +14,12 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequest1<T, R>>
+public final class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequest1<T, R>>
   implements Request1<T, R> {
 
-  public NettyTcpRequest1(JsonRpcSender jsonRpcSender, SocketAddress defaultSocketAddress,
-                          Jsonb defaultJsonb, Charset defaultCharset, JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyTcpRequest1(final JsonRpcSender jsonRpcSender, final SocketAddress defaultSocketAddress,
+                          final Jsonb defaultJsonb, final Charset defaultCharset,
+                          final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(jsonRpcSender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
@@ -26,7 +27,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest1<T, R> socketAddress(SocketAddress socketAddress) {
+  public NettyTcpRequest1<T, R> socketAddress(final SocketAddress socketAddress) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, socketAddress, jsonb,
       charset, jsonRemoteProcedureSignature);
   }
@@ -35,7 +36,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest1<T, R> jsonb(Jsonb jsonb) {
+  public NettyTcpRequest1<T, R> jsonb(final Jsonb jsonb) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -44,7 +45,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public NettyTcpRequest1<T, R> charset(Charset charset) {
+  public NettyTcpRequest1<T, R> charset(final Charset charset) {
     return new NettyTcpRequest1<>(defaultJsonRpcSender, defaultSocketAddress,
       jsonb, charset, jsonRemoteProcedureSignature);
   }
@@ -53,7 +54,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> positionalCall(String id, T arg) {
+  public CompletableFuture<R> positionalCall(final String id, final T arg) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg}), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
@@ -62,7 +63,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public CompletableFuture<R> namedCall(String id, T arg) {
+  public CompletableFuture<R> namedCall(final String id, final T arg) {
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg);
@@ -74,7 +75,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public void positionalNotificationCall(T arg) {
+  public void positionalNotificationCall(final T arg) {
     defaultJsonRpcSender.send(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg}), jsonb, charset, defaultSocketAddress);
   }
@@ -83,7 +84,7 @@ public class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequ
    * {@inheritDoc}
    */
   @Override
-  public void namedNotificationCall(T arg) {
+  public void namedNotificationCall(final T arg) {
     Map<String, Object> argsMap = new WeakHashMap<>(1);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
     argsMap.put(parameterNames[ProcedureScanner.FIRST_PROCEDURE_PARAMETER], arg);

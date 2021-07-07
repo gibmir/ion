@@ -1,24 +1,34 @@
 package com.github.gibmir.ion.lib.netty.server.http.configuration;
 
-public class HttpRequestDecoderConfiguration {
+public final class HttpRequestDecoderConfiguration {
   private final int maxInitialLineLength;
   private final int maxHeaderSize;
   private final int maxChunkSize;
 
-  public HttpRequestDecoderConfiguration(int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
+  public HttpRequestDecoderConfiguration(final int maxInitialLineLength, final int maxHeaderSize,
+                                         final int maxChunkSize) {
     this.maxInitialLineLength = maxInitialLineLength;
     this.maxHeaderSize = maxHeaderSize;
     this.maxChunkSize = maxChunkSize;
   }
 
+  /**
+   * @return max initial length
+   */
   public int getMaxInitialLineLength() {
     return maxInitialLineLength;
   }
 
+  /**
+   * @return max header size
+   */
   public int getMaxHeaderSize() {
     return maxHeaderSize;
   }
 
+  /**
+   * @return max chunk size
+   */
   public int getMaxChunkSize() {
     return maxChunkSize;
   }

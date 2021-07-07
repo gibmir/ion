@@ -4,17 +4,7 @@ import com.github.gibmir.ion.api.message.NotificationMessage;
 
 public class NettyNotificationMessage extends NettyAbstractMessage implements NotificationMessage {
 
-  public NettyNotificationMessage(String method, String argumentsJson) {
+  public NettyNotificationMessage(final String method, final String argumentsJson) {
     super(method, argumentsJson);
-  }
-
-  @Override
-  public String getMethodName() {
-    return method;
-  }
-
-  @Override
-  public String getArgumentsJson() {
-    return argumentsJson;
   }
 }

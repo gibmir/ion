@@ -26,7 +26,7 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryProvider {
+public final class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcServerFactoryProvider.class);
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
 
@@ -71,13 +71,13 @@ public class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryPr
     return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
   }
 
-  private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(ServerProcessor serverProcessor,
-                                                                                 Configuration configuration,
-                                                                                 Charset charset, Jsonb jsonb,
-                                                                                 FrameDecoderConfig frameDecoderConfig,
-                                                                                 int encoderFrameLength) {
+  private static JsonRpcChannelInitializer createJsonRpcServerChannelInitializer(final ServerProcessor serverProcessor,
+                                                                                 final Configuration configuration,
+                                                                                 final Charset charset, final Jsonb jsonb,
+                                                                                 final FrameDecoderConfig decoderConfig,
+                                                                                 final int encoderFrameLength) {
     ChannelHandlerAppender channelHandlerAppender = new JsonRpcServerChannelHandlerAppender(serverProcessor, charset,
-      jsonb, frameDecoderConfig, encoderFrameLength, LoggerFactory.getLogger(ResponseEncoder.class));
+      jsonb, decoderConfig, encoderFrameLength, LoggerFactory.getLogger(ResponseEncoder.class));
     return new JsonRpcChannelInitializer(NettyServerConfigurationUtils.decorateWithSsl(channelHandlerAppender,
       configuration));
   }

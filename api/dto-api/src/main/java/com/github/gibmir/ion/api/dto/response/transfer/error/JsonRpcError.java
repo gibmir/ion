@@ -11,37 +11,62 @@ public class JsonRpcError {
   public JsonRpcError() {
   }
 
-  public JsonRpcError(int code, String message) {
+  public JsonRpcError(final int code, final String message) {
     this.code = code;
     this.message = message;
   }
 
+  /**
+   * @return error code
+   */
   public int getCode() {
     return code;
   }
 
-  public void setCode(int code) {
+  /**
+   * Sets error code.
+   *
+   * @param code error code
+   */
+  public void setCode(final int code) {
     this.code = code;
   }
 
+  /**
+   * @return error message
+   */
   public String getMessage() {
     return message;
   }
 
-  public void setMessage(String message) {
+  /**
+   * Sets error message.
+   *
+   * @param message error message
+   */
+  public void setMessage(final String message) {
     this.message = message;
   }
 
-  public JsonRpcError appendMessage(String message) {
+  /**
+   * Append message to <b>this</b> error.
+   *
+   * @param message error message to append
+   * @return error with appended message
+   */
+  public JsonRpcError appendMessage(final String message) {
     this.message += message;
     return this;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String toString() {
-    return '{' +
-      " code: " + code + ',' +
-      " message: " + message +
-      '}';
+    return '{'
+      + " code: " + code + ','
+      + " message: " + message
+      + '}';
   }
 }

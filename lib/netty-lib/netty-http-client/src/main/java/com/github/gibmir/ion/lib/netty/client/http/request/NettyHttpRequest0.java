@@ -11,19 +11,19 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyHttpRequest0<R> extends AbstractNettyHttpRequest<NettyHttpRequest0<R>>
+public final class NettyHttpRequest0<R> extends AbstractNettyHttpRequest<NettyHttpRequest0<R>>
   implements Request0<R> {
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
 
 
-  public NettyHttpRequest0(NettyHttpJsonRpcSender defaultJsonRpcNettySender, URI defaultUri,
-                           Jsonb defaultJsonb, Charset defaultCharset,
-                           JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyHttpRequest0(final NettyHttpJsonRpcSender defaultJsonRpcNettySender, final URI defaultUri,
+                           final Jsonb defaultJsonb, final Charset defaultCharset,
+                           final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(defaultJsonRpcNettySender, defaultUri, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public CompletableFuture<R> call(String id) {
+  public CompletableFuture<R> call(final String id) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       EMPTY_PAYLOAD), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), uri);
   }
@@ -35,17 +35,17 @@ public class NettyHttpRequest0<R> extends AbstractNettyHttpRequest<NettyHttpRequ
   }
 
   @Override
-  public NettyHttpRequest0<R> jsonb(Jsonb jsonb) {
+  public NettyHttpRequest0<R> jsonb(final Jsonb jsonb) {
     return new NettyHttpRequest0<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public NettyHttpRequest0<R> charset(Charset charset) {
+  public NettyHttpRequest0<R> charset(final Charset charset) {
     return new NettyHttpRequest0<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public NettyHttpRequest0<R> uri(URI uri) {
+  public NettyHttpRequest0<R> uri(final URI uri) {
     return new NettyHttpRequest0<>(defaultJsonRpcSender, uri, jsonb, charset, jsonRemoteProcedureSignature);
   }
 }

@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 
-public class JsonRpcServerChannelHandlerAppender implements ChannelHandlerAppender {
+public final class JsonRpcServerChannelHandlerAppender implements ChannelHandlerAppender {
   private final ServerProcessor serverProcessor;
   private final Jsonb jsonb;
   private final Charset charset;
@@ -25,9 +25,9 @@ public class JsonRpcServerChannelHandlerAppender implements ChannelHandlerAppend
   private final int lengthFieldLength;
   private final Logger responseEncoderLogger;
 
-  public JsonRpcServerChannelHandlerAppender(ServerProcessor serverProcessor, Charset charset, Jsonb jsonb,
-                                             FrameDecoderConfig frameDecoderConfig, int encoderFieldLength,
-                                             Logger responseEncoderLogger) {
+  public JsonRpcServerChannelHandlerAppender(final ServerProcessor serverProcessor, final Charset charset,
+                                             final Jsonb jsonb, final FrameDecoderConfig frameDecoderConfig,
+                                             final int encoderFieldLength, final Logger responseEncoderLogger) {
     this.serverProcessor = serverProcessor;
     this.jsonb = jsonb;
     this.charset = charset;
@@ -37,7 +37,7 @@ public class JsonRpcServerChannelHandlerAppender implements ChannelHandlerAppend
   }
 
   @Override
-  public void appendTo(ChannelPipeline channelPipeline) {
+  public void appendTo(final ChannelPipeline channelPipeline) {
     channelPipeline
       //decoder
       .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(frameDecoderConfig.getMaxFrameLength(),

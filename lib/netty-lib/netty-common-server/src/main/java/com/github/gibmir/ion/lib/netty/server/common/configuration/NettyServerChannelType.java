@@ -9,10 +9,13 @@ public enum NettyServerChannelType {
 
   private final Class<? extends ServerChannel> channelClass;
 
-  NettyServerChannelType(Class<? extends ServerChannel> channelClass) {
+  NettyServerChannelType(final Class<? extends ServerChannel> channelClass) {
     this.channelClass = channelClass;
   }
 
+  /**
+   * @return resolved server channel class ({@link NioServerSocketChannel} or {@link EpollServerSocketChannel})
+   */
   public Class<? extends ServerChannel> resolveChannelClass() {
     return channelClass;
   }

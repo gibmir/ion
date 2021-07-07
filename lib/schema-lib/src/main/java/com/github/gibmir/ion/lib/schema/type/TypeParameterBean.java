@@ -7,7 +7,7 @@ public class TypeParameterBean extends SchemaElementBean implements TypeParamete
   public TypeParameterBean() {
   }
 
-  public TypeParameterBean(String id, String name, String description) {
+  public TypeParameterBean(final String id, final String name, final String description) {
     super(id, name, description);
   }
 }

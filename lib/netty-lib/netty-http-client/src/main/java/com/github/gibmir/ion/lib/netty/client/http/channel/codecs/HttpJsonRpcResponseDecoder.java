@@ -12,18 +12,18 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class HttpJsonRpcResponseDecoder extends MessageToMessageDecoder<FullHttpResponse> {
+public final class HttpJsonRpcResponseDecoder extends MessageToMessageDecoder<FullHttpResponse> {
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpJsonRpcResponseDecoder.class);
   private final Jsonb jsonb;
   private final Charset charset;
 
-  public HttpJsonRpcResponseDecoder(Jsonb jsonb, Charset charset) {
+  public HttpJsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset) {
     this.jsonb = jsonb;
     this.charset = charset;
   }
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, FullHttpResponse msg, List<Object> out) {
+  protected void decode(final ChannelHandlerContext ctx, final FullHttpResponse msg, final List<Object> out) {
     ByteBuf body = msg.content();
     int readableBytes = body.readableBytes();
     LOGGER.debug("Response body is empty");

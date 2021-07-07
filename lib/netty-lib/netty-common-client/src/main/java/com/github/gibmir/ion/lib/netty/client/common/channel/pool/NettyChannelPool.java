@@ -13,14 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 
-public class NettyChannelPool extends AbstractChannelPoolMap<SocketAddress, SimpleChannelPool> {
+public final class NettyChannelPool extends AbstractChannelPoolMap<SocketAddress, SimpleChannelPool> {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelPool.class);
   private final EventLoopGroup group;
   private final Class<? extends Channel> channelClass;
   private final ChannelInitializer<Channel> channelInitializer;
 
-  public NettyChannelPool(EventLoopGroup group, Class<? extends Channel> channelClass,
-                          ChannelInitializer<Channel> channelInitializer) {
+  public NettyChannelPool(final EventLoopGroup group, final Class<? extends Channel> channelClass,
+                          final ChannelInitializer<Channel> channelInitializer) {
     super();
     this.group = group;
     this.channelClass = channelClass;
@@ -28,7 +28,7 @@ public class NettyChannelPool extends AbstractChannelPoolMap<SocketAddress, Simp
   }
 
   @Override
-  protected SimpleChannelPool newPool(SocketAddress socketAddress) {
+  protected SimpleChannelPool newPool(final SocketAddress socketAddress) {
     return new SimpleChannelPool(new Bootstrap()
       .remoteAddress(socketAddress)
       .group(group)
@@ -36,18 +36,18 @@ public class NettyChannelPool extends AbstractChannelPoolMap<SocketAddress, Simp
       //todo channel option customization
       .option(ChannelOption.SO_KEEPALIVE, true), new ChannelPoolHandler() {
       @Override
-      public void channelCreated(Channel ch) {
+      public void channelCreated(final Channel ch) {
         LOGGER.debug("Channel for socket address [{}] was created", socketAddress);
         ch.pipeline().addLast(channelInitializer);
       }
 
       @Override
-      public void channelAcquired(Channel ch) {
+      public void channelAcquired(final Channel ch) {
         LOGGER.debug("Channel for socket address [{}] was acquired", socketAddress);
       }
 
       @Override
-      public void channelReleased(Channel ch) {
+      public void channelReleased(final Channel ch) {
         LOGGER.debug("Channel for socket address [{}] was released", socketAddress);
       }
     });

@@ -8,20 +8,20 @@ import io.netty.channel.SimpleChannelInboundHandler;
 /**
  * @implNote Handler {@link ChannelHandlerContext#write(Object) starts outbound handlers processing}
  */
-public class RequestMessageHandler extends SimpleChannelInboundHandler<Message> {
+public final class RequestMessageHandler extends SimpleChannelInboundHandler<Message> {
   private final ServerProcessor serverProcessor;
 
-  public RequestMessageHandler(ServerProcessor serverProcessor) {
+  public RequestMessageHandler(final ServerProcessor serverProcessor) {
     this.serverProcessor = serverProcessor;
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
+  protected void channelRead0(final ChannelHandlerContext ctx, final Message msg) {
     ctx.write(serverProcessor.process(msg));
   }
 
   @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) {
+  public void channelReadComplete(final ChannelHandlerContext ctx) {
     ctx.flush();
   }
 }

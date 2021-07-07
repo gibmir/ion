@@ -21,21 +21,21 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
+public final class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyTcpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, ? extends ChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
 
-  public NettyTcpJsonRpcSender(ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap,
-                               ResponseListenerRegistry responseListenerRegistry) {
+  public NettyTcpJsonRpcSender(final ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap,
+                               final ResponseListenerRegistry responseListenerRegistry) {
     this.nettyChannelPool = channelPoolMap;
     this.responseListenerRegistry = responseListenerRegistry;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public <R> CompletableFuture<R> send(String id, RequestDto request, Jsonb jsonb, Charset charset,
-                                       Type returnType, SocketAddress socketAddress) {
+  public <R> CompletableFuture<R> send(final String id, final RequestDto request, final Jsonb jsonb,
+                                       final Charset charset, final Type returnType, final SocketAddress socketAddress) {
     CompletableFuture<Object> responseFuture = new CompletableFuture<>();
     try {
       responseListenerRegistry.register(new ResponseFuture(id, returnType, jsonb,
@@ -54,8 +54,8 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   }
 
   @Override
-  public void send(NotificationDto request, Jsonb jsonb, Charset charset,
-                   SocketAddress socketAddress) {
+  public void send(final NotificationDto request, final Jsonb jsonb, final Charset charset,
+                   final SocketAddress socketAddress) {
     try {
       sendTo(socketAddress, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
@@ -73,8 +73,8 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
    * </ol>
    */
   @Override
-  public void send(NettyBatch nettyBatch, Jsonb jsonb, Charset charset,
-                   SocketAddress socketAddress) {
+  public void send(final NettyBatch nettyBatch, final Jsonb jsonb, final Charset charset,
+                   final SocketAddress socketAddress) {
     for (NettyBatch.BatchPart<?> batchPart : nettyBatch.getBatchParts()) {
       ResponseFuture responseFuture = new ResponseFuture(batchPart.getId(), batchPart.getReturnType(),
         jsonb, batchPart.getResponseCallback());
@@ -83,7 +83,7 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
     sendTo(socketAddress, jsonb.toJson(nettyBatch.getBatchRequestDto()).getBytes(charset));
   }
 
-  private void sendTo(SocketAddress socketAddress, byte[] payload) {
+  private void sendTo(final SocketAddress socketAddress, final byte[] payload) {
     ChannelPool simpleChannelPool = nettyChannelPool.get(socketAddress);
     simpleChannelPool.acquire().addListener((FutureListener<Channel>) channelAcquired -> {
       if (channelAcquired.isSuccess()) {

@@ -1,6 +1,9 @@
 package com.github.gibmir.ion.api.message;
 
 public interface BatchMessage extends Message {
+  /**
+   * @return batch messages
+   */
   Message[] getMessages();
 
   @Override

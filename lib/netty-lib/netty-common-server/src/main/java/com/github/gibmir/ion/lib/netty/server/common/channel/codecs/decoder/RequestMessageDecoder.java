@@ -22,15 +22,15 @@ import java.util.List;
 /**
  * Decodes {@link JsonValue} into {@link Message} for further processing.
  */
-public class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
+public final class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
   private static final Logger LOGGER = LoggerFactory.getLogger(RequestMessageDecoder.class);
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, JsonValue json, List<Object> out) {
+  protected void decode(final ChannelHandlerContext ctx, final JsonValue json, final List<Object> out) {
     out.add(decodeMessage(json));
   }
 
-  private static Message decodeMessage(JsonValue json) {
+  private static Message decodeMessage(final JsonValue json) {
     switch (json.getValueType()) {
       case ARRAY:
         //if json is array - it contains batch
@@ -46,7 +46,7 @@ public class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
     }
   }
 
-  private static Message decodeBatch(JsonArray jsonArray) {
+  private static Message decodeBatch(final JsonArray jsonArray) {
     int batchSize = jsonArray.size();
     Message[] batchMessages = new Message[batchSize];
     for (int i = 0; i < batchSize; i++) {
@@ -62,7 +62,7 @@ public class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
     return new NettyBatchMessage(batchMessages);
   }
 
-  private static Message decodeRequest(JsonObject jsonObject) {
+  private static Message decodeRequest(final JsonObject jsonObject) {
     String id = resolveId(jsonObject);
     String argumentsJson = resolveArgumentsJson(jsonObject);
     JsonString protocolJson = jsonObject.getJsonString(SerializationProperties.PROTOCOL_KEY);
@@ -88,7 +88,7 @@ public class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
     return new NettyRequestMessage(id, method, argumentsJson);
   }
 
-  private static String resolveId(JsonObject json) {
+  private static String resolveId(final JsonObject json) {
     JsonString idJson = json.getJsonString(SerializationProperties.ID_KEY);
     if (idJson == null) {
       //notification
@@ -99,7 +99,7 @@ public class RequestMessageDecoder extends MessageToMessageDecoder<JsonValue> {
     }
   }
 
-  private static String resolveArgumentsJson(JsonObject json) {
+  private static String resolveArgumentsJson(final JsonObject json) {
     JsonValue argumentsJson = json.get(SerializationProperties.PARAMS_KEY);
     if (argumentsJson != null) {
       return argumentsJson.toString();

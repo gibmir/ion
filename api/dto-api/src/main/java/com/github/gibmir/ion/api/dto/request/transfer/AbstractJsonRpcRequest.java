@@ -5,36 +5,65 @@ import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody implements JsonRpcRequest {
-
+public abstract class AbstractJsonRpcRequest extends AbstractJsonRpcBody
+  implements JsonRpcRequest {
+  /**
+   * Represents procedure name.
+   */
   @JsonbProperty("method")
-  protected String procedureName;
+  private String procedureName;
+  /**
+   * Represents procedure params.
+   */
   @JsonbProperty("params")
-  protected Object args;
+  private Object args;
 
+  /**
+   * Default constructor.
+   */
   public AbstractJsonRpcRequest() {
     super();
   }
 
-  public AbstractJsonRpcRequest(String procedureName, Object args) {
+  /**
+   * @param procedureName procedure name
+   * @param args          procedure arguments
+   */
+  public AbstractJsonRpcRequest(final String procedureName, final Object args) {
     super();
     this.procedureName = procedureName;
     this.args = args;
   }
 
-  public String getProcedureName() {
+  /**
+   * @return procedure name
+   */
+  public final String getProcedureName() {
     return procedureName;
   }
 
-  public void setProcedureName(String procedureName) {
+  /**
+   * Sets procedure name.
+   *
+   * @param procedureName procedure name
+   */
+  public final void setProcedureName(final String procedureName) {
     this.procedureName = procedureName;
   }
 
-  public Object getArgs() {
+  /**
+   * @return arguments
+   */
+  public final Object getArgs() {
     return args;
   }
 
-  public void setArgs(Object args) {
+  /**
+   * Sets procedure arguments.
+   *
+   * @param args procedure arguments
+   */
+  public final void setArgs(final Object args) {
     this.args = args;
   }
 }

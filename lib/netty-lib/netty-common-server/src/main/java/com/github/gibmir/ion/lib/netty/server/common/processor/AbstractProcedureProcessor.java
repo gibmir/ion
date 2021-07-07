@@ -11,7 +11,8 @@ public abstract class AbstractProcedureProcessor<P> implements ProcedureProcesso
   private Jsonb jsonb;
   private Charset charset;
 
-  protected AbstractProcedureProcessor(Class<P> procedure, P processor, Jsonb jsonb, Charset charset) {
+  protected AbstractProcedureProcessor(final Class<P> procedure, final P processor, final Jsonb jsonb,
+                                       final Charset charset) {
     this.procedure = procedure;
     this.processor = processor;
     this.jsonb = jsonb;
@@ -19,34 +20,34 @@ public abstract class AbstractProcedureProcessor<P> implements ProcedureProcesso
   }
 
   @Override
-  public ProcedureProcessor<P> jsonb(Jsonb jsonb) {
+  public final ProcedureProcessor<P> jsonb(final Jsonb jsonb) {
     this.jsonb = jsonb;
     return this;
   }
 
   @Override
-  public Jsonb jsonb() {
+  public final Jsonb jsonb() {
     return jsonb;
   }
 
   @Override
-  public ProcedureProcessor<P> charset(Charset charset) {
+  public final ProcedureProcessor<P> charset(final Charset charset) {
     this.charset = charset;
     return this;
   }
 
   @Override
-  public Charset charset() {
+  public final Charset charset() {
     return charset;
   }
 
   @Override
-  public Class<P> getProcedure() {
+  public final Class<P> getProcedure() {
     return procedure;
   }
 
   @Override
-  public P getProcessor() {
+  public final P getProcessor() {
     return processor;
   }
 }

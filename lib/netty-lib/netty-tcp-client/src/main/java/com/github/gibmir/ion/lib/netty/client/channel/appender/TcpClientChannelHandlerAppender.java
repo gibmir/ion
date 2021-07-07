@@ -21,8 +21,9 @@ public class TcpClientChannelHandlerAppender implements ChannelHandlerAppender {
   private final FrameDecoderConfig frameDecoderConfig;
   private final int lengthFieldLength;
 
-  public TcpClientChannelHandlerAppender(ResponseListenerRegistry responseListenerRegistry, Charset charset,
-                                         Jsonb jsonb, FrameDecoderConfig frameDecoderConfig, int lengthFieldLength) {
+  public TcpClientChannelHandlerAppender(final ResponseListenerRegistry responseListenerRegistry, final Charset charset,
+                                         final Jsonb jsonb, final FrameDecoderConfig frameDecoderConfig,
+                                         final int lengthFieldLength) {
     this.responseListenerRegistry = responseListenerRegistry;
     this.charset = charset;
     this.jsonb = jsonb;
@@ -31,7 +32,7 @@ public class TcpClientChannelHandlerAppender implements ChannelHandlerAppender {
   }
 
   @Override
-  public void appendTo(ChannelPipeline channelPipeline) {
+  public final void appendTo(final ChannelPipeline channelPipeline) {
     channelPipeline
       //decoder
       .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(frameDecoderConfig.getMaxFrameLength(),

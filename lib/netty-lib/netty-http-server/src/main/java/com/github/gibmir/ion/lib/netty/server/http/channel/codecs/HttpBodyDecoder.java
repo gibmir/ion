@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class HttpBodyDecoder extends MessageToMessageDecoder<FullHttpRequest> {
+public final class HttpBodyDecoder extends MessageToMessageDecoder<FullHttpRequest> {
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpBodyDecoder.class);
 
   @Override
-  protected void decode(ChannelHandlerContext ctx, FullHttpRequest msg, List<Object> out) {
+  protected void decode(final ChannelHandlerContext ctx, final FullHttpRequest msg, final List<Object> out) {
     ByteBuf body = msg.content();
     int readableBytes = body.readableBytes();
     if (readableBytes > 0) {

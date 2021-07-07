@@ -14,22 +14,22 @@ import javax.json.bind.Jsonb;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class NettyProcedureProcessorRegistry implements ProcedureProcessorRegistry {
+public final class NettyProcedureProcessorRegistry implements ProcedureProcessorRegistry {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyProcedureProcessorRegistry.class);
   private final Map<String, JsonRpcRequestProcessor> processorMap;
 
-  public NettyProcedureProcessorRegistry(Map<String, JsonRpcRequestProcessor> processorMap) {
+  public NettyProcedureProcessorRegistry(final Map<String, JsonRpcRequestProcessor> processorMap) {
     this.processorMap = processorMap;
   }
 
   @Override
-  public JsonRpcRequestProcessor getProcedureProcessorFor(String procedureName) {
+  public JsonRpcRequestProcessor getProcedureProcessorFor(final String procedureName) {
     return processorMap.get(procedureName);
   }
 
   @Override
-  public void process(String id, String procedureName, JsonObject jsonObject, Jsonb jsonb,
-                      Consumer<JsonRpcResponse> responseConsumer) {
+  public void process(final String id, final String procedureName, final JsonObject jsonObject, final Jsonb jsonb,
+                      final Consumer<JsonRpcResponse> responseConsumer) {
     processorMap.compute(procedureName, (procedure, jsonRpcRequestProcessor) -> {
       if (jsonRpcRequestProcessor != null) {
         jsonRpcRequestProcessor.process(id, procedure, jsonObject, responseConsumer);
@@ -43,7 +43,7 @@ public class NettyProcedureProcessorRegistry implements ProcedureProcessorRegist
   }
 
   @Override
-  public void process(String procedureName, JsonObject jsonObject, Jsonb jsonb) {
+  public void process(final String procedureName, final JsonObject jsonObject, final Jsonb jsonb) {
     processorMap.compute(procedureName, (procedure, jsonRpcRequestProcessor) -> {
       if (jsonRpcRequestProcessor != null) {
         jsonRpcRequestProcessor.process(procedure, jsonObject);
@@ -58,12 +58,12 @@ public class NettyProcedureProcessorRegistry implements ProcedureProcessorRegist
 
 
   @Override
-  public void register(String procedureName, JsonRpcRequestProcessor jsonRpcRequestProcessor) {
+  public void register(final String procedureName, final JsonRpcRequestProcessor jsonRpcRequestProcessor) {
     processorMap.put(procedureName, jsonRpcRequestProcessor);
   }
 
   @Override
-  public void unregister(String procedureName) {
+  public void unregister(final String procedureName) {
     processorMap.computeIfPresent(procedureName, (k, v) -> null);
   }
 }

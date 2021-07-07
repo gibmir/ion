@@ -19,14 +19,14 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
-public class NettyTcpRequestFactory implements RequestFactory {
+public final class NettyTcpRequestFactory implements RequestFactory {
   private final JsonRpcSender defaultJsonRpcNettySender;
   private final SocketAddress defaultSocketAddress;
   private final Jsonb defaultJsonb;
   private final Charset defaultCharset;
 
-  public NettyTcpRequestFactory(JsonRpcSender defaultJsonRpcSender, SocketAddress defaultSocketAddress,
-                                Jsonb defaultJsonb, Charset defaultCharset) {
+  public NettyTcpRequestFactory(final JsonRpcSender defaultJsonRpcSender, final SocketAddress defaultSocketAddress,
+                                final Jsonb defaultJsonb, final Charset defaultCharset) {
     this.defaultJsonRpcNettySender = defaultJsonRpcSender;
     this.defaultSocketAddress = defaultSocketAddress;
     this.defaultJsonb = defaultJsonb;
@@ -34,25 +34,25 @@ public class NettyTcpRequestFactory implements RequestFactory {
   }
 
   @Override
-  public <R> NettyTcpRequest0<R> noArg(Class<? extends JsonRemoteProcedure0<R>> procedure) {
+  public <R> NettyTcpRequest0<R> noArg(final Class<? extends JsonRemoteProcedure0<R>> procedure) {
     return new NettyTcpRequest0<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature0(procedure));
   }
 
   @Override
-  public <T, R> NettyTcpRequest1<T, R> singleArg(Class<? extends JsonRemoteProcedure1<T, R>> procedure) {
+  public <T, R> NettyTcpRequest1<T, R> singleArg(final Class<? extends JsonRemoteProcedure1<T, R>> procedure) {
     return new NettyTcpRequest1<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature1(procedure));
   }
 
   @Override
-  public <T1, T2, R> NettyTcpRequest2<T1, T2, R> twoArg(Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure) {
+  public <T1, T2, R> NettyTcpRequest2<T1, T2, R> twoArg(final Class<? extends JsonRemoteProcedure2<T1, T2, R>> procedure) {
     return new NettyTcpRequest2<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature2(procedure));
   }
 
   @Override
-  public <T1, T2, T3, R> NettyTcpRequest3<T1, T2, T3, R> threeArg(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure) {
+  public <T1, T2, T3, R> NettyTcpRequest3<T1, T2, T3, R> threeArg(final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> procedure) {
     return new NettyTcpRequest3<>(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset,
       ProcedureScanner.resolveSignature3(procedure));
   }

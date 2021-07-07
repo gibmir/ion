@@ -4,22 +4,30 @@ import com.github.gibmir.ion.api.dto.AbstractJsonRpcBody;
 
 public abstract class AbstractJsonRpcResponse extends AbstractJsonRpcBody {
   public static final String JSON_RPC_NULL_ID = "null";
-  protected String id;
+  private String id;
 
   public AbstractJsonRpcResponse() {
     super();
   }
 
-  public AbstractJsonRpcResponse(String id) {
+  public AbstractJsonRpcResponse(final String id) {
     super();
     this.id = id;
   }
 
+  /**
+   * @return response id
+   */
   public String getId() {
     return id;
   }
 
-  public void setId(String id) {
+  /**
+   * Sets response id.
+   *
+   * @param id response id
+   */
+  public void setId(final String id) {
     this.id = id;
   }
 }

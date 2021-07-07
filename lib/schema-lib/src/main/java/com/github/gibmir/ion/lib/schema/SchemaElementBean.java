@@ -12,48 +12,73 @@ public class SchemaElementBean implements SchemaElement {
   public SchemaElementBean() {
   }
 
-  public SchemaElementBean(String id, String name, String description) {
+  public SchemaElementBean(final String id, final String name, final String description) {
     this.id = id;
     this.name = name;
     this.description = description;
   }
 
   @Override
-  public String getId() {
+  public final String getId() {
     return id;
   }
 
   @Override
-  public String getName() {
+  public final String getName() {
     return name;
   }
 
   @Override
-  public String getDescription() {
+  public final String getDescription() {
     return description;
   }
 
-  public void setId(String id) {
+  /**
+   * Sets id.
+   *
+   * @param id schema id
+   */
+  public void setId(final String id) {
     this.id = id;
   }
 
-  public void setName(String name) {
+  /**
+   * Sets schema name.
+   *
+   * @param name schema name
+   */
+  public void setName(final String name) {
     this.name = name;
   }
 
-  public void setDescription(String description) {
+  /**
+   * Sets schema description.
+   *
+   * @param description schema description
+   */
+  public void setDescription(final String description) {
     this.description = description;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SchemaElementBean that = (SchemaElementBean) o;
-    return Objects.equals(id, that.id) &&
-      Objects.equals(name, that.name);
+    return Objects.equals(id, that.id)
+      && Objects.equals(name, that.name);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, name);

@@ -7,7 +7,7 @@ import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import java.util.List;
 import java.util.Map;
 
-public class SchemaBean implements Schema {
+public final class SchemaBean implements Schema {
   private List<Procedure> procedures;
   private Map<String, TypeDeclaration> types;
 
@@ -15,8 +15,8 @@ public class SchemaBean implements Schema {
     super();
   }
 
-  public SchemaBean(Map<String, TypeDeclaration> types,
-                    List<Procedure> procedures) {
+  public SchemaBean(final Map<String, TypeDeclaration> types,
+                    final List<Procedure> procedures) {
     this.types = types;
     this.procedures = procedures;
   }
@@ -33,9 +33,8 @@ public class SchemaBean implements Schema {
 
   @Override
   public String toString() {
-    return "SchemaBean{" +
-      "procedures=" + procedures +
-      ", types=" + types +
-      '}';
+    return "SchemaBean{"
+      + "procedures=" + procedures
+      + ", types=" + types + '}';
   }
 }

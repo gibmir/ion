@@ -11,12 +11,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-public class ParametrizedTypeTree {
+public final class ParametrizedTypeTree {
   private final TypeNode root;
   private final String typeString;
 
-
-  public static ParametrizedTypeTree from(String typeString) {
+  /**
+   * Read specified type string to generic type tree.
+   *
+   * @param typeString type string representation
+   * @return generic type tree
+   * @implNote for <pre>{@code
+   *     map<string,list<string>>
+   *     }
+   *     </pre>
+   * returns tree:
+   * <pre>{@code
+   *        map
+   *       /   \
+   * string     list
+   *                \
+   *                 string
+   *     }
+   *     </pre>
+   */
+  public static ParametrizedTypeTree from(final String typeString) {
     char[] typeStringSymbols = typeString.toCharArray();
     Stack<TypeNode> stack = new Stack<>();
     TypeNode root = new TypeNode(null);
@@ -48,11 +66,16 @@ public class ParametrizedTypeTree {
     return new ParametrizedTypeTree(root, typeString);
   }
 
-  private ParametrizedTypeTree(TypeNode root, String typeString) {
+  private ParametrizedTypeTree(final TypeNode root, final String typeString) {
     this.root = root;
     this.typeString = typeString;
   }
 
+  /**
+   * Traverse the tree to build type loading stack.
+   *
+   * @return stack with types
+   */
   public Stack<String> buildTypeLoadingStack() {
     Stack<String> result = new Stack<>();
     if (root != null) {
@@ -71,6 +94,9 @@ public class ParametrizedTypeTree {
     return result;
   }
 
+  /**
+   * @return type name
+   */
   public ParameterizedTypeName buildTypeName() {
 
     Stack<TypeNode> traverseStack = new Stack<>();
@@ -108,7 +134,7 @@ public class ParametrizedTypeTree {
     return nodeType.get(root);
   }
 
-  private ClassName resolveClassName(String currentTypeName) {
+  private ClassName resolveClassName(final String currentTypeName) {
     Types currentType = Types.from(currentTypeName);
     switch (currentType) {
       case BOOLEAN:
@@ -128,15 +154,13 @@ public class ParametrizedTypeTree {
     private final TypeNode parent;
     private final StringBuilder value = new StringBuilder();
 
-    public TypeNode(TypeNode parent) {
+    public TypeNode(final TypeNode parent) {
       this.parent = parent;
     }
   }
 
   @Override
   public String toString() {
-    return "ParametrizedTypeTree{" +
-      "typeString='" + typeString + '\'' +
-      '}';
+    return "ParametrizedTypeTree{" + "typeString='" + typeString + '\'' + '}';
   }
 }

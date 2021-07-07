@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class IonSchemaReader {
+public final class IonSchemaReader {
   public static final String SCHEMA_TYPES_KEY = "types";
   public static final String DESCRIPTION_KEY = "description";
   public static final String DEFAULT_DESCRIPTION = "empty description";
@@ -35,7 +35,13 @@ public class IonSchemaReader {
   private IonSchemaReader() {
   }
 
-  public static Map<String, TypeDeclaration> readTypes(JsonObject schema) {
+  /**
+   * Read types from json schema.
+   *
+   * @param schema ion json schema
+   * @return types
+   */
+  public static Map<String, TypeDeclaration> readTypes(final JsonObject schema) {
     Map<String, TypeDeclaration> namePerDeclaration = new HashMap<>();
     JsonValue typesJson = schema.get(SCHEMA_TYPES_KEY);
     if (typesJson != null) {
@@ -58,7 +64,13 @@ public class IonSchemaReader {
     return namePerDeclaration;
   }
 
-  public static List<Procedure> readProcedures(JsonObject schema) {
+  /**
+   * Reads procedures from json ion schema.
+   *
+   * @param schema json ion schema
+   * @return procedures
+   */
+  public static List<Procedure> readProcedures(final JsonObject schema) {
     JsonValue proceduresValue = schema.get(PROCEDURES_KEY);
     if (proceduresValue != null) {
       JsonObject proceduresJsonObject = proceduresValue.asJsonObject();
@@ -82,7 +94,7 @@ public class IonSchemaReader {
     }
   }
 
-  private static List<PropertyType> getArguments(JsonValue argumentsJson) {
+  private static List<PropertyType> getArguments(final JsonValue argumentsJson) {
     if (argumentsJson != null) {
       JsonObject argumentsObject = argumentsJson.asJsonObject();
       Set<String> argumentTypeNames = argumentsObject.keySet();
@@ -100,15 +112,20 @@ public class IonSchemaReader {
     }
   }
 
-  public static Set<PropertyType> getTypeProperties(JsonValue typeProperties) {
+  /**
+   * Reads type properties.
+   *
+   * @param typeProperties type properties json
+   * @return property types
+   */
+  public static Set<PropertyType> getTypeProperties(final JsonValue typeProperties) {
     if (typeProperties != null) {
       JsonObject propertiesObject = typeProperties.asJsonObject();
       Set<PropertyType> propertyTypes = new HashSet<>();
       for (String propertyName : propertiesObject.keySet()) {
         JsonObject propertyObject = propertiesObject.get(propertyName).asJsonObject();
-        propertyTypes.add(new PropertyTypeBean(propertyObject.getString(ID_KEY, DEFAULT_ID)
-          , propertyName, propertyObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION),
-          propertyObject.getString(TYPE_KEY)));
+        propertyTypes.add(new PropertyTypeBean(propertyObject.getString(ID_KEY, DEFAULT_ID), propertyName,
+          propertyObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION), propertyObject.getString(TYPE_KEY)));
       }
       return propertyTypes;
     } else {
@@ -116,7 +133,13 @@ public class IonSchemaReader {
     }
   }
 
-  public static Set<TypeParameter> getTypeParameters(JsonValue typeParametersJson) {
+  /**
+   * Reads type parameters.
+   *
+   * @param typeParametersJson type parameters json
+   * @return type parameters
+   */
+  public static Set<TypeParameter> getTypeParameters(final JsonValue typeParametersJson) {
     if (typeParametersJson != null) {
       JsonObject parametersObject = typeParametersJson.asJsonObject();
       Set<TypeParameter> typeParameters = new HashSet<>();

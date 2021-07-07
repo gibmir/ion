@@ -7,14 +7,20 @@ import java.nio.charset.Charset;
 
 import static com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils.ROOT_PREFIX;
 
-public class ServerConfigurationUtils {
+public final class ServerConfigurationUtils {
   //charset
   public static final String REQUEST_CHARSET_PROPERTY = ROOT_PREFIX + ".server.request.charset";
 
   private ServerConfigurationUtils() {
   }
 
-  public static Charset createCharsetWith(Configuration configuration) {
+  /**
+   * Creates charset with specified config.
+   *
+   * @param configuration application config
+   * @return charset
+   */
+  public static Charset createCharsetWith(final Configuration configuration) {
     return configuration.getOptionalValue(ServerConfigurationUtils.REQUEST_CHARSET_PROPERTY, String.class)
       .map(Charset::forName).orElse(ConfigurationUtils.DEFAULT_CHARSET);
   }

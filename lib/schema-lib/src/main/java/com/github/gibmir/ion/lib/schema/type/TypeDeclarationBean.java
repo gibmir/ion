@@ -8,7 +8,7 @@ import com.github.gibmir.ion.lib.schema.SchemaElementBean;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class TypeDeclarationBean extends SchemaElementBean implements TypeDeclaration {
+public final class TypeDeclarationBean extends SchemaElementBean implements TypeDeclaration {
   private PropertyType[] propertyTypes;
   private TypeParameter[] typeParameters;
 
@@ -17,7 +17,9 @@ public class TypeDeclarationBean extends SchemaElementBean implements TypeDeclar
   }
 
 
-  public TypeDeclarationBean(String id, String name, String description, Collection<PropertyType> propertyTypes, Collection<TypeParameter> typeParameters) {
+  public TypeDeclarationBean(final String id, final String name, final String description,
+                             final Collection<PropertyType> propertyTypes,
+                             final Collection<TypeParameter> typeParameters) {
     super(id, name, description);
     this.propertyTypes = propertyTypes.toArray(new PropertyType[0]);
     this.typeParameters = typeParameters.toArray(new TypeParameter[0]);
@@ -33,14 +35,17 @@ public class TypeDeclarationBean extends SchemaElementBean implements TypeDeclar
     return typeParameters;
   }
 
-  public void setPropertyTypes(PropertyType... propertyTypes) {
+  /**
+   * Sets property types.
+   *
+   * @param propertyTypes property type
+   */
+  public void setPropertyTypes(final PropertyType... propertyTypes) {
     this.propertyTypes = propertyTypes;
   }
 
   @Override
   public String toString() {
-    return "TypeDeclarationBean{" +
-      "propertyTypes=" + Arrays.toString(propertyTypes) +
-      '}';
+    return "TypeDeclarationBean{" + "propertyTypes=" + Arrays.toString(propertyTypes) + '}';
   }
 }

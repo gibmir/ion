@@ -15,33 +15,66 @@ public class SuccessResponse extends AbstractJsonRpcResponse implements JsonRpcR
     super();
   }
 
-  public SuccessResponse(String id, Object result) {
+  public SuccessResponse(final String id, final Object result) {
     super(id);
     this.result = result;
   }
 
+  /**
+   * @return response result
+   */
   public Object getResult() {
     return result;
   }
 
-  public void setResult(Object result) {
+  /**
+   * Sets response result.
+   *
+   * @param result response result
+   */
+  public void setResult(final Object result) {
     this.result = result;
   }
 
-  public static SuccessResponse createWithStringId(String id, Object result) {
+  /**
+   * Creates response with string id.
+   *
+   * @param id     response id
+   * @param result response object
+   * @return response
+   */
+  public static SuccessResponse createWithStringId(final String id, final Object result) {
     return new SuccessResponse(id, result);
   }
 
-  public static SuccessResponse createWithNumericId(int id, Object result) {
+  /**
+   * Creates response with numeric id.
+   *
+   * @param id     response id
+   * @param result response object
+   * @return response
+   */
+  public static SuccessResponse createWithNumericId(final int id, final Object result) {
     return new SuccessResponse(Integer.toString(id), result);
   }
 
-  public static SuccessResponse createWithNullId(Object result) {
+  /**
+   * Creates response without id.
+   *
+   * @param result response object
+   * @return response
+   */
+  public static SuccessResponse createWithNullId(final Object result) {
     return new SuccessResponse(JSON_RPC_NULL_ID, result);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @param jsonRpcResponseProcessor processor to process response
+   */
   @Override
-  public void processWith(JsonRpcResponseProcessor jsonRpcResponseProcessor) {
+  public void processWith(final JsonRpcResponseProcessor jsonRpcResponseProcessor) {
     jsonRpcResponseProcessor.process(this);
   }
 }

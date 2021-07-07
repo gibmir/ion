@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ComposedProcedureManager implements ProcedureManager {
+public final class ComposedProcedureManager implements ProcedureManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(ComposedProcedureManager.class);
   private final ProcedureManager[] procedureManagers;
 
-  public ComposedProcedureManager(ProcedureManager[] procedureManagers) {
+  public ComposedProcedureManager(final ProcedureManager[] procedureManagers) {
     this.procedureManagers = procedureManagers;
   }
 
-  public ComposedProcedureManager(Collection<ProcedureManager> procedureManagers) {
+  public ComposedProcedureManager(final Collection<ProcedureManager> procedureManagers) {
     this.procedureManagers = procedureManagers.toArray(new ProcedureManager[0]);
   }
 

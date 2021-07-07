@@ -14,12 +14,22 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbException;
 import java.util.List;
 
-public class SerializationUtils {
+public final class SerializationUtils {
 
   private SerializationUtils() {
   }
 
-  public static <R> JsonRpcResponse extractResponseFrom(JsonValue structure, Class<R> responseType, Jsonb jsonb) {
+  /**
+   * Extract response from json structure.
+   *
+   * @param structure    json object representation
+   * @param responseType response type
+   * @param jsonb        serializer
+   * @param <R>          response type
+   * @return response
+   */
+  public static <R> JsonRpcResponse extractResponseFrom(final JsonValue structure, final Class<R> responseType,
+                                                        final Jsonb jsonb) {
     try {
       switch (structure.getValueType()) {
         case OBJECT:
@@ -33,8 +43,16 @@ public class SerializationUtils {
     }
   }
 
-  public static JsonRpcResponse extractBatchResponseFrom(JsonValue structure, List<Class<?>> responseTypes,
-                                                         Jsonb jsonb) {
+  /**
+   * Extract response from json structure.
+   *
+   * @param structure     json object representation
+   * @param responseTypes response types
+   * @param jsonb         serializer
+   * @return response
+   */
+  public static JsonRpcResponse extractBatchResponseFrom(final JsonValue structure, final List<Class<?>> responseTypes,
+                                                         final Jsonb jsonb) {
     try {
       switch (structure.getValueType()) {
         case ARRAY:
@@ -49,7 +67,8 @@ public class SerializationUtils {
   }
 
 
-  private static <R> JsonRpcResponse extractBatchResponse(JsonObject object, Class<R> responseType, Jsonb jsonb) {
+  private static <R> JsonRpcResponse extractBatchResponse(final JsonObject object, final Class<R> responseType,
+                                                          final Jsonb jsonb) {
     JsonValue idValue = object.get(SerializationProperties.ID_KEY);
     if (idValue == null) {
       return ErrorResponse.withNullId(Errors.INVALID_RPC.getError());
@@ -72,7 +91,8 @@ public class SerializationUtils {
     }
   }
 
-  private static JsonRpcResponse extractBatchResponse(JsonArray array, List<Class<?>> responseTypes, Jsonb jsonb) {
+  private static JsonRpcResponse extractBatchResponse(final JsonArray array, final List<Class<?>> responseTypes,
+                                                      final Jsonb jsonb) {
     try {
       int batchSize = array.size();
       JsonRpcResponse[] responses = new JsonRpcResponse[batchSize];

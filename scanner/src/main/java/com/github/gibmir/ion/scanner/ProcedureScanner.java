@@ -19,20 +19,23 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ProcedureScanner {
+public final class ProcedureScanner {
 
   /**
+   * Represents first procedure argument.
    * {@link JsonRemoteProcedure1#call(Object) T type}
    * {@link JsonRemoteProcedure2#call(Object, Object) T1 type}
    * {@link JsonRemoteProcedure3#call(Object, Object, Object) T1 type}
    */
   public static final int FIRST_PROCEDURE_PARAMETER = 0;
   /**
+   * Represents second procedure argument.
    * {@link JsonRemoteProcedure2#call(Object, Object) T2 type}
    * {@link JsonRemoteProcedure3#call(Object, Object, Object) T2 type}
    */
   public static final int SECOND_PROCEDURE_PARAMETER = 1;
   /**
+   * Represents third procedure argument.
    * {@link JsonRemoteProcedure3#call(Object, Object, Object) T3 type}
    */
   public static final int THIRD_PROCEDURE_PARAMETER = 2;
@@ -46,8 +49,14 @@ public class ProcedureScanner {
   private ProcedureScanner() {
   }
 
+  /**
+   * Resolves procedure signature from provided class.
+   *
+   * @param procedureClass API procedure class
+   * @return procedure class
+   */
   @SuppressWarnings("unchecked")
-  public static JsonRemoteProcedureSignature resolveSignature0(Class<?> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature0(final Class<?> procedureClass) {
     int parametersCount = 0;
     //unchecked array
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
@@ -68,8 +77,14 @@ public class ProcedureScanner {
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
+  /**
+   * Resolves procedure signature from provided class.
+   *
+   * @param procedureClass API procedure class
+   * @return procedure class
+   */
   @SuppressWarnings("unchecked")
-  public static JsonRemoteProcedureSignature resolveSignature1(Class<?> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature1(final Class<?> procedureClass) {
     int parametersCount = 1;
     String procedureName = getProcedureName(procedureClass);
     //unchecked array
@@ -92,8 +107,14 @@ public class ProcedureScanner {
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
+  /**
+   * Resolves procedure signature from provided class.
+   *
+   * @param procedureClass API procedure class
+   * @return procedure class
+   */
   @SuppressWarnings("unchecked")
-  public static JsonRemoteProcedureSignature resolveSignature2(Class<?> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature2(final Class<?> procedureClass) {
     int parametersCount = 2;
     String procedureName = getProcedureName(procedureClass);
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
@@ -118,8 +139,14 @@ public class ProcedureScanner {
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
+  /**
+   * Resolves procedure signature from provided class.
+   *
+   * @param procedureClass API procedure class
+   * @return procedure class
+   */
   @SuppressWarnings("unchecked")
-  public static JsonRemoteProcedureSignature resolveSignature3(Class<?> procedureClass) {
+  public static JsonRemoteProcedureSignature resolveSignature3(final Class<?> procedureClass) {
     int parametersCount = 3;
     String procedureName = getProcedureName(procedureClass);
     Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
@@ -145,12 +172,13 @@ public class ProcedureScanner {
     throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
-  private static void setParameterName(String[] parameterNames, Parameter[] parameters, int position, String defaultName) {
+  private static void setParameterName(final String[] parameterNames, final Parameter[] parameters,
+                                       final int position, final String defaultName) {
     parameterNames[position] = getParameterNameOrElse(parameters[position],
       defaultName);
   }
 
-  private static String getParameterNameOrElse(Parameter parameter, String defaultName) {
+  private static String getParameterNameOrElse(final Parameter parameter, final String defaultName) {
     if (parameter.isAnnotationPresent(Named.class)) {
       return parameter.getAnnotation(Named.class).name();
     } else {
@@ -158,7 +186,13 @@ public class ProcedureScanner {
     }
   }
 
-  public static String getProcedureName(Class<?> procedureClass) {
+  /**
+   * Provides procedure name from API procedure class.
+   *
+   * @param procedureClass API procedure class
+   * @return procedure name
+   */
+  public static String getProcedureName(final Class<?> procedureClass) {
     if (procedureClass.isAnnotationPresent(Named.class)) {
       return procedureClass.getAnnotation(Named.class).name();
     } else {
@@ -167,7 +201,7 @@ public class ProcedureScanner {
   }
 
   @SuppressWarnings("unchecked")
-  private static Collection<Class<?>> resolveHierarchy(Class<?> analyzableType, Class<?> type) {
+  private static Collection<Class<?>> resolveHierarchy(final Class<?> analyzableType, final Class<?> type) {
     Set<Class<?>> hierarchy = ReflectionUtils.getAllSuperTypes(analyzableType,
       //if specified type assignable from analyzable super types
       type::isAssignableFrom);
@@ -175,7 +209,7 @@ public class ProcedureScanner {
     return hierarchy;
   }
 
-  private static Collection<ParameterizedType> getParametrizedInterfacesFrom(Collection<Class<?>> analyzableHierarchy) {
+  private static Collection<ParameterizedType> getParametrizedInterfacesFrom(final Collection<Class<?>> analyzableHierarchy) {
     return analyzableHierarchy.stream()
       //get all generic interfaces for each hierarchy node
       .map(Class::getGenericInterfaces)
@@ -185,7 +219,7 @@ public class ProcedureScanner {
       .collect(Collectors.toList());
   }
 
-  private static Type getReturnType(Type[] actualTypeArguments) {
+  private static Type getReturnType(final Type[] actualTypeArguments) {
     return actualTypeArguments[ /*return type is last*/ actualTypeArguments.length - 1];
   }
 }

@@ -14,43 +14,43 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class ResponseEncoder extends MessageToMessageEncoder<JsonRpcResponse> {
+public final class ResponseEncoder extends MessageToMessageEncoder<JsonRpcResponse> {
   private final Logger logger;
   private final Jsonb jsonb;
   private final Charset charset;
 
-  public ResponseEncoder(Logger logger, Jsonb jsonb, Charset charset) {
+  public ResponseEncoder(final Logger logger, final Jsonb jsonb, final Charset charset) {
     this.logger = logger;
     this.jsonb = jsonb;
     this.charset = charset;
   }
 
   @Override
-  protected void encode(ChannelHandlerContext ctx, JsonRpcResponse msg, List<Object> out) {
+  protected void encode(final ChannelHandlerContext ctx, final JsonRpcResponse msg, final List<Object> out) {
     msg.processWith(new JsonRpcResponseProcessor() {
       @Override
-      public void process(ErrorResponse errorResponse) {
+      public void process(final ErrorResponse errorResponse) {
         logger.debug("Sending error response for request with id [{}]", errorResponse.getId());
         out.add(jsonb.toJson(errorResponse).getBytes(charset));
       }
 
       @Override
-      public void process(SuccessResponse successResponse) {
+      public void process(final SuccessResponse successResponse) {
         logger.debug("Sending response for request with id [{}]", successResponse.getId());
         out.add(jsonb.toJson(successResponse).getBytes(charset));
       }
 
       @Override
-      public void process(BatchResponseDto batchResponseDto) {
+      public void process(final BatchResponseDto batchResponseDto) {
         JsonRpcResponse[] responses = batchResponseDto.getJsonRpcResponses();
         logger.debug("Sending batch response with size [{}]", responses.length);
         out.add(jsonb.toJson(responses).getBytes(charset));
       }
 
       @Override
-      public void process(NotificationResponse notificationResponse) {
+      public void process(final NotificationResponse notificationResponse) {
         //there is no answer for notification
-        logger.trace("Notification was correctly processed");
+        logger.trace("Notification was processed");
       }
     });
   }

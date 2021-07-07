@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Stack;
 
-public class TypeGenerationUtils {
+public final class TypeGenerationUtils {
 
   public static final String GETTER_METHOD_PREFIX = "get";
   public static final String SETTER_METHOD_PREFIX = "set";
@@ -29,7 +29,19 @@ public class TypeGenerationUtils {
   public static final String PROCEDURE_RETURN_CODE_BLOCK = "return $L;";
   public static final String SETTER_CODE_BLOCK = "this.$L = $L;";
 
-  public static void loadTypes(Stack<TypeDeclaration> typeLoadingStack, String packageName, Path path) throws IOException {
+  private TypeGenerationUtils() {
+  }
+
+  /**
+   * Load types for specified type loading stack.
+   *
+   * @param typeLoadingStack types stack
+   * @param packageName      package for loading types
+   * @param path             path to write
+   * @throws IOException if path is incorrect
+   */
+  public static void loadTypes(final Stack<TypeDeclaration> typeLoadingStack, final String packageName,
+                               final Path path) throws IOException {
     while (!typeLoadingStack.isEmpty()) {
       TypeDeclaration typeDeclaration = typeLoadingStack.pop();
       TypeSpec typeSpec = asTypeSpecification(typeDeclaration);
@@ -37,7 +49,13 @@ public class TypeGenerationUtils {
     }
   }
 
-  public static TypeSpec asTypeSpecification(TypeDeclaration typeDeclaration) {
+  /**
+   * Represents type declaration as type specification.
+   *
+   * @param typeDeclaration type declaration
+   * @return type spec
+   */
+  public static TypeSpec asTypeSpecification(final TypeDeclaration typeDeclaration) {
     TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(IonPluginMojo.asClassName(typeDeclaration.getName()))
       .addModifiers(Modifier.PUBLIC)
       .addJavadoc(typeDeclaration.getDescription());
@@ -81,11 +99,11 @@ public class TypeGenerationUtils {
     return typeSpecBuilder.build();
   }
 
-  private static boolean isParametrized(TypeParameter[] parameters) {
+  private static boolean isParametrized(final TypeParameter[] parameters) {
     return parameters.length > 0;
   }
 
-  private static MethodSpec createSetter(String typeName, Type fieldType) {
+  private static MethodSpec createSetter(final String typeName, final Type fieldType) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(SETTER_CODE_BLOCK, typeName, typeName)
@@ -93,7 +111,7 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  private static MethodSpec createSetter(String typeName, ClassName fieldTypeName) {
+  private static MethodSpec createSetter(final String typeName, final ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(SETTER_CODE_BLOCK, typeName, typeName)
@@ -101,7 +119,7 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  private static MethodSpec createSetter(String typeName, ParameterizedTypeName fieldTypeName) {
+  private static MethodSpec createSetter(final String typeName, final ParameterizedTypeName fieldTypeName) {
     return MethodSpec.methodBuilder(SETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(SETTER_CODE_BLOCK, typeName, typeName)
@@ -109,25 +127,27 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  private static FieldSpec createField(PropertyType propertyType, String typeName, ClassName fieldTypeName) {
+  private static FieldSpec createField(final PropertyType propertyType, final String typeName,
+                                       final ClassName fieldTypeName) {
     return FieldSpec.builder(fieldTypeName, IonPluginMojo.asFieldName(typeName), Modifier.PRIVATE)
       .addJavadoc(propertyType.getDescription())
       .build();
   }
 
-  private static FieldSpec createField(PropertyType propertyType, String typeName, ParameterizedTypeName fieldTypeName) {
+  private static FieldSpec createField(final PropertyType propertyType, final String typeName,
+                                       final ParameterizedTypeName fieldTypeName) {
     return FieldSpec.builder(fieldTypeName, IonPluginMojo.asFieldName(typeName), Modifier.PRIVATE)
       .addJavadoc(propertyType.getDescription())
       .build();
   }
 
-  private static FieldSpec createField(PropertyType propertyType, String typeName, Type fieldType) {
+  private static FieldSpec createField(final PropertyType propertyType, final String typeName, final Type fieldType) {
     return FieldSpec.builder(fieldType, IonPluginMojo.asFieldName(typeName), Modifier.PRIVATE)
       .addJavadoc(propertyType.getDescription())
       .build();
   }
 
-  private static MethodSpec createGetter(String typeName, ClassName fieldTypeName) {
+  private static MethodSpec createGetter(final String typeName, final ClassName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
@@ -135,7 +155,7 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  private static MethodSpec createGetter(String typeName, ParameterizedTypeName fieldTypeName) {
+  private static MethodSpec createGetter(final String typeName, final ParameterizedTypeName fieldTypeName) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
@@ -143,7 +163,7 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  private static MethodSpec createGetter(String typeName, Type fieldType) {
+  private static MethodSpec createGetter(final String typeName, final Type fieldType) {
     return MethodSpec.methodBuilder(GETTER_METHOD_PREFIX + IonPluginMojo.asClassName(typeName))
       .addModifiers(Modifier.PUBLIC)
       .addCode(PROCEDURE_RETURN_CODE_BLOCK, typeName)
@@ -151,7 +171,11 @@ public class TypeGenerationUtils {
       .build();
   }
 
-  public static Stack<TypeDeclaration> buildLoadingStack(Map<String, TypeDeclaration> schemaTypeDeclarationMap) {
+  /**
+   * @param schemaTypeDeclarationMap schema type declarations
+   * @return type loading stack
+   */
+  public static Stack<TypeDeclaration> buildLoadingStack(final Map<String, TypeDeclaration> schemaTypeDeclarationMap) {
     Stack<TypeDeclaration> typeLoadingStack = new Stack<>();
     for (TypeDeclaration typeDeclaration : schemaTypeDeclarationMap.values()) {
       fillStack(typeDeclaration, typeLoadingStack, schemaTypeDeclarationMap);
@@ -159,8 +183,9 @@ public class TypeGenerationUtils {
     return typeLoadingStack;
   }
 
-  private static Stack<TypeDeclaration> fillStack(TypeDeclaration typeDeclaration, Stack<TypeDeclaration> stack,
-                                                  Map<String, TypeDeclaration> schemaTypeDeclarationMap) {
+  private static Stack<TypeDeclaration> fillStack(final TypeDeclaration typeDeclaration,
+                                                  final Stack<TypeDeclaration> stack,
+                                                  final Map<String, TypeDeclaration> schemaTypeDeclarationMap) {
     //if type is not custom - it has already loaded
     if (!Types.CUSTOM.equals(Types.from(typeDeclaration.getName()))) {
       return stack;
@@ -189,9 +214,9 @@ public class TypeGenerationUtils {
     return stack;
   }
 
-  private static void fillStackWithParametrizedProperty(Stack<TypeDeclaration> stack,
-                                                        Map<String, TypeDeclaration> schemaTypeDeclarationMap,
-                                                        String propertyTypeName) {
+  private static void fillStackWithParametrizedProperty(final Stack<TypeDeclaration> stack,
+                                                        final Map<String, TypeDeclaration> schemaTypeDeclarationMap,
+                                                        final String propertyTypeName) {
     ParametrizedTypeTree parametrizedTypeTree = ParametrizedTypeTree.from(propertyTypeName);
     Stack<String> parametrizedTypeNameStack = parametrizedTypeTree.buildTypeLoadingStack();
     while (!parametrizedTypeNameStack.isEmpty()) {
@@ -204,7 +229,11 @@ public class TypeGenerationUtils {
     }
   }
 
-  public static boolean isParametrizedProperty(String propertyTypeName) {
+  /**
+   * @param propertyTypeName property type name
+   * @return true if specified type is generic
+   */
+  public static boolean isParametrizedProperty(final String propertyTypeName) {
     return propertyTypeName.contains(PARAMETRIZATION_SEPARATOR);
   }
 }

@@ -15,9 +15,9 @@ public abstract class AbstractNettyTcpRequest<Request extends ConfigurableNettyT
   protected final Charset charset;
   protected final JsonRemoteProcedureSignature jsonRemoteProcedureSignature;
 
-  public AbstractNettyTcpRequest(JsonRpcSender defaultJsonRpcSender, SocketAddress defaultSocketAddress,
-                                 Jsonb defaultJsonb, Charset defaultCharset,
-                                 JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public AbstractNettyTcpRequest(final JsonRpcSender defaultJsonRpcSender, final SocketAddress defaultSocketAddress,
+                                 final Jsonb defaultJsonb, final Charset defaultCharset,
+                                 final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     this.jsonRemoteProcedureSignature = jsonRemoteProcedureSignature;
     this.defaultJsonRpcSender = defaultJsonRpcSender;
     this.defaultSocketAddress = defaultSocketAddress;
@@ -26,17 +26,17 @@ public abstract class AbstractNettyTcpRequest<Request extends ConfigurableNettyT
   }
 
   @Override
-  public Jsonb jsonb() {
+  public final Jsonb jsonb() {
     return jsonb;
   }
 
   @Override
-  public Charset charset() {
+  public final Charset charset() {
     return charset;
   }
 
   @Override
-  public SocketAddress socketAddress() {
+  public final SocketAddress socketAddress() {
     return defaultSocketAddress;
   }
 }

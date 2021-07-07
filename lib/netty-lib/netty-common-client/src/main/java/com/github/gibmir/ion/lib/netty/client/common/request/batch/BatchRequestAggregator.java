@@ -21,17 +21,35 @@ public class BatchRequestAggregator {
   private final List<JsonRpcRequest> requests = new ArrayList<>();
   private final List<NettyBatch.BatchPart<?>> batchParts = new ArrayList<>();
 
-  public <R> void addRequest(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
-                             ResponseCallback<R> responseCallback) {
+  /**
+   * Appends request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure0 remote procedure
+   * @param responseCallback     callback
+   * @param <R>                  return type
+   */
+  public <R> void addRequest(final String id, final Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
+                             final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(jsonRemoteProcedure0);
     RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(), EMPTY_PAYLOAD);
     requests.add(requestDto);
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-
-  public <T1, R> void addPositionalRequest(String id, Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
-                                           T1 arg, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends positional request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure1 remote procedure
+   * @param responseCallback     callback
+   * @param arg                  first argument
+   * @param <T1>                 first argument type
+   * @param <R>                  return type
+   */
+  public <T1, R> void addPositionalRequest(final String id,
+                                           final Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
+                                           final T1 arg, final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
     RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg});
@@ -39,9 +57,21 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-
-  public <T1, T2, R> void addPositionalRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                               T1 arg1, T2 arg2, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends positional request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure2 remote procedure
+   * @param responseCallback     callback
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, R> void addPositionalRequest(final String id,
+                                               final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                               final T1 arg1, final T2 arg2, final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
     RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2});
@@ -49,10 +79,24 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-
-  public <T1, T2, T3, R> void addPositionalRequest(String id,
-                                                   Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                   T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends positional request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure3 remote procedure
+   * @param responseCallback     callback
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param arg3                 third argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <T3>                 third argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, T3, R> void addPositionalRequest(final String id,
+                                                   final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                   final T1 arg1, final T2 arg2, final T3 arg3,
+                                                   final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
     RequestDto requestDto = RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2, arg3});
@@ -60,9 +104,19 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-
-  public <T1, R> void addNamedRequest(String id, Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
-                                      T1 arg, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends named request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure1 remote procedure
+   * @param responseCallback     callback
+   * @param arg                  first argument
+   * @param <T1>                 first argument type
+   * @param <R>                  return type
+   */
+  public <T1, R> void addNamedRequest(final String id,
+                                      final Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
+                                      final T1 arg, final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -72,8 +126,21 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-  public <T1, T2, R> void addNamedRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                          T1 arg1, T2 arg2, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends named request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure2 remote procedure
+   * @param responseCallback     callback
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, R> void addNamedRequest(final String id,
+                                          final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                          final T1 arg1, final T2 arg2, final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -84,8 +151,24 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-  public <T1, T2, T3, R> void addNamedRequest(String id, Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                              T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback) {
+  /**
+   * Appends named request to batch.
+   *
+   * @param id                   request id
+   * @param jsonRemoteProcedure3 remote procedure
+   * @param responseCallback     callback
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param arg3                 third argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <T3>                 third argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, T3, R> void addNamedRequest(final String id,
+                                              final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                              final T1 arg1, final T2 arg2, final T3 arg3,
+                                              final ResponseCallback<R> responseCallback) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -97,33 +180,77 @@ public class BatchRequestAggregator {
     batchParts.add(new NettyBatch.BatchPart<>(id, responseCallback, jsonRemoteProcedureSignature.getReturnType()));
   }
 
-  public <R> void addNotification(Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
+  /**
+   * Appends notification to batch.
+   *
+   * @param jsonRemoteProcedure0 remote procedure
+   * @param <R>                  return type
+   */
+  public <R> void addNotification(final Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature0(jsonRemoteProcedure0);
     requests.add(NotificationDto.empty(jsonRemoteProcedureSignature.getProcedureName()));
 
   }
 
-  public <T1, R> void addPositionalNotification(Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1, T1 arg) {
+  /**
+   * Appends positional notification to batch.
+   *
+   * @param jsonRemoteProcedure1 remote procedure
+   * @param arg                  first argument
+   * @param <T1>                 first argument type
+   * @param <R>                  return type
+   */
+  public <T1, R> void addPositionalNotification(final Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
+                                                final T1 arg) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
     requests.add(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(), new Object[]{arg}));
   }
 
-
-  public <T1, T2, R> void addPositionalNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                    T1 arg1, T2 arg2) {
+  /**
+   * Appends positional notification to batch.
+   *
+   * @param jsonRemoteProcedure2 remote procedure
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, R> void addPositionalNotification(final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                                    final T1 arg1, final T2 arg2) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
     requests.add(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(), new Object[]{arg1, arg2}));
   }
 
-
-  public <T1, T2, T3, R> void addPositionalNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                        T1 arg1, T2 arg2, T3 arg3) {
+  /**
+   * Appends positional notification to batch.
+   *
+   * @param jsonRemoteProcedure3 remote procedure
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param arg3                 third argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <T3>                 third argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, T3, R> void addPositionalNotification(final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                        final T1 arg1, final T2 arg2, final T3 arg3) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
     requests.add(NotificationDto.positional(jsonRemoteProcedureSignature.getProcedureName(),
       new Object[]{arg1, arg2, arg3}));
   }
 
-  public <T1, R> void addNamedNotification(Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1, T1 arg) {
+  /**
+   * Appends named notification to batch.
+   *
+   * @param jsonRemoteProcedure1 remote procedure
+   * @param arg                  first argument
+   * @param <T1>                 first argument type
+   * @param <R>                  return type
+   */
+  public <T1, R> void addNamedNotification(final Class<? extends JsonRemoteProcedure1<T1, R>> jsonRemoteProcedure1,
+                                           final T1 arg) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature1(jsonRemoteProcedure1);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -131,9 +258,18 @@ public class BatchRequestAggregator {
     requests.add(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(), argsMap));
   }
 
-
-  public <T1, T2, R> void addNamedNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                               T1 arg1, T2 arg2) {
+  /**
+   * Appends named notification to batch.
+   *
+   * @param jsonRemoteProcedure2 remote procedure
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, R> void addNamedNotification(final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                               final T1 arg1, final T2 arg2) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature2(jsonRemoteProcedure2);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -142,9 +278,20 @@ public class BatchRequestAggregator {
     requests.add(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(), argsMap));
   }
 
-
-  public <T1, T2, T3, R> void addNamedNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                   T1 arg1, T2 arg2, T3 arg3) {
+  /**
+   * Appends named notification to batch.
+   *
+   * @param jsonRemoteProcedure3 remote procedure
+   * @param arg1                 first argument
+   * @param arg2                 second argument
+   * @param arg3                 third argument
+   * @param <T1>                 first argument type
+   * @param <T2>                 second argument type
+   * @param <T3>                 third argument type
+   * @param <R>                  return type
+   */
+  public <T1, T2, T3, R> void addNamedNotification(final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                   final T1 arg1, final T2 arg2, final T3 arg3) {
     JsonRemoteProcedureSignature jsonRemoteProcedureSignature = ProcedureScanner.resolveSignature3(jsonRemoteProcedure3);
     Map<String, Object> argsMap = new WeakHashMap<>(3);
     String[] parameterNames = jsonRemoteProcedureSignature.getParameterNames();
@@ -154,10 +301,16 @@ public class BatchRequestAggregator {
     requests.add(NotificationDto.named(jsonRemoteProcedureSignature.getProcedureName(), argsMap));
   }
 
+  /**
+   * @return batch requests
+   */
   public List<JsonRpcRequest> getRequests() {
     return requests;
   }
 
+  /**
+   * @return provides listeners
+   */
   public List<NettyBatch.BatchPart<?>> getAwaitBatchParts() {
     return batchParts;
   }

@@ -15,15 +15,15 @@ import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
-public class NettyTcpBatchRequest implements BatchRequest {
-  protected final NettyBatch nettyBatch;
-  protected final JsonRpcSender defaultJsonRpcNettySender;
-  protected final SocketAddress defaultSocketAddress;
-  protected final Jsonb jsonb;
-  protected final Charset charset;
+public final class NettyTcpBatchRequest implements BatchRequest {
+  private final NettyBatch nettyBatch;
+  private final JsonRpcSender defaultJsonRpcNettySender;
+  private final SocketAddress defaultSocketAddress;
+  private final Jsonb jsonb;
+  private final Charset charset;
 
-  private NettyTcpBatchRequest(NettyBatch nettyBatch, JsonRpcSender defaultJsonRpcSender,
-                               SocketAddress defaultSocketAddress, Jsonb jsonb, Charset charset) {
+  private NettyTcpBatchRequest(final NettyBatch nettyBatch, final JsonRpcSender defaultJsonRpcSender,
+                               final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
     this.nettyBatch = nettyBatch;
     this.defaultJsonRpcNettySender = defaultJsonRpcSender;
     this.defaultSocketAddress = defaultSocketAddress;
@@ -31,8 +31,18 @@ public class NettyTcpBatchRequest implements BatchRequest {
     this.charset = charset;
   }
 
-  public static Builder builder(BatchRequestAggregator batchRequestAggregator, JsonRpcSender defaultJsonRpcSender,
-                                SocketAddress defaultSocketAddress, Jsonb jsonb, Charset charset) {
+  /**
+   * Creates batch builder.
+   *
+   * @param batchRequestAggregator batch request aggregator
+   * @param defaultJsonRpcSender   sender
+   * @param defaultSocketAddress   server address
+   * @param jsonb                  serializer
+   * @param charset                encoding
+   * @return builder
+   */
+  public static Builder builder(final BatchRequestAggregator batchRequestAggregator, final JsonRpcSender defaultJsonRpcSender,
+                                final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
     return new Builder(batchRequestAggregator, defaultJsonRpcSender, defaultSocketAddress, jsonb, charset);
   }
 
@@ -41,39 +51,66 @@ public class NettyTcpBatchRequest implements BatchRequest {
     defaultJsonRpcNettySender.send(nettyBatch, jsonb, charset, defaultSocketAddress);
   }
 
-  public NettyTcpBatchRequest socketAddress(SocketAddress socketAddress) {
+  /**
+   * Sets server socket address.
+   *
+   * @param socketAddress server socket address
+   * @return this
+   */
+  public NettyTcpBatchRequest socketAddress(final SocketAddress socketAddress) {
     return new NettyTcpBatchRequest(nettyBatch, defaultJsonRpcNettySender, socketAddress, jsonb, charset);
   }
 
-  public NettyTcpBatchRequest jsonb(Jsonb jsonb) {
+  /**
+   * Sets json serializer.
+   *
+   * @param jsonb serializer
+   * @return this
+   */
+  public NettyTcpBatchRequest jsonb(final Jsonb jsonb) {
     return new NettyTcpBatchRequest(nettyBatch, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
-  public NettyTcpBatchRequest charset(Charset charset) {
+  /**
+   * Sets encoding.
+   *
+   * @param charset encoding
+   * @return this
+   */
+  public NettyTcpBatchRequest charset(final Charset charset) {
     return new NettyTcpBatchRequest(nettyBatch, defaultJsonRpcNettySender, defaultSocketAddress, jsonb, charset);
   }
 
+  /**
+   * @return serializer
+   */
   public Jsonb jsonb() {
     return jsonb;
   }
 
+  /**
+   * @return encoding
+   */
   public Charset charset() {
     return charset;
   }
 
+  /**
+   * @return server socket address
+   */
   public SocketAddress socketAddress() {
     return defaultSocketAddress;
   }
 
-  public static class Builder implements BatchRequestBuilder<Builder> {
+  public static final class Builder implements BatchRequestBuilder<Builder> {
     private final BatchRequestAggregator batchRequestAggregator;
     private final JsonRpcSender defaultJsonRpcSender;
     private final SocketAddress defaultSocketAddress;
     private final Jsonb jsonb;
     private final Charset charset;
 
-    private Builder(BatchRequestAggregator batchRequestAggregator, JsonRpcSender defaultJsonRpcSender,
-                    SocketAddress defaultSocketAddress, Jsonb jsonb, Charset charset) {
+    private Builder(final BatchRequestAggregator batchRequestAggregator, final JsonRpcSender defaultJsonRpcSender,
+                    final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
       this.batchRequestAggregator = batchRequestAggregator;
       this.defaultJsonRpcSender = defaultJsonRpcSender;
       this.defaultSocketAddress = defaultSocketAddress;
@@ -82,97 +119,106 @@ public class NettyTcpBatchRequest implements BatchRequest {
     }
 
     @Override
-    public <R> Builder addRequest(String id, Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
-                                  ResponseCallback<R> responseCallback) {
+    public <R> Builder addRequest(final String id, final Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0,
+                                  final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addRequest(id, jsonRemoteProcedure0, responseCallback);
       return this;
     }
 
     @Override
-    public <T, R> Builder addPositionalRequest(String id,
-                                               Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
-                                               T arg, ResponseCallback<R> responseCallback) {
+    public <T, R> Builder addPositionalRequest(final String id,
+                                               final Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
+                                               final T arg, final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addPositionalRequest(id, jsonRemoteProcedure1, arg, responseCallback);
       return this;
     }
 
     @Override
-    public <T1, T2, R> Builder addPositionalRequest(String id,
-                                                    Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                    T1 arg1, T2 arg2, ResponseCallback<R> responseCallback) {
+    public <T1, T2, R> Builder addPositionalRequest(final String id,
+                                                    final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                                    final T1 arg1, final T2 arg2, final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addPositionalRequest(id, jsonRemoteProcedure2, arg1, arg2, responseCallback);
       return this;
     }
 
     @Override
-    public <T1, T2, T3, R> Builder addPositionalRequest(String id,
-                                                        Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                        T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback) {
+    public <T1, T2, T3, R> Builder addPositionalRequest(final String id,
+                                                        final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                        final T1 arg1, final T2 arg2, final T3 arg3,
+                                                        final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addPositionalRequest(id, jsonRemoteProcedure3, arg1, arg2, arg3, responseCallback);
       return this;
     }
 
     @Override
-    public <T, R> Builder addNamedRequest(String id, Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
-                                          T arg, ResponseCallback<R> responseCallback) {
+    public <T, R> Builder addNamedRequest(final String id,
+                                          final Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
+                                          final T arg, final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addNamedRequest(id, jsonRemoteProcedure1, arg, responseCallback);
       return this;
     }
 
     @Override
-    public <T1, T2, R> Builder addNamedRequest(String id, Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                               T1 arg1, T2 arg2, ResponseCallback<R> responseCallback) {
+    public <T1, T2, R> Builder addNamedRequest(final String id,
+                                               final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                               final T1 arg1, final T2 arg2, final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addNamedRequest(id, jsonRemoteProcedure2, arg1, arg2, responseCallback);
       return this;
     }
 
     @Override
-    public <T1, T2, T3, R> Builder addNamedRequest(String id, Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                   T1 arg1, T2 arg2, T3 arg3, ResponseCallback<R> responseCallback) {
+    public <T1, T2, T3, R> Builder addNamedRequest(final String id,
+                                                   final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                   final T1 arg1, final T2 arg2, final T3 arg3,
+                                                   final ResponseCallback<R> responseCallback) {
       batchRequestAggregator.addNamedRequest(id, jsonRemoteProcedure3, arg1, arg2, arg3, responseCallback);
       return this;
     }
 
     @Override
-    public <R> Builder addNotification(Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
+    public <R> Builder addNotification(final Class<? extends JsonRemoteProcedure0<R>> jsonRemoteProcedure0) {
       batchRequestAggregator.addNotification(jsonRemoteProcedure0);
       return this;
     }
 
     @Override
-    public <T, R> Builder addPositionalNotification(Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
+    public <T, R> Builder addPositionalNotification(final Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
+                                                    final T arg) {
       batchRequestAggregator.addPositionalNotification(jsonRemoteProcedure1, arg);
       return this;
     }
 
     @Override
-    public <T1, T2, R> Builder addPositionalNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
-                                                         T1 arg1, T2 arg2) {
+    public <T1, T2, R> Builder addPositionalNotification(final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                                         final T1 arg1, final T2 arg2) {
       batchRequestAggregator.addPositionalNotification(jsonRemoteProcedure2, arg1, arg2);
       return this;
     }
 
     @Override
-    public <T1, T2, T3, R> Builder addPositionalNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
-                                                             T1 arg1, T2 arg2, T3 arg3) {
+    public <T1, T2, T3, R> Builder addPositionalNotification(final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                             final T1 arg1, final T2 arg2, final T3 arg3) {
       batchRequestAggregator.addPositionalNotification(jsonRemoteProcedure3, arg1, arg2, arg3);
       return this;
     }
 
     @Override
-    public <T, R> Builder addNamedNotification(Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1, T arg) {
+    public <T, R> Builder addNamedNotification(final Class<? extends JsonRemoteProcedure1<T, R>> jsonRemoteProcedure1,
+                                               final T arg) {
       batchRequestAggregator.addNamedNotification(jsonRemoteProcedure1, arg);
       return this;
     }
 
     @Override
-    public <T1, T2, R> Builder addNamedNotification(Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2, T1 arg1, T2 arg2) {
+    public <T1, T2, R> Builder addNamedNotification(final Class<? extends JsonRemoteProcedure2<T1, T2, R>> jsonRemoteProcedure2,
+                                                    final T1 arg1, final T2 arg2) {
       batchRequestAggregator.addNamedNotification(jsonRemoteProcedure2, arg1, arg2);
       return this;
     }
 
     @Override
-    public <T1, T2, T3, R> Builder addNamedNotification(Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3, T1 arg1, T2 arg2, T3 arg3) {
+    public <T1, T2, T3, R> Builder addNamedNotification(final Class<? extends JsonRemoteProcedure3<T1, T2, T3, R>> jsonRemoteProcedure3,
+                                                        final T1 arg1, final T2 arg2, final T3 arg3) {
       batchRequestAggregator.addNamedNotification(jsonRemoteProcedure3, arg1, arg2, arg3);
       return this;
     }

@@ -11,19 +11,19 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyTcpRequest0<R> extends AbstractNettyTcpRequest<NettyTcpRequest0<R>>
+public final class NettyTcpRequest0<R> extends AbstractNettyTcpRequest<NettyTcpRequest0<R>>
   implements Request0<R> {
   public static final Object[] EMPTY_PAYLOAD = new Object[0];
 
 
-  public NettyTcpRequest0(JsonRpcSender defaultJsonRpcNettySender, SocketAddress defaultSocketAddress,
-                          Jsonb defaultJsonb, Charset defaultCharset,
-                          JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
+  public NettyTcpRequest0(final JsonRpcSender defaultJsonRpcNettySender, final SocketAddress defaultSocketAddress,
+                          final Jsonb defaultJsonb, final Charset defaultCharset,
+                          final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(defaultJsonRpcNettySender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public CompletableFuture<R> call(String id) {
+  public CompletableFuture<R> call(final String id) {
     return defaultJsonRpcSender.send(id, RequestDto.positional(id, jsonRemoteProcedureSignature.getProcedureName(),
       EMPTY_PAYLOAD), jsonb, charset, jsonRemoteProcedureSignature.getReturnType(), defaultSocketAddress);
   }
@@ -35,17 +35,17 @@ public class NettyTcpRequest0<R> extends AbstractNettyTcpRequest<NettyTcpRequest
   }
 
   @Override
-  public NettyTcpRequest0<R> socketAddress(SocketAddress socketAddress) {
+  public NettyTcpRequest0<R> socketAddress(final SocketAddress socketAddress) {
     return new NettyTcpRequest0<>(defaultJsonRpcSender, socketAddress, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public NettyTcpRequest0<R> jsonb(Jsonb jsonb) {
+  public NettyTcpRequest0<R> jsonb(final Jsonb jsonb) {
     return new NettyTcpRequest0<>(defaultJsonRpcSender, defaultSocketAddress, jsonb, charset, jsonRemoteProcedureSignature);
   }
 
   @Override
-  public NettyTcpRequest0<R> charset(Charset charset) {
+  public NettyTcpRequest0<R> charset(final Charset charset) {
     return new NettyTcpRequest0<>(defaultJsonRpcSender, defaultSocketAddress, jsonb, charset, jsonRemoteProcedureSignature);
   }
 }

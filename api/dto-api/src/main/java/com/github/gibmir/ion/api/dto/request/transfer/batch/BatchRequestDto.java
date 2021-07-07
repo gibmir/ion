@@ -3,20 +3,37 @@ package com.github.gibmir.ion.api.dto.request.transfer.batch;
 import com.github.gibmir.ion.api.dto.request.JsonRpcRequest;
 
 public class BatchRequestDto implements JsonRpcRequest {
+  /**
+   * batch of json-rpo requests.
+   */
   private JsonRpcRequest[] jsonRpcRequests;
 
+  /**
+   * Default constructor.
+   */
   public BatchRequestDto() {
   }
 
-  public BatchRequestDto(JsonRpcRequest[] jsonRpcRequests) {
+  /**
+   * @param jsonRpcRequests batch requests
+   */
+  public BatchRequestDto(final JsonRpcRequest[] jsonRpcRequests) {
     this.jsonRpcRequests = jsonRpcRequests;
   }
 
-  public JsonRpcRequest[] getJsonRpcRequests() {
+  /**
+   * @return batch requests
+   */
+  public final JsonRpcRequest[] getJsonRpcRequests() {
     return jsonRpcRequests;
   }
 
-  public void setJsonRpcRequests(JsonRpcRequest[] jsonRpcRequests) {
+  /**
+   * Sets batch requests.
+   *
+   * @param jsonRpcRequests batch requests
+   */
+  public final void setJsonRpcRequests(final JsonRpcRequest[] jsonRpcRequests) {
     this.jsonRpcRequests = jsonRpcRequests;
   }
 }

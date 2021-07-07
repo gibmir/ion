@@ -10,22 +10,22 @@ import java.util.Optional;
 public class YamlConfiguration implements Configuration {
   private final Map<String, Object> properties;
 
-  public YamlConfiguration(Map<String, Object> properties) {
+  public YamlConfiguration(final Map<String, Object> properties) {
     this.properties = properties;
   }
 
   @Override
-  public <T> T getValue(String propertyName, Class<T> type) {
+  public final <T> T getValue(final String propertyName, final Class<T> type) {
     return type.cast(properties.get(propertyName));
   }
 
   @Override
-  public <T> Optional<T> getOptionalValue(String propertyName, Class<T> type) {
+  public final <T> Optional<T> getOptionalValue(final String propertyName, final Class<T> type) {
     return Optional.ofNullable(getValue(propertyName, type));
   }
 
   @Override
-  public <T> List<T> getValues(String propertyName, Class<T> genericType) {
+  public final <T> List<T> getValues(final String propertyName, final Class<T> genericType) {
     Object value = properties.get(propertyName);
     if (value == null) {
       return Collections.emptyList();
@@ -37,7 +37,7 @@ public class YamlConfiguration implements Configuration {
   }
 
   @SuppressWarnings("unchecked")
-  private static <T> List<T> uncheckedListCast(Object list) {
+  private static <T> List<T> uncheckedListCast(final Object list) {
     return (List<T>) list;
   }
 }

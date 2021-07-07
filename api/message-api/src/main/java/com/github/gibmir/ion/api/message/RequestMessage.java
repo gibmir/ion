@@ -1,10 +1,19 @@
 package com.github.gibmir.ion.api.message;
 
 public interface RequestMessage extends Message {
+  /**
+   * @return request id
+   */
   String getId();
 
+  /**
+   * @return method name
+   */
   String getMethodName();
 
+  /**
+   * @return arguments json
+   */
   String getArgumentsJson();
 
   @Override

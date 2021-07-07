@@ -18,10 +18,13 @@ public enum Errors {
   TRANSPORT_ERROR(new JsonRpcError(32300, "transport error. "));
   private final JsonRpcError error;
 
-  Errors(JsonRpcError error) {
+  Errors(final JsonRpcError error) {
     this.error = error;
   }
 
+  /**
+   * @return exception from standard error
+   */
   public JsonRpcError getError() {
     return new JsonRpcError(error.getCode(), error.getMessage());
   }

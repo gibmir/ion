@@ -22,7 +22,7 @@ public class YamlConfigurationProvider implements ConfigurationProvider {
   private static volatile YamlConfiguration yamlConfigurationInstance;
 
   @Override
-  public YamlConfiguration provide() {
+  public final YamlConfiguration provide() {
     YamlConfiguration localInstance = yamlConfigurationInstance;
     //double-check singleton
     if (localInstance == null) {
@@ -45,7 +45,7 @@ public class YamlConfigurationProvider implements ConfigurationProvider {
     return new YamlConfiguration(configMap);
   }
 
-  private static InputStream getConfigurationFileInputStream(ClassLoader classLoader, String configurationFilePath) {
+  private static InputStream getConfigurationFileInputStream(final ClassLoader classLoader, final String configurationFilePath) {
     if (configurationFilePath != null) {
       Path path = Path.of(configurationFilePath);
       File file = path.toFile();

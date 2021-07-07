@@ -9,19 +9,24 @@ public enum Types {
   NUMBER("number", Double.class, false),
   CUSTOM("custom", null, true),
   LIST("list", List.class, true),
-  MAP("map", Map.class, true),
-  ;
+  MAP("map", Map.class, true);
   private final String typeName;
   private final Class<?> type;
   private final boolean parametrized;
 
-  Types(String typeName, Class<?> type, boolean parametrized) {
+  Types(final String typeName, final Class<?> type, final boolean parametrized) {
     this.typeName = typeName;
     this.type = type;
     this.parametrized = parametrized;
   }
 
-  public static Types from(String typeName) {
+  /**
+   * Resolves type by specified type name.
+   *
+   * @param typeName type name
+   * @return resolved type
+   */
+  public static Types from(final String typeName) {
     if (typeName.equals(STRING.typeName)) {
       return STRING;
     } else if (typeName.equals(NUMBER.typeName)) {
@@ -37,10 +42,17 @@ public enum Types {
     }
   }
 
+  /**
+   * @return resolved class
+   * @implNote returns null for custom type.
+   */
   public Class<?> resolve() {
     return type;
   }
 
+  /**
+   * @return true if type parametrized
+   */
   public boolean isParametrized() {
     return parametrized;
   }

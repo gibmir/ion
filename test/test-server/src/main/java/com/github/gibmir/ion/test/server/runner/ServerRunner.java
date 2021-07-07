@@ -6,8 +6,14 @@ import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryPro
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
 import com.github.gibmir.ion.test.common.procedure.TestStringProcedure;
 
-public class ServerRunner {
-  public static void main(String[] args) {
+public final class ServerRunner {
+  private ServerRunner() {
+  }
+
+  /**
+   * @param args cmd line args
+   */
+  public static void main(final String[] args) {
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
     ProcedureProcessorFactory procedureProcessorFactory = jsonRpcServer.getProcedureProcessorFactory();

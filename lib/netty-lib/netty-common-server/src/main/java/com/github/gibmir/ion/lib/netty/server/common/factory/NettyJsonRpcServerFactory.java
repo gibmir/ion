@@ -6,15 +6,15 @@ import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
 import com.github.gibmir.ion.lib.netty.server.common.NettyJsonRpcServer;
 import io.netty.channel.EventLoopGroup;
 
-public class NettyJsonRpcServerFactory implements JsonRpcServerFactory {
+public final class NettyJsonRpcServerFactory implements JsonRpcServerFactory {
   private final EventLoopGroup bossGroup;
   private final EventLoopGroup workerGroup;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
   private final ProcedureProcessorFactory procedureProcessorFactory;
 
-  public NettyJsonRpcServerFactory(EventLoopGroup bossGroup, EventLoopGroup workerGroup,
-                                   ProcedureProcessorRegistry procedureProcessorRegistry,
-                                   ProcedureProcessorFactory procedureProcessorFactory) {
+  public NettyJsonRpcServerFactory(final EventLoopGroup bossGroup, final EventLoopGroup workerGroup,
+                                   final ProcedureProcessorRegistry procedureProcessorRegistry,
+                                   final ProcedureProcessorFactory procedureProcessorFactory) {
     this.bossGroup = bossGroup;
     this.workerGroup = workerGroup;
     this.procedureProcessorRegistry = procedureProcessorRegistry;

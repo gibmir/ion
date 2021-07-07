@@ -29,7 +29,7 @@ import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
-public class NettyHttpRequestFactoryProvider implements RequestFactoryProvider {
+public final class NettyHttpRequestFactoryProvider implements RequestFactoryProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyHttpRequestFactoryProvider.class);
   private static volatile NettyHttpRequestFactory nettyRequestFactoryInstance;
 
@@ -66,11 +66,11 @@ public class NettyHttpRequestFactoryProvider implements RequestFactoryProvider {
       NettyClientConfigurationUtils.createUriWith(configuration), jsonb, charset);
   }
 
-  private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(Configuration configuration,
-                                                                                  ResponseListenerRegistry responseListenerRegistry,
-                                                                                  Charset charset, Jsonb jsonb,
-                                                                                  int maxContentLength,
-                                                                                  HttpResponseDecoderConfiguration decoderConfiguration) {
+  private static ChannelInitializer<Channel> createJsonRpcNettyChannelInitializer(final Configuration configuration,
+                                                                                  final ResponseListenerRegistry responseListenerRegistry,
+                                                                                  final Charset charset, final Jsonb jsonb,
+                                                                                  final int maxContentLength,
+                                                                                  final HttpResponseDecoderConfiguration decoderConfiguration) {
     HttpClientChannelHandlerAppender appender = new HttpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb,
       decoderConfiguration, maxContentLength);
     ChannelHandlerAppender channelHandlerAppender = NettyClientConfigurationUtils.appendSsl(configuration,

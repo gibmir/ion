@@ -4,15 +4,15 @@ import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.lib.schema.SchemaElementBean;
 
-public class ProcedureBean extends SchemaElementBean implements Procedure {
+public final class ProcedureBean extends SchemaElementBean implements Procedure {
   private PropertyType[] argumentTypes;
   private PropertyType returnArgumentType;
 
   public ProcedureBean() {
   }
 
-  public ProcedureBean(String id, String name, String description, PropertyType[] argumentTypes,
-                       PropertyType returnArgumentType) {
+  public ProcedureBean(final String id, final String name, final String description, final PropertyType[] argumentTypes,
+                       final PropertyType returnArgumentType) {
     super(id, name, description);
     this.argumentTypes = argumentTypes;
     this.returnArgumentType = returnArgumentType;
@@ -28,11 +28,21 @@ public class ProcedureBean extends SchemaElementBean implements Procedure {
     return returnArgumentType;
   }
 
-  public void setArgumentTypes(PropertyType... argumentTypes) {
+  /**
+   * Sets argument types.
+   *
+   * @param argumentTypes argument types
+   */
+  public void setArgumentTypes(final PropertyType... argumentTypes) {
     this.argumentTypes = argumentTypes;
   }
 
-  public void setReturnArgumentType(PropertyType returnArgumentType) {
+  /**
+   * Sets return argument type.
+   *
+   * @param returnArgumentType return argument type
+   */
+  public void setReturnArgumentType(final PropertyType returnArgumentType) {
     this.returnArgumentType = returnArgumentType;
   }
 }

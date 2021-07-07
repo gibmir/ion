@@ -12,16 +12,16 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.Map;
 
-public class SimpleResponseListenerRegistry implements ResponseListenerRegistry {
+public final class SimpleResponseListenerRegistry implements ResponseListenerRegistry {
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleResponseListenerRegistry.class);
   private final Map<String, ResponseFuture> idPerResponseListener;
 
-  public SimpleResponseListenerRegistry(Map<String, ResponseFuture> idPerResponseListener) {
+  public SimpleResponseListenerRegistry(final Map<String, ResponseFuture> idPerResponseListener) {
     this.idPerResponseListener = idPerResponseListener;
   }
 
   @Override
-  public void register(ResponseFuture responseFuture) {
+  public void register(final ResponseFuture responseFuture) {
     String id = responseFuture.getId();
     idPerResponseListener.compute(id, (key, completableFuture) -> {
       if (completableFuture != null) {
@@ -35,7 +35,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
   }
 
   @Override
-  public void notifyListenerWith(JsonValue jsonValue) {
+  public void notifyListenerWith(final JsonValue jsonValue) {
     try {
       switch (jsonValue.getValueType()) {
         case OBJECT:
@@ -55,7 +55,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
     }
   }
 
-  private void processRequest(JsonObject jsonObject) {
+  private void processRequest(final JsonObject jsonObject) {
     JsonValue idValue = jsonObject.get(SerializationProperties.ID_KEY);
     if (idValue == null) {
       LOGGER.error("Error [{}] occurred during response deserialization. Id was not present ",
@@ -67,8 +67,8 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
       (key, responseFuture) -> computeResponse(jsonObject, key, responseFuture));
   }
 
-  private ResponseFuture computeResponse(JsonObject jsonObject, String id,
-                                         ResponseFuture responseFuture) {
+  private ResponseFuture computeResponse(final JsonObject jsonObject, final String id,
+                                         final ResponseFuture responseFuture) {
     if (responseFuture != null) {
       try {
         compute(jsonObject, id, responseFuture);
@@ -82,7 +82,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
     return null;
   }
 
-  private void compute(JsonObject jsonObject, String id, ResponseFuture responseFuture) {
+  private void compute(final JsonObject jsonObject, final String id, final ResponseFuture responseFuture) {
     if (jsonObject.get(SerializationProperties.PROTOCOL_KEY) == null) {
       ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("Protocol was not present"))
         .processWith(responseFuture);
@@ -98,7 +98,7 @@ public class SimpleResponseListenerRegistry implements ResponseListenerRegistry 
           .fromJson(jsonObject.toString(), ErrorResponse.class)
           .processWith(responseFuture);
       } else {
-        ErrorResponse.withId(id, Errors.INVALID_RPC.getError().appendMessage("There is no body"))
+        ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("There is no body"))
           .processWith(responseFuture);
       }
     }

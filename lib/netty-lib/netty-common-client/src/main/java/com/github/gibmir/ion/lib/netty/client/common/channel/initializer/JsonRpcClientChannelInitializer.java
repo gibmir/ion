@@ -12,7 +12,7 @@ import io.netty.handler.ssl.SslHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel> {
+public final class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel> {
   private final ChannelHandler[] channelHandlers;
 
   public static class Builder {
@@ -22,24 +22,39 @@ public class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel>
     private LoggingHandler loggingHandler;
     private SslHandler sslHandler;
 
-    public Builder(JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                   JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                   JsonRpcResponseHandler jsonRpcResponseHandler) {
+    public Builder(final JsonRpcRequestEncoder jsonRpcRequestEncoder,
+                   final JsonRpcResponseDecoder jsonRpcResponseDecoder,
+                   final JsonRpcResponseHandler jsonRpcResponseHandler) {
       this.jsonRpcRequestEncoder = jsonRpcRequestEncoder;
       this.jsonRpcResponseDecoder = jsonRpcResponseDecoder;
       this.jsonRpcResponseHandler = jsonRpcResponseHandler;
     }
 
-    public Builder withLogging(LoggingHandler loggingHandler) {
+    /**
+     * Sets specified logging handler.
+     *
+     * @param loggingHandler logging handler
+     * @return this
+     */
+    public final Builder withLogging(final LoggingHandler loggingHandler) {
       this.loggingHandler = loggingHandler;
       return this;
     }
 
-    public Builder withSsl(SslHandler sslHandler) {
+    /**
+     * Sets specified ssl handler.
+     *
+     * @param sslHandler ssl handler
+     * @return this
+     */
+    public final Builder withSsl(final SslHandler sslHandler) {
       this.sslHandler = sslHandler;
       return this;
     }
 
+    /**
+     * @return channel initializer with configured handlers
+     */
     public JsonRpcClientChannelInitializer build() {
       List<ChannelHandler> builderHandlers = new ArrayList<>();
       if (sslHandler != null) {
@@ -56,18 +71,24 @@ public class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel>
     }
   }
 
-  private JsonRpcClientChannelInitializer(ChannelHandler... channelHandlers) {
+  private JsonRpcClientChannelInitializer(final ChannelHandler... channelHandlers) {
     this.channelHandlers = channelHandlers;
   }
 
-  public static Builder builder(JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                                JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                                JsonRpcResponseHandler jsonRpcResponseHandler) {
+  /**
+   * @param jsonRpcRequestEncoder  encoder
+   * @param jsonRpcResponseDecoder decoder
+   * @param jsonRpcResponseHandler handler
+   * @return builder
+   */
+  public static Builder builder(final JsonRpcRequestEncoder jsonRpcRequestEncoder,
+                                final JsonRpcResponseDecoder jsonRpcResponseDecoder,
+                                final JsonRpcResponseHandler jsonRpcResponseHandler) {
     return new Builder(jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
   }
 
   @Override
-  protected void initChannel(Channel ch) {
+  protected void initChannel(final Channel ch) {
     ch.pipeline().addLast(channelHandlers);
   }
 }

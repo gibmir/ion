@@ -5,13 +5,13 @@ import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NettyProcedureManager implements ProcedureManager {
+public final class NettyProcedureManager implements ProcedureManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyProcedureManager.class);
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
   private final String procedureName;
 
 
-  public NettyProcedureManager(ProcedureProcessorRegistry procedureProcessorRegistry, String procedureName) {
+  public NettyProcedureManager(final ProcedureProcessorRegistry procedureProcessorRegistry, final String procedureName) {
     this.procedureProcessorRegistry = procedureProcessorRegistry;
     this.procedureName = procedureName;
   }

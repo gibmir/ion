@@ -23,7 +23,7 @@ public enum NettyLogLevel implements Supplier<LogLevel> {
   DISABLED(LogLevel.ERROR);
   private final LogLevel logLevel;
 
-  NettyLogLevel(LogLevel logLevel) {
+  NettyLogLevel(final LogLevel logLevel) {
     this.logLevel = logLevel;
   }
 

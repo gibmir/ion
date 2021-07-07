@@ -3,20 +3,20 @@ package com.github.gibmir.ion.lib.schema.type;
 import com.github.gibmir.ion.api.schema.type.PropertyType;
 import com.github.gibmir.ion.lib.schema.SchemaElementBean;
 
-public class PropertyTypeBean extends SchemaElementBean implements PropertyType {
+public final class PropertyTypeBean extends SchemaElementBean implements PropertyType {
   private String typeName;
 
   public PropertyTypeBean() {
     super();
   }
 
-  public PropertyTypeBean(String id, String name, String description, String typeName) {
+  public PropertyTypeBean(final String id, final String name, final String description, final String typeName) {
     super(id, name, description);
     this.typeName = typeName;
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     return super.equals(o);
   }
 
@@ -32,11 +32,10 @@ public class PropertyTypeBean extends SchemaElementBean implements PropertyType 
 
   @Override
   public String toString() {
-    return "PropertyTypeBean{" +
-      "typeName='" + typeName + '\'' +
-      ", id='" + id + '\'' +
-      ", name='" + name + '\'' +
-      ", description='" + description + '\'' +
-      '}';
+    return "PropertyTypeBean{"
+      + "typeName='" + typeName + '\''
+      + ", id='" + id + '\''
+      + ", name='" + name + '\''
+      + ", description='" + description + '\'' + '}';
   }
 }

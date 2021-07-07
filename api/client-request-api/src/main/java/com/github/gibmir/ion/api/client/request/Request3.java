@@ -59,6 +59,9 @@ public interface Request3<T1, T2, T3, R> {
   /**
    * Makes a positional(array arguments) notification call.
    *
+   * @param arg1 first argument
+   * @param arg2 second argument
+   * @param arg3 third argument
    * @implSpec You must follow the json-rpc 2.0 specification.
    * Example request:
    * <pre>{@code
@@ -72,6 +75,9 @@ public interface Request3<T1, T2, T3, R> {
   /**
    * Makes a named(key-value arguments) notification call.
    *
+   * @param arg1 first argument
+   * @param arg2 second argument
+   * @param arg3 third argument
    * @implSpec You must follow the json-rpc 2.0 specification.
    * Example request:
    * <pre>{@code
