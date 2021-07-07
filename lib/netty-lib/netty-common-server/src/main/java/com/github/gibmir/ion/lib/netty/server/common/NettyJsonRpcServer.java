@@ -6,7 +6,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.api.server.JsonRpcServer;
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.lib.netty.server.common.processor.factory.JsonRpcRequestProcessorFactory;
 import com.github.gibmir.ion.lib.netty.server.common.manager.ComposedProcedureManager;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;

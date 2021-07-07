@@ -3,7 +3,7 @@ package com.github.gibmir.ion.lib.netty.server.http.provider;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
 import com.github.gibmir.ion.lib.netty.server.common.processor.registry.NettyProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;

@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.server.environment.mock;
 
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;

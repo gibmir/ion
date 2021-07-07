@@ -2,7 +2,6 @@ package com.github.gibmir.ion.lib.netty.server.common.processor.factory;
 
 import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
-import com.github.gibmir.ion.api.dto.properties.SerializationProperties;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
@@ -10,7 +9,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
-import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.processor.request.JsonRpcRequestProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,6 @@ import javax.json.bind.Jsonb;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Type;
-import java.util.function.Consumer;
 
 public final class JsonRpcRequestProcessorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonRpcRequestProcessorFactory.class);
@@ -156,51 +154,6 @@ public final class JsonRpcRequestProcessorFactory {
       this.namedMethodHandle = namedMethodHandle;
       this.service = service;
       this.jsonb = jsonb;
-    }
-
-    @Override
-    public void process(final String id, final String procedureName, final JsonObject jsonObject,
-                        final Consumer<JsonRpcResponse> responseConsumer) {
-      JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
-      if (paramsValue == null) {
-        responseConsumer.accept(process(RequestDto.positional(id, procedureName, EMPTY_ARGS)));
-        return;
-      }
-      switch (paramsValue.getValueType()) {
-        case ARRAY:
-          responseConsumer.accept(process(RequestDto.positional(id, procedureName,
-            getArgumentsFromArray(this.jsonb, paramsValue, namedMethodHandle.argumentTypes.length))));
-          return;
-        case OBJECT:
-          responseConsumer.accept(process(RequestDto.positional(id, procedureName,
-            getArgumentsFromMap(this.jsonb, paramsValue))));
-          return;
-        default:
-          responseConsumer.accept(ErrorResponse.fromJsonRpcError(id, Errors.INVALID_METHOD_PARAMETERS.getError()
-            .appendMessage("Unsupported request Type")));
-      }
-    }
-
-    @Override
-    public void process(final String procedureName, final JsonObject jsonObject) {
-      JsonValue paramsValue = jsonObject.get(SerializationProperties.PARAMS_KEY);
-      if (paramsValue == null) {
-        process(NotificationDto.empty(procedureName));
-        return;
-      }
-      int argumentsCount = namedMethodHandle.argumentTypes.length;
-      switch (paramsValue.getValueType()) {
-        case ARRAY:
-          process(NotificationDto.positional(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
-          return;
-        case OBJECT:
-          //named processing
-          process(NotificationDto.positional(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
-          return;
-        default:
-          LOGGER.error("Exception [{}] occurred while processing notification",
-            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Unsupported request Type"));
-      }
     }
 
     @Override

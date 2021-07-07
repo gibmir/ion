@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.server.common.manager;
 
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

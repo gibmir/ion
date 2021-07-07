@@ -1,14 +1,12 @@
 package com.github.gibmir.ion.lib.netty.server.common.processor.registry;
 
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
-import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import org.junit.jupiter.api.Test;
 
-import javax.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -20,16 +18,6 @@ class ProcedureProcessorRegistryTest {
 
   public static final String TEST_PROCEDURE_NAME = "testProcedureName";
   public static final JsonRpcRequestProcessor TEST_JSON_RPC_REQUEST_PROCESSOR = new JsonRpcRequestProcessor() {
-    @Override
-    public void process(String id, String procedureName, JsonObject jsonObject,
-                        Consumer<JsonRpcResponse> responseConsumer) {
-
-    }
-
-    @Override
-    public void process(String procedureName, JsonObject jsonObject) {
-
-    }
 
     @Override
     public JsonRpcResponse processRequest(String id, String procedureName, String argumentsJson) {

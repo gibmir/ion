@@ -1,7 +1,7 @@
 package com.github.gibmir.ion.lib.netty.server;
 
-import com.github.gibmir.ion.api.server.cache.processor.JsonRpcRequestProcessor;
-import com.github.gibmir.ion.api.server.cache.processor.ProcedureProcessorRegistry;
+import com.github.gibmir.ion.api.server.processor.request.JsonRpcRequestProcessor;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessor;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
