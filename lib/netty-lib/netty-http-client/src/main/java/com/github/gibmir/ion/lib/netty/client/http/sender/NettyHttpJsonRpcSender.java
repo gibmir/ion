@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public final class NettyHttpJsonRpcSender {
+public class NettyHttpJsonRpcSender {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyHttpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;

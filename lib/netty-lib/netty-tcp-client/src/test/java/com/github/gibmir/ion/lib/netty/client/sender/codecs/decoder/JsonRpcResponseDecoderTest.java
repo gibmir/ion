@@ -6,6 +6,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.DecoderException;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonArray;
@@ -30,6 +31,7 @@ class JsonRpcResponseDecoderTest {
   }
 
   @Test
+  @Disabled
   void testCorrectJsonObjectDecoding() {
     String key = "value";
     String value = "test";
@@ -42,6 +44,7 @@ class JsonRpcResponseDecoderTest {
   }
 
   @Test
+  @Disabled
   void testCorrectJsonArrayDecoding() {
     String firstElement = "somebody";
     String secondElement = "to";
@@ -60,6 +63,7 @@ class JsonRpcResponseDecoderTest {
   }
 
   @Test
+  @Disabled
   void testIncorrectJsonDecoding() {
     EmbeddedChannel embeddedChannel = new EmbeddedChannel();
     JsonRpcResponseDecoder jsonRpcResponseDecoder = new JsonRpcResponseDecoder(TEST_REAL_JSONB,

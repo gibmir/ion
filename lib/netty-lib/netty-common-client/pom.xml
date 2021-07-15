@@ -11,11 +11,6 @@
 
     <artifactId>netty-common-client</artifactId>
     <description>Provides common ion netty client classes</description>
-
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -32,14 +27,17 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-api</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>dto-api</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>configuration-api</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
@@ -47,21 +45,19 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.github.gibmir.ion</groupId>
+            <artifactId>scanner</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>${yasson.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>${javax.json-api.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.gibmir.ion</groupId>
-            <artifactId>scanner</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>

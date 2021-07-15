@@ -16,43 +16,4 @@
         <module>netty-lib</module>
         <module>schema-lib</module>
     </modules>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>core-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>dto-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>client-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>discovery-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>configuration-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>server-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>message-api</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

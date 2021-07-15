@@ -21,7 +21,7 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public final class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
+public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyTcpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, ? extends ChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
@@ -32,6 +32,9 @@ public final class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
     this.responseListenerRegistry = responseListenerRegistry;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   @SuppressWarnings("unchecked")
   public <R> CompletableFuture<R> send(final String id, final RequestDto request, final Jsonb jsonb,
@@ -53,6 +56,9 @@ public final class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
     return responseFuture.thenApply(response -> (R) response);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void send(final NotificationDto request, final Jsonb jsonb, final Charset charset,
                    final SocketAddress socketAddress) {

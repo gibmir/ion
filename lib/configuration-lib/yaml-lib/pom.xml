@@ -11,9 +11,6 @@
 
     <artifactId>yaml-lib</artifactId>
 
-    <properties>
-        <snakeyaml.version>1.26</snakeyaml.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -26,17 +23,16 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>configuration-api</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>${javax.json-api.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

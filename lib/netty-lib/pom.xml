@@ -23,21 +23,4 @@
         <module>netty-http-server</module>
         <module>netty-common-http</module>
     </modules>
-    <properties>
-        <netty.version>4.1.50.Final</netty.version>
-    </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.gibmir.ion</groupId>
-                <artifactId>netty-common-client</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
