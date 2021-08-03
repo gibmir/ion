@@ -34,6 +34,7 @@ public final class ConfigurationUtils {
   //java properties
   public static final String CONFIG_FILE_PATH_JAVA_PROPERTY = ConfigurationUtils.ROOT_PREFIX
     + ".configuration.file.path";
+  public static final String CONFIG_FILE_PATH_ENV = "ION_CONFIGURATION_FILE_PATH";
   public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   //charset

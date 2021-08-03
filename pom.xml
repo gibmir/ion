@@ -33,9 +33,6 @@
         <yasson.version>1.0.1</yasson.version>
         <snakeyaml.version>1.26</snakeyaml.version>
         <mvn.surefire.plugin.version>3.0.0-M3</mvn.surefire.plugin.version>
-        <!--JACOCO-->
-        <jacoco.version>0.8.7</jacoco.version>
-        <jacoco.covered.min>0.90</jacoco.covered.min>
         <!--CHECKSTYLE-->
         <mvn.checkstyle.plugin.version>3.1.2</mvn.checkstyle.plugin.version>
         <netty.version>4.1.50.Final</netty.version>

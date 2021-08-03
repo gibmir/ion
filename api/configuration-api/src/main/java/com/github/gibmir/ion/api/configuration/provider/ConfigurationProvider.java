@@ -18,6 +18,9 @@ public interface ConfigurationProvider {
    * Provides application configuration.
    *
    * @return application configuration
+   * @throws com.github.gibmir.ion.api.configuration.exception.ConfigurationProvidingException if exception occurred
+   *                                                                                           while trying to
+   *                                                                                           provide config
    */
   Configuration provide();
 }
