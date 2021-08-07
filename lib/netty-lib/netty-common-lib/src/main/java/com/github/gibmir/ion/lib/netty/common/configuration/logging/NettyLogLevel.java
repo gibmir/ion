@@ -20,7 +20,7 @@ public enum NettyLogLevel implements Supplier<LogLevel> {
    *
    * @implNote You shouldn't create {@link io.netty.handler.logging.LoggingHandler} if this log level was resolved
    */
-  DISABLED(LogLevel.ERROR);
+  DISABLED(null);
   private final LogLevel logLevel;
 
   NettyLogLevel(final LogLevel logLevel) {
