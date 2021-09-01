@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.common.message;
 
-public class NettyAbstractMessage {
+public abstract class NettyAbstractMessage {
   private final String method;
   private final String argumentsJson;
 
