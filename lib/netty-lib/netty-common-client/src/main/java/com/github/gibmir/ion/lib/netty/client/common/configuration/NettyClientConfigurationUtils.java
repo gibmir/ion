@@ -50,9 +50,12 @@ public final class NettyClientConfigurationUtils {
    */
   public static SocketAddress createSocketAddressWith(final Configuration configuration) {
     String socketAddressHost = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_HOST, String.class);
-
     Integer socketAddressPort = configuration.getValue(NETTY_CLIENT_SOCKET_ADDRESS_PORT, Integer.class);
-    LOGGER.info("Socket address was received. Host:port [{}:{}]", socketAddressHost, socketAddressPort);
+    String address = String.format("host:port [%s:%s]", socketAddressHost, socketAddressPort);
+    LOGGER.info("Socket address was received. {}", address);
+    if (socketAddressHost == null || socketAddressPort == null) {
+      throw new IllegalArgumentException(String.format("Socket address [%s] was configured incorrectly", address));
+    }
     return new InetSocketAddress(socketAddressHost, socketAddressPort);
   }
 
@@ -66,8 +69,10 @@ public final class NettyClientConfigurationUtils {
    */
   public static URI createUriWith(final Configuration configuration) {
     String uri = configuration.getValue(NETTY_CLIENT_URI, String.class);
-
-    LOGGER.info("Socket address was received. URI {}", uri);
+    LOGGER.info("URI [{}] was resolved from configuration", uri);
+    if (uri == null || uri.isBlank()) {
+      throw new IllegalArgumentException(String.format("URI [%s] was resolved incorrectly", uri));
+    }
     return URI.create(uri);
   }
 
@@ -225,7 +230,13 @@ public final class NettyClientConfigurationUtils {
       //for system default
       return null;
     }
-    return Paths.get(trustManagerCertPathString).toFile();
+    File file = Paths.get(trustManagerCertPathString).toFile();
+    if (/*file is not exists*/!file.exists()) {
+      String message = String.format("Trust store was resolved incorrectly. File [%s] doesn't exists",
+        trustManagerCertPathString);
+      throw new IllegalArgumentException(message);
+    }
+    return file;
   }
 
   //string
@@ -243,7 +254,13 @@ public final class NettyClientConfigurationUtils {
       //for system default
       return null;
     }
-    return Paths.get(keyManagerCertPathString).toFile();
+    File file = Paths.get(keyManagerCertPathString).toFile();
+    if (/*file is not exists*/!file.exists()) {
+      String message = String.format("Key manager was resolved incorrectly. File [%s] doesn't exists",
+        keyManagerCertPathString);
+      throw new IllegalArgumentException(message);
+    }
+    return file;
   }
 
   //string
@@ -261,7 +278,13 @@ public final class NettyClientConfigurationUtils {
       //for system default
       return null;
     }
-    return Paths.get(keyManagerCertPathString).toFile();
+    File file = Paths.get(keyManagerCertPathString).toFile();
+    if (/*file is not exists*/!file.exists()) {
+      String message = String.format("Private key was resolved incorrectly. File [%s] doesn't exists",
+        keyManagerCertPathString);
+      throw new IllegalArgumentException(message);
+    }
+    return file;
   }
 
   //string
