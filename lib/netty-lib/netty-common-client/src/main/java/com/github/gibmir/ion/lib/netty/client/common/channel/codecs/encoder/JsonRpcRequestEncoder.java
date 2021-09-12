@@ -4,8 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-public final class JsonRpcRequestEncoder extends MessageToByteEncoder<byte[]> {
+public class JsonRpcRequestEncoder extends MessageToByteEncoder<byte[]> {
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void encode(final ChannelHandlerContext ctx, final byte[] msg, final ByteBuf out) {
     int writerIndex = out.writerIndex();

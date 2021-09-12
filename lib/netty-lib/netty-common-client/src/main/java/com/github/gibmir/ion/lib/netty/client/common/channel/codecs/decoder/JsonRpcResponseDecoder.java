@@ -8,7 +8,7 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public final class JsonRpcResponseDecoder extends MessageToMessageDecoder<byte[]> {
+public class JsonRpcResponseDecoder extends MessageToMessageDecoder<byte[]> {
   private final Jsonb jsonb;
   private final Charset charset;
 
@@ -17,6 +17,9 @@ public final class JsonRpcResponseDecoder extends MessageToMessageDecoder<byte[]
     this.charset = charset;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void decode(final ChannelHandlerContext ctx, final byte[] msg, final List<Object> out) {
     out.add(jsonb.fromJson(new String(msg, charset), JsonValue.class));

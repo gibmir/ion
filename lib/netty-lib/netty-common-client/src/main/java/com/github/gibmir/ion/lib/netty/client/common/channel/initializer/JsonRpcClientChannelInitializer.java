@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslHandler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +16,16 @@ import java.util.List;
 public final class JsonRpcClientChannelInitializer extends ChannelInitializer<Channel> {
   private final ChannelHandler[] channelHandlers;
 
-  public static class Builder {
+  public static final class Builder {
     private final JsonRpcRequestEncoder jsonRpcRequestEncoder;
     private final JsonRpcResponseDecoder jsonRpcResponseDecoder;
     private final JsonRpcResponseHandler jsonRpcResponseHandler;
     private LoggingHandler loggingHandler;
     private SslHandler sslHandler;
 
-    public Builder(final JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                   final JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                   final JsonRpcResponseHandler jsonRpcResponseHandler) {
+    private Builder(final JsonRpcRequestEncoder jsonRpcRequestEncoder,
+                    final JsonRpcResponseDecoder jsonRpcResponseDecoder,
+                    final JsonRpcResponseHandler jsonRpcResponseHandler) {
       this.jsonRpcRequestEncoder = jsonRpcRequestEncoder;
       this.jsonRpcResponseDecoder = jsonRpcResponseDecoder;
       this.jsonRpcResponseHandler = jsonRpcResponseHandler;
@@ -36,7 +37,7 @@ public final class JsonRpcClientChannelInitializer extends ChannelInitializer<Ch
      * @param loggingHandler logging handler
      * @return this
      */
-    public final Builder withLogging(final LoggingHandler loggingHandler) {
+    public Builder withLogging(final LoggingHandler loggingHandler) {
       this.loggingHandler = loggingHandler;
       return this;
     }
@@ -47,7 +48,7 @@ public final class JsonRpcClientChannelInitializer extends ChannelInitializer<Ch
      * @param sslHandler ssl handler
      * @return this
      */
-    public final Builder withSsl(final SslHandler sslHandler) {
+    public Builder withSsl(final SslHandler sslHandler) {
       this.sslHandler = sslHandler;
       return this;
     }
@@ -81,9 +82,9 @@ public final class JsonRpcClientChannelInitializer extends ChannelInitializer<Ch
    * @param jsonRpcResponseHandler handler
    * @return builder
    */
-  public static Builder builder(final JsonRpcRequestEncoder jsonRpcRequestEncoder,
-                                final JsonRpcResponseDecoder jsonRpcResponseDecoder,
-                                final JsonRpcResponseHandler jsonRpcResponseHandler) {
+  public static Builder builder(@NonNull final JsonRpcRequestEncoder jsonRpcRequestEncoder,
+                                @NonNull final JsonRpcResponseDecoder jsonRpcResponseDecoder,
+                                @NonNull final JsonRpcResponseHandler jsonRpcResponseHandler) {
     return new Builder(jsonRpcRequestEncoder, jsonRpcResponseDecoder, jsonRpcResponseHandler);
   }
 
