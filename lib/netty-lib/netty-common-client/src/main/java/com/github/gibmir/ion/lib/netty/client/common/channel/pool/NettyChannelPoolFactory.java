@@ -13,14 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 
-public final class NettyChannelPool extends AbstractChannelPoolMap<SocketAddress, SimpleChannelPool> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelPool.class);
+public final class NettyChannelPoolFactory extends AbstractChannelPoolMap<SocketAddress, SimpleChannelPool> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelPoolFactory.class);
   private final EventLoopGroup group;
   private final Class<? extends Channel> channelClass;
   private final ChannelInitializer<Channel> channelInitializer;
 
-  public NettyChannelPool(final EventLoopGroup group, final Class<? extends Channel> channelClass,
-                          final ChannelInitializer<Channel> channelInitializer) {
+  public NettyChannelPoolFactory(final EventLoopGroup group, final Class<? extends Channel> channelClass,
+                                 final ChannelInitializer<Channel> channelInitializer) {
     super();
     this.group = group;
     this.channelClass = channelClass;

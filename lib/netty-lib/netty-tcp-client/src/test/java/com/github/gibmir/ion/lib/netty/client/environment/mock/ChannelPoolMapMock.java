@@ -1,6 +1,6 @@
 package com.github.gibmir.ion.lib.netty.client.environment.mock;
 
-import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPool;
+import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPoolFactory;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.channel.pool.ChannelPoolMap;
 
@@ -16,8 +16,8 @@ public class ChannelPoolMapMock {
   private ChannelPoolMapMock() {
   }
 
-  public static NettyChannelPool emptyMock() {
-    return mock(NettyChannelPool.class);
+  public static NettyChannelPoolFactory emptyMock() {
+    return mock(NettyChannelPoolFactory.class);
   }
 
   @SuppressWarnings("unchecked")

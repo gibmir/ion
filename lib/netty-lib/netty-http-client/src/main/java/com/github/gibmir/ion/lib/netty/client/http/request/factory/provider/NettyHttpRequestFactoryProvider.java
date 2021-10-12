@@ -8,7 +8,7 @@ import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.SimpleResponseListenerRegistry;
-import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPool;
+import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPoolFactory;
 import com.github.gibmir.ion.lib.netty.client.common.configuration.NettyClientConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.http.channel.appender.HttpClientChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.client.http.configuration.HttpResponseDecoderConfiguration;
@@ -59,7 +59,7 @@ public final class NettyHttpRequestFactoryProvider implements RequestFactoryProv
     ChannelInitializer<Channel> channelInitializer = createJsonRpcNettyChannelInitializer(configuration,
       responseListenerRegistry, charset, jsonb, maxContentLength, httpResponseDecoderConfiguration);
     ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool =
-      new NettyChannelPool(NettyClientConfigurationUtils.createEventLoopGroup(configuration),
+      new NettyChannelPoolFactory(NettyClientConfigurationUtils.createEventLoopGroup(configuration),
         NettyClientConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
     LOGGER.info("Ion http json-rpc 2.0 client is ready to run");
     return new NettyHttpRequestFactory(new NettyHttpJsonRpcSender(nettyChannelPool, responseListenerRegistry),

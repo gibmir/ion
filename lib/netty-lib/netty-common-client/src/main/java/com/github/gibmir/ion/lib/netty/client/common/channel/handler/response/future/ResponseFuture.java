@@ -1,14 +1,13 @@
 package com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future;
 
 import com.github.gibmir.ion.api.client.batch.request.builder.ResponseCallback;
-import com.github.gibmir.ion.api.dto.processor.JsonRpcResponseProcessor;
 import com.github.gibmir.ion.api.dto.processor.exception.JsonRpcProcessingException;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 
 import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
 
-public final class ResponseFuture implements JsonRpcResponseProcessor {
+public final class ResponseFuture {
   private final Jsonb responseJsonb;
   private final String id;
   private final Type returnType;
@@ -61,8 +60,12 @@ public final class ResponseFuture implements JsonRpcResponseProcessor {
     responseCallback.onResponse(responseJsonb.fromJson(responseJson, returnType), null);
   }
 
-  @Override
-  public void process(final ErrorResponse errorResponse) {
+  /**
+   * Completes future with json-rpc error.
+   *
+   * @param errorResponse json-rpc error
+   */
+  public void completeError(final ErrorResponse errorResponse) {
     responseCallback.onResponse(null, new JsonRpcProcessingException(errorResponse));
   }
 }

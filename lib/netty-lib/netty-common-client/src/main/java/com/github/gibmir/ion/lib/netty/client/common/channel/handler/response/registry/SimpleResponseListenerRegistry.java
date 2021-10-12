@@ -84,8 +84,9 @@ public final class SimpleResponseListenerRegistry implements ResponseListenerReg
 
   private void compute(final JsonObject jsonObject, final String id, final ResponseFuture responseFuture) {
     if (jsonObject.get(SerializationProperties.PROTOCOL_KEY) == null) {
-      ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("Protocol was not present"))
-        .processWith(responseFuture);
+      ErrorResponse errorResponse = ErrorResponse.fromJsonRpcError(id,
+        Errors.INVALID_RPC.getError().appendMessage("Protocol was not present"));
+      responseFuture.completeError(errorResponse);
       return;
     }
     JsonValue resultValue = jsonObject.get(SerializationProperties.RESULT_KEY);
@@ -94,12 +95,11 @@ public final class SimpleResponseListenerRegistry implements ResponseListenerReg
     } else {
       JsonValue error = jsonObject.get(SerializationProperties.ERROR_KEY);
       if (error != null) {
-        responseFuture.getResponseJsonb()
-          .fromJson(jsonObject.toString(), ErrorResponse.class)
-          .processWith(responseFuture);
+        responseFuture.completeError(responseFuture.getResponseJsonb()
+          .fromJson(jsonObject.toString(), ErrorResponse.class));
       } else {
-        ErrorResponse.fromJsonRpcError(id, Errors.INVALID_RPC.getError().appendMessage("There is no body"))
-          .processWith(responseFuture);
+        responseFuture.completeError(ErrorResponse.fromJsonRpcError(id,
+          Errors.INVALID_RPC.getError().appendMessage("There is no body")));
       }
     }
   }
