@@ -23,15 +23,26 @@ public final class SimpleResponseListenerRegistry implements ResponseListenerReg
   @Override
   public void register(final ResponseFuture responseFuture) {
     String id = responseFuture.getId();
-    idPerResponseListener.compute(id, (key, completableFuture) -> {
-      if (completableFuture != null) {
-        String message = "Response with id [" + id + "] already registered.";
-        responseFuture.completeExceptionally(new IllegalStateException(message));
-        return completableFuture;
-      } else {
-        return responseFuture;
-      }
-    });
+    idPerResponseListener.compute(id, (key, future) -> computeRegistration(responseFuture, key, future));
+  }
+
+  /**
+   * Registers future in listener.
+   *
+   * @param currentlyRegisteredFuture response future to be registered
+   * @param id                        request identifier
+   * @param future                    response future from
+   * @return registered response
+   */
+  public static ResponseFuture computeRegistration(final ResponseFuture currentlyRegisteredFuture, final String id,
+                                                   final ResponseFuture future) {
+    if (future != null) {
+      String message = "Response with id [" + id + "] already registered.";
+      currentlyRegisteredFuture.completeExceptionally(new IllegalStateException(message));
+      return future;
+    } else {
+      return currentlyRegisteredFuture;
+    }
   }
 
   @Override
