@@ -49,7 +49,8 @@ public final class NettyTcpRequestFactoryProvider implements RequestFactoryProvi
   private NettyTcpRequestFactory createNettyRequestFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
     Cache<String, ResponseFuture> responseFuturesCache = NettyClientConfigurationUtils.createResponseFuturesCache(configuration);
-    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
+    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap(),
+      LoggerFactory.getLogger(SimpleResponseListenerRegistry.class));
     Charset charset = ConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     FrameDecoderConfig frameDecoderConfig = NettyClientConfigurationUtils.resolveFrameDecoderConfig(configuration);

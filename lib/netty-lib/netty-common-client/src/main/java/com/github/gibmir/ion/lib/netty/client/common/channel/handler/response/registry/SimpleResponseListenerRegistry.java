@@ -5,7 +5,6 @@ import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import javax.json.JsonString;
@@ -13,11 +12,13 @@ import javax.json.JsonValue;
 import java.util.Map;
 
 public final class SimpleResponseListenerRegistry implements ResponseListenerRegistry {
-  private static final Logger LOGGER = LoggerFactory.getLogger(SimpleResponseListenerRegistry.class);
   private final Map<String, ResponseFuture> idPerResponseListener;
+  private final Logger logger;
 
-  public SimpleResponseListenerRegistry(final Map<String, ResponseFuture> idPerResponseListener) {
+  public SimpleResponseListenerRegistry(final Map<String, ResponseFuture> idPerResponseListener,
+                                        final Logger logger) {
     this.idPerResponseListener = idPerResponseListener;
+    this.logger = logger;
   }
 
   @Override
@@ -58,24 +59,37 @@ public final class SimpleResponseListenerRegistry implements ResponseListenerReg
           }
           return;
         default:
-          LOGGER.error("Error [{}] occurred during response deserialization. ", Errors.INVALID_RPC.getError());
+          logger.error("Error [{}] occurred during response deserialization. ", Errors.INVALID_RPC.getError());
       }
     } catch (Exception parseException) {
-      LOGGER.error("Error [{}] occurred during response deserialization. ", Errors.INVALID_RPC.getError()
-        .appendMessage(parseException.getMessage()));
+      logger.error("Error [{}] occurred during response deserialization. ",
+        Errors.INVALID_RPC.getError().appendMessage(parseException.getMessage()));
     }
   }
 
   private void processRequest(final JsonObject jsonObject) {
-    JsonValue idValue = jsonObject.get(SerializationProperties.ID_KEY);
-    if (idValue == null) {
-      LOGGER.error("Error [{}] occurred during response deserialization. Id was not present ",
+    JsonValue idJson = jsonObject.get(SerializationProperties.ID_KEY);
+    //id null check
+    if (idJson == null) {
+      logger.error("Error [{}] occurred during response deserialization. Id was not present ",
         Errors.INVALID_RPC.getError());
       return;
     }
-    String id = ((JsonString) idValue).getString();
-    idPerResponseListener.compute(id,
-      (key, responseFuture) -> computeResponse(jsonObject, key, responseFuture));
+    //id type check
+    switch (idJson.getValueType()) {
+      case STRING:
+        idPerResponseListener.compute(((JsonString) idJson).getString(),
+          (responseId, responseFuture) -> computeResponse(jsonObject, responseId, responseFuture));
+        break;
+      case NUMBER:
+        idPerResponseListener.compute(idJson.toString(),
+          (responseId, responseFuture) -> computeResponse(jsonObject, responseId, responseFuture));
+        break;
+      default:
+        logger.error("Response id [{}] has incorrect type [{}]. Must be string or number",
+          idJson, idJson.getValueType());
+        break;
+    }
   }
 
   private ResponseFuture computeResponse(final JsonObject jsonObject, final String id,
@@ -87,7 +101,7 @@ public final class SimpleResponseListenerRegistry implements ResponseListenerReg
         responseFuture.completeExceptionally(e);
       }
     } else {
-      LOGGER.error("There is no response future listener for id [{}] ", id);
+      logger.error("There is no response future listener for id [{}] ", id);
     }
     //removes from map
     return null;

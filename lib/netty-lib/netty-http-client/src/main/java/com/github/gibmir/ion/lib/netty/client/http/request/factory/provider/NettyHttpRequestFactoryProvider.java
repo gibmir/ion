@@ -51,7 +51,8 @@ public final class NettyHttpRequestFactoryProvider implements RequestFactoryProv
   private NettyHttpRequestFactory createNettyHttpRequestFactory() {
     Configuration configuration = ConfigurationProvider.load().provide();
     Cache<String, ResponseFuture> responseFuturesCache = NettyClientConfigurationUtils.createResponseFuturesCache(configuration);
-    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap());
+    ResponseListenerRegistry responseListenerRegistry = new SimpleResponseListenerRegistry(responseFuturesCache.asMap(),
+      LoggerFactory.getLogger(SimpleResponseListenerRegistry.class));
     Charset charset = ConfigurationUtils.readCharsetFrom(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);
     int maxContentLength = NettyHttpConfigurationUtils.resolveMaxContentLength(configuration);

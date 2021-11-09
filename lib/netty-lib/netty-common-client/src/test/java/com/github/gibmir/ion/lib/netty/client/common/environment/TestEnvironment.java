@@ -11,7 +11,7 @@ import org.hamcrest.TypeSafeMatcher;
 import java.lang.reflect.Type;
 
 public class TestEnvironment {
-  public static final String TEST_ID = "someId";
+  public static final String TEST_ID = "test-id";
   public static final String TEST_FIRST_ARG = "testFirstArg";
   public static final String TEST_SECOND_ARG = "testSecondArg";
   public static final String TEST_THIRD_ARG = "testThirdArg";

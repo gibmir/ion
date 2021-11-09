@@ -17,8 +17,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
 import io.netty.channel.pool.ChannelPool;
 import io.netty.channel.pool.ChannelPoolMap;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -49,6 +51,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class JsonRpcSenderTest {
+  public static Logger logger;
+
+  @BeforeAll
+  static void beforeAll() {
+    logger = mock(Logger.class);
+  }
+
   /*NOTIFICATIONS*/
 
   /**
@@ -268,7 +277,7 @@ class JsonRpcSenderTest {
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock
       .newMock(ChannelPoolStub.createWith(FutureChannelMock.newMock(channel, true)));
     Map<String, ResponseFuture> responseCache = new HashMap<>();
-    ResponseListenerRegistry testResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responseCache);
+    ResponseListenerRegistry testResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responseCache, logger);
     NettyTcpJsonRpcSender jsonRpcNettySender = new NettyTcpJsonRpcSender(channelPoolMap, testResponseListenerRegistry);
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
@@ -296,7 +305,7 @@ class JsonRpcSenderTest {
     ChannelPoolMap<SocketAddress, ? extends ChannelPool> channelPoolMap = ChannelPoolMapMock
       .newMock(ChannelPoolStub.createWith(FutureChannelMock.newMock(channel, true)));
     Map<String, ResponseFuture> responsesCache = new HashMap<>();
-    ResponseListenerRegistry testEmptyResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responsesCache);
+    ResponseListenerRegistry testEmptyResponseListenerRegistry = ResponseListenerRegistryMock.newStub(responsesCache, logger);
     NettyTcpJsonRpcSender jsonRpcNettySender = new NettyTcpJsonRpcSender(channelPoolMap, testEmptyResponseListenerRegistry);
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),

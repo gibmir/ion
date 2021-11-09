@@ -7,8 +7,10 @@ import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.fu
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.SimpleResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.environment.mock.JsonValueMock;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
 
 import javax.json.JsonValue;
 import java.util.HashMap;
@@ -27,11 +29,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class SimpleResponseListenerRegistryTest {
+  public static Logger logger;
+
+  @BeforeAll
+  static void beforeAll() {
+    logger = mock(Logger.class);
+  }
 
   @Test
   void testCorrectRegister() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, mock(ResponseCallback.class));
     assertDoesNotThrow(() -> registry.register(responseFuture));
 
@@ -42,7 +50,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void testRegisterWithSameId() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     ResponseFuture firstResponseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, mock(ResponseCallback.class));
     ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, mock(ResponseCallback.class));
     assertDoesNotThrow(() -> registry.register(firstResponseFuture));
@@ -61,7 +69,7 @@ class SimpleResponseListenerRegistryTest {
     ResponseCallback<Object> responseCallback = mock(ResponseCallback.class);
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     int expectedResult = 1;
     String correctResponse = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":" + expectedResult + "}";
 
@@ -79,7 +87,7 @@ class SimpleResponseListenerRegistryTest {
     ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, null, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String correctResponse = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}";
 
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(correctResponse, JsonValue.class));
@@ -96,7 +104,7 @@ class SimpleResponseListenerRegistryTest {
   @Test
   void notifyListenerWithEmptyRegistryCorrectJsonValue() {
     HashMap<String, ResponseFuture> idPerResponseListener = new HashMap<>();
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String correctResponse = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}";
 
     assertDoesNotThrow(
@@ -109,7 +117,7 @@ class SimpleResponseListenerRegistryTest {
     ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String response = "{\"id\":\"test-id\",\"result\":1}";
 
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(response, JsonValue.class));
@@ -130,7 +138,7 @@ class SimpleResponseListenerRegistryTest {
 
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String response = "{\"jsonrpc\":\"2.0\",\"result\":1}";
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(response, JsonValue.class));
 
@@ -144,7 +152,7 @@ class SimpleResponseListenerRegistryTest {
 
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String response = "{\"jsonrpc\":\"2.0\",\"id\":\"test-id\"}";
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(response, JsonValue.class));
 
@@ -162,7 +170,7 @@ class SimpleResponseListenerRegistryTest {
 
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
 
     assertDoesNotThrow(() -> registry.notifyListenerWith(JsonValueMock.newMock(JsonValue.ValueType.STRING)));
 
@@ -176,7 +184,7 @@ class SimpleResponseListenerRegistryTest {
 
     ResponseFuture responseFuture = new ResponseFuture(TEST_ID, int.class, TEST_REAL_JSONB, responseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
 
     assertDoesNotThrow(() -> registry.notifyListenerWith(null));
 
@@ -193,7 +201,7 @@ class SimpleResponseListenerRegistryTest {
     ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, TEST_REAL_JSONB, secondResponseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String arrayResponse = "[{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}," +
       "{\"jsonrpc\":\"2.0\",\"id\":\"test-id2\",\"result\":2}]";
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(arrayResponse, JsonValue.class));
@@ -220,7 +228,7 @@ class SimpleResponseListenerRegistryTest {
       secondResponseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String arrayResponse = "[{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}," +
       "{\"jsonrpc\":\"2.0\",\"id\":\"test-id2\",\"result\":2}]";
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(arrayResponse, JsonValue.class));
@@ -244,7 +252,7 @@ class SimpleResponseListenerRegistryTest {
     ResponseFuture secondResponseFuture = new ResponseFuture(TEST_ID + 2, int.class, TEST_REAL_JSONB, secondResponseCallback);
     idPerResponseListener.put(TEST_ID, responseFuture);
     idPerResponseListener.put(TEST_ID + 2, secondResponseFuture);
-    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener);
+    ResponseListenerRegistry registry = new SimpleResponseListenerRegistry(idPerResponseListener, logger);
     String arrayResponse = "[{\"jsonrpc\":\"2.0\",\"id\":\"test-id\",\"result\":1}," +
       "{\"jsonrpc\":\"2.0\",\"id\":\"test-id2\", \"error\": {\"code\": -32700, \"message\": \"Parse error\"}}]";
     registry.notifyListenerWith(TEST_REAL_JSONB.fromJson(arrayResponse, JsonValue.class));
