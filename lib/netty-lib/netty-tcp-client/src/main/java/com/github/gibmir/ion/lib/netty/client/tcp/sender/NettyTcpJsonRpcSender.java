@@ -5,7 +5,6 @@ import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationD
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.future.ResponseFuture;
 import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.registry.ResponseListenerRegistry;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.NettyBatch;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
 import io.netty.channel.pool.ChannelPool;
@@ -15,13 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
-import java.io.Closeable;
 import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
-public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
+public class NettyTcpJsonRpcSender {
   private static final Logger LOGGER = LoggerFactory.getLogger(NettyTcpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, ? extends ChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
@@ -33,9 +31,17 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   }
 
   /**
-   * {@inheritDoc}
+   * Sends json-rpc request.
+   *
+   * @param id            request id
+   * @param request       request dto
+   * @param jsonb         serializer
+   * @param charset       request charset
+   * @param returnType    request return type
+   * @param socketAddress address
+   * @param <R>           return type
+   * @return future response
    */
-  @Override
   @SuppressWarnings("unchecked")
   public <R> CompletableFuture<R> send(final String id, final RequestDto request, final Jsonb jsonb,
                                        final Charset charset, final Type returnType, final SocketAddress socketAddress) {
@@ -57,9 +63,13 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   }
 
   /**
-   * {@inheritDoc}
+   * Sends json-rpc notification.
+   *
+   * @param request       request dto
+   * @param jsonb         serializer
+   * @param charset       request charset
+   * @param socketAddress address
    */
-  @Override
   public void send(final NotificationDto request, final Jsonb jsonb, final Charset charset,
                    final SocketAddress socketAddress) {
     try {
@@ -70,6 +80,12 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
   }
 
   /**
+   * Sends json-rpc batch.
+   *
+   * @param nettyBatch    batch
+   * @param jsonb         serializer
+   * @param charset       request charset
+   * @param socketAddress address
    * @throws ChannelException if exception occurred while sending request(on client side)
    * @implNote <ol>
    * <li>create future to await batch response</li>
@@ -78,7 +94,6 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
    * <li>process response</li>
    * </ol>
    */
-  @Override
   public void send(final NettyBatch nettyBatch, final Jsonb jsonb, final Charset charset,
                    final SocketAddress socketAddress) {
     for (NettyBatch.BatchPart<?> batchPart : nettyBatch.getBatchParts()) {
@@ -99,10 +114,5 @@ public class NettyTcpJsonRpcSender implements JsonRpcSender, Closeable {
         throw new ChannelException("Can't acquire the channel for address " + socketAddress);
       }
     });
-  }
-
-  @Override
-  public void close() {
-
   }
 }

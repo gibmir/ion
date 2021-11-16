@@ -2,7 +2,7 @@ package com.github.gibmir.ion.lib.netty.client.tcp.request;
 
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
+import com.github.gibmir.ion.lib.netty.client.tcp.sender.NettyTcpJsonRpcSender;
 import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.verify;
 
 class NettyTcpRequest0Test {
 
-  private JsonRpcSender sender;
+  private NettyTcpJsonRpcSender sender;
   private SocketAddress socketAddress;
   private Jsonb jsonb;
   private Charset charset;
@@ -32,7 +31,7 @@ class NettyTcpRequest0Test {
 
   @BeforeEach
   void beforeEach() {
-    sender = mock(JsonRpcSender.class);
+    sender = mock(NettyTcpJsonRpcSender.class);
     socketAddress = mock(SocketAddress.class);
     jsonb = mock(Jsonb.class);
     charset = mock(Charset.class);

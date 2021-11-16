@@ -16,6 +16,7 @@ public final class ServerRunner {
   public static void main(final String[] args) {
     JsonRpcServerFactory jsonRpcServerFactory = JsonRpcServerFactoryProvider.load().provide();
     JsonRpcServer jsonRpcServer = jsonRpcServerFactory.create();
+
     ProcedureProcessorFactory procedureProcessorFactory = jsonRpcServer.getProcedureProcessorFactory();
     jsonRpcServer.register(procedureProcessorFactory.create(TestStringProcedure.class, String::toUpperCase));
   }

@@ -1,12 +1,12 @@
 package com.github.gibmir.ion.lib.netty.client.tcp.request.factory;
 
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
 import com.github.gibmir.ion.lib.netty.client.tcp.environment.TestEnvironment;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest0;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest1;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest2;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest3;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.batch.NettyTcpBatchRequest;
+import com.github.gibmir.ion.lib.netty.client.tcp.sender.NettyTcpJsonRpcSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 
 class NettyTcpRequestFactoryTest {
   public Logger logger = mock(Logger.class);
-  public JsonRpcSender jsonRpcSender;
+  public NettyTcpJsonRpcSender jsonRpcSender;
   public SocketAddress socketAddress;
   public Jsonb jsonb;
   private Charset charset;
@@ -33,7 +33,7 @@ class NettyTcpRequestFactoryTest {
 
   @BeforeEach
   void beforeEach() {
-    jsonRpcSender = mock(JsonRpcSender.class);
+    jsonRpcSender = mock(NettyTcpJsonRpcSender.class);
     socketAddress = mock(SocketAddress.class);
     jsonb = mock(Jsonb.class);
     charset = Charset.defaultCharset();
@@ -80,18 +80,5 @@ class NettyTcpRequestFactoryTest {
     assertThat(batchRequest.charset(), equalTo(charset));
     assertThat(batchRequest.jsonb(), equalTo(jsonb));
     assertThat(batchRequest.socketAddress(), equalTo(socketAddress));
-  }
-
-  @Test
-  void testClose() throws IOException {
-    assertDoesNotThrow(factory::close);
-    verify(jsonRpcSender).close();
-  }
-
-  @Test
-  void testCloseWithWarning() throws IOException {
-    factory = new NettyTcpRequestFactory(null, socketAddress, jsonb, charset, logger);
-    factory.close();
-    verify(logger).warn(anyString());
   }
 }

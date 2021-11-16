@@ -336,13 +336,4 @@ class JsonRpcSenderTest {
     verify(secondBatchCallback, times(1))
       .onResponse(any(), any());
   }
-
-  /*CLOSE*/
-
-  @Test
-  void testCloseNull() {
-    NettyTcpJsonRpcSender jsonRpcNettySender = new NettyTcpJsonRpcSender(null, TEST_EMPTY_RESPONSE_LISTENER_REGISTRY);
-
-    assertDoesNotThrow(jsonRpcNettySender::close);
-  }
 }

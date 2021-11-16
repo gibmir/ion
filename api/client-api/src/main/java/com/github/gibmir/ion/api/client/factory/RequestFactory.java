@@ -10,9 +10,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 
-import java.io.Closeable;
-
-public interface RequestFactory extends Closeable {
+public interface RequestFactory {
 
   /**
    * @param procedure remote procedure interface

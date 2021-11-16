@@ -9,7 +9,7 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
 import com.github.gibmir.ion.lib.netty.client.common.request.batch.NettyBatch;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
+import com.github.gibmir.ion.lib.netty.client.tcp.sender.NettyTcpJsonRpcSender;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -17,12 +17,12 @@ import java.nio.charset.Charset;
 
 public final class NettyTcpBatchRequest implements BatchRequest {
   private final NettyBatch nettyBatch;
-  private final JsonRpcSender defaultJsonRpcNettySender;
+  private final NettyTcpJsonRpcSender defaultJsonRpcNettySender;
   private final SocketAddress defaultSocketAddress;
   private final Jsonb jsonb;
   private final Charset charset;
 
-  private NettyTcpBatchRequest(final NettyBatch nettyBatch, final JsonRpcSender defaultJsonRpcSender,
+  private NettyTcpBatchRequest(final NettyBatch nettyBatch, final NettyTcpJsonRpcSender defaultJsonRpcSender,
                                final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
     this.nettyBatch = nettyBatch;
     this.defaultJsonRpcNettySender = defaultJsonRpcSender;
@@ -41,7 +41,7 @@ public final class NettyTcpBatchRequest implements BatchRequest {
    * @param charset                encoding
    * @return builder
    */
-  public static Builder builder(final BatchRequestAggregator batchRequestAggregator, final JsonRpcSender defaultJsonRpcSender,
+  public static Builder builder(final BatchRequestAggregator batchRequestAggregator, final NettyTcpJsonRpcSender defaultJsonRpcSender,
                                 final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
     return new Builder(batchRequestAggregator, defaultJsonRpcSender, defaultSocketAddress, jsonb, charset);
   }
@@ -104,12 +104,12 @@ public final class NettyTcpBatchRequest implements BatchRequest {
 
   public static final class Builder implements BatchRequestBuilder<Builder> {
     private final BatchRequestAggregator batchRequestAggregator;
-    private final JsonRpcSender defaultJsonRpcSender;
+    private final NettyTcpJsonRpcSender defaultJsonRpcSender;
     private final SocketAddress defaultSocketAddress;
     private final Jsonb jsonb;
     private final Charset charset;
 
-    private Builder(final BatchRequestAggregator batchRequestAggregator, final JsonRpcSender defaultJsonRpcSender,
+    private Builder(final BatchRequestAggregator batchRequestAggregator, final NettyTcpJsonRpcSender defaultJsonRpcSender,
                     final SocketAddress defaultSocketAddress, final Jsonb jsonb, final Charset charset) {
       this.batchRequestAggregator = batchRequestAggregator;
       this.defaultJsonRpcSender = defaultJsonRpcSender;

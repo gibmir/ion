@@ -5,29 +5,28 @@ import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure0;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure1;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure2;
 import com.github.gibmir.ion.api.core.procedure.JsonRemoteProcedure3;
+import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
+import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest0;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest1;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest2;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest3;
-import com.github.gibmir.ion.scanner.ProcedureScanner;
-import com.github.gibmir.ion.lib.netty.client.common.request.batch.BatchRequestAggregator;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
-import com.github.gibmir.ion.lib.netty.client.tcp.request.NettyTcpRequest0;
 import com.github.gibmir.ion.lib.netty.client.tcp.request.batch.NettyTcpBatchRequest;
+import com.github.gibmir.ion.lib.netty.client.tcp.sender.NettyTcpJsonRpcSender;
+import com.github.gibmir.ion.scanner.ProcedureScanner;
 import org.slf4j.Logger;
 
 import javax.json.bind.Jsonb;
-import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 
 public final class NettyTcpRequestFactory implements RequestFactory {
-  private final JsonRpcSender defaultJsonRpcNettySender;
+  private final NettyTcpJsonRpcSender defaultJsonRpcNettySender;
   private final SocketAddress defaultSocketAddress;
   private final Jsonb defaultJsonb;
   private final Charset defaultCharset;
   private final Logger logger;
 
-  public NettyTcpRequestFactory(final JsonRpcSender defaultJsonRpcSender, final SocketAddress defaultSocketAddress,
+  public NettyTcpRequestFactory(final NettyTcpJsonRpcSender defaultJsonRpcSender, final SocketAddress defaultSocketAddress,
                                 final Jsonb defaultJsonb, final Charset defaultCharset, final Logger logger) {
     this.defaultJsonRpcNettySender = defaultJsonRpcSender;
     this.defaultSocketAddress = defaultSocketAddress;
@@ -64,15 +63,5 @@ public final class NettyTcpRequestFactory implements RequestFactory {
   public NettyTcpBatchRequest.Builder batch() {
     return NettyTcpBatchRequest.builder(new BatchRequestAggregator(), defaultJsonRpcNettySender,
       defaultSocketAddress, defaultJsonb, defaultCharset);
-  }
-
-  @Override
-  public void close() throws IOException {
-    if (defaultJsonRpcNettySender != null) {
-      logger.info("Closing netty tcp request factory");
-      defaultJsonRpcNettySender.close();
-    } else {
-      logger.warn("Nothing to close! Sender is null");
-    }
   }
 }

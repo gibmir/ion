@@ -1,11 +1,11 @@
 package com.github.gibmir.ion.lib.netty.client.tcp.request;
 
 import com.github.gibmir.ion.api.client.request.Request1;
+import com.github.gibmir.ion.lib.netty.client.tcp.sender.NettyTcpJsonRpcSender;
 import com.github.gibmir.ion.scanner.ProcedureScanner;
 import com.github.gibmir.ion.scanner.signature.JsonRemoteProcedureSignature;
 import com.github.gibmir.ion.api.dto.request.transfer.RequestDto;
 import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationDto;
-import com.github.gibmir.ion.lib.netty.client.common.sender.JsonRpcSender;
 
 import javax.json.bind.Jsonb;
 import java.net.SocketAddress;
@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public final class NettyTcpRequest1<T, R> extends AbstractNettyTcpRequest<NettyTcpRequest1<T, R>>
   implements Request1<T, R> {
 
-  public NettyTcpRequest1(final JsonRpcSender jsonRpcSender, final SocketAddress defaultSocketAddress,
+  public NettyTcpRequest1(final NettyTcpJsonRpcSender jsonRpcSender, final SocketAddress defaultSocketAddress,
                           final Jsonb defaultJsonb, final Charset defaultCharset,
                           final JsonRemoteProcedureSignature jsonRemoteProcedureSignature) {
     super(jsonRpcSender, defaultSocketAddress, defaultJsonb, defaultCharset, jsonRemoteProcedureSignature);
