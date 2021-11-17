@@ -11,6 +11,7 @@ import com.github.gibmir.ion.lib.netty.client.common.channel.handler.response.re
 import com.github.gibmir.ion.lib.netty.client.common.channel.pool.NettyChannelPoolFactory;
 import com.github.gibmir.ion.lib.netty.client.common.configuration.NettyClientConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.http.channel.appender.HttpClientChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.client.http.channel.codecs.HttpJsonRpcResponseDecoder;
 import com.github.gibmir.ion.lib.netty.client.http.configuration.HttpResponseDecoderConfiguration;
 import com.github.gibmir.ion.lib.netty.client.http.configuration.NettyHttpClientConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.client.http.request.factory.NettyHttpRequestFactory;
@@ -73,7 +74,7 @@ public final class NettyHttpRequestFactoryProvider implements RequestFactoryProv
                                                                                   final int maxContentLength,
                                                                                   final HttpResponseDecoderConfiguration decoderConfiguration) {
     HttpClientChannelHandlerAppender appender = new HttpClientChannelHandlerAppender(responseListenerRegistry, charset, jsonb,
-      decoderConfiguration, maxContentLength);
+      decoderConfiguration, maxContentLength, LoggerFactory.getLogger(HttpJsonRpcResponseDecoder.class));
     ChannelHandlerAppender channelHandlerAppender = NettyClientConfigurationUtils.appendSsl(configuration,
       NettyClientConfigurationUtils.appendLogging(configuration,
         appender));

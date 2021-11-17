@@ -13,24 +13,25 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 public final class HttpJsonRpcResponseDecoder extends MessageToMessageDecoder<FullHttpResponse> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpJsonRpcResponseDecoder.class);
   private final Jsonb jsonb;
   private final Charset charset;
+  private final Logger logger;
 
-  public HttpJsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset) {
+  public HttpJsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset, Logger logger) {
     this.jsonb = jsonb;
     this.charset = charset;
+    this.logger = logger;
   }
 
   @Override
   protected void decode(final ChannelHandlerContext ctx, final FullHttpResponse msg, final List<Object> out) {
     ByteBuf body = msg.content();
     int readableBytes = body.readableBytes();
-    LOGGER.debug("Response body is empty");
+    logger.debug("Response body is empty");
     if (readableBytes > 0) {
       byte[] bodyPayload = new byte[readableBytes];
       body.readBytes(bodyPayload);
-      LOGGER.debug("HTTP response body with size [{}] was read", readableBytes);
+      logger.debug("HTTP response body with size [{}] was read", readableBytes);
       out.add(jsonb.fromJson(new String(bodyPayload, charset), JsonValue.class));
     }
   }
