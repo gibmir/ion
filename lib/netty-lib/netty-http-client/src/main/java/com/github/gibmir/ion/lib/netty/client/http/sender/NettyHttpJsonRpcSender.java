@@ -15,9 +15,9 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import java.lang.reflect.Type;
@@ -29,14 +29,16 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class NettyHttpJsonRpcSender {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NettyHttpJsonRpcSender.class);
   private final ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool;
   private final ResponseListenerRegistry responseListenerRegistry;
+  private final Logger logger;
 
   public NettyHttpJsonRpcSender(final ChannelPoolMap<SocketAddress, SimpleChannelPool> nettyChannelPool,
-                                final ResponseListenerRegistry responseListenerRegistry) {
+                                final ResponseListenerRegistry responseListenerRegistry,
+                                final Logger logger) {
     this.responseListenerRegistry = responseListenerRegistry;
     this.nettyChannelPool = nettyChannelPool;
+    this.logger = logger;
   }
 
   /**
@@ -83,7 +85,7 @@ public class NettyHttpJsonRpcSender {
     try {
       sendTo(uri, jsonb.toJson(request).getBytes(charset));
     } catch (Exception e) {
-      LOGGER.error("Exception occurred while sending notification ", e);
+      logger.error("Exception occurred while sending notification ", e);
     }
   }
 
@@ -106,21 +108,22 @@ public class NettyHttpJsonRpcSender {
   }
 
   private void sendTo(final URI uri, final byte[] payload) {
-    InetSocketAddress socketAddress = new InetSocketAddress(uri.getHost(), uri.getPort());
-    ChannelPool simpleChannelPool = nettyChannelPool.get(socketAddress);
-    simpleChannelPool.acquire().addListener((FutureListener<Channel>) acquiredFuture -> {
-      if (acquiredFuture.isSuccess()) {
-        Channel channel = acquiredFuture.getNow();
-        FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
-          uri.getRawPath());
-        httpRequest.headers().set(HttpHeaderNames.HOST, uri.getHost());
-        httpRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, payload.length);
-        httpRequest.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
-        httpRequest.content().clear().writeBytes(payload);
-        channel.writeAndFlush(httpRequest).addListener(writeFinished -> simpleChannelPool.release(channel));
-      } else {
-        throw new ChannelException("Can't acquire the channel for uri " + uri);
-      }
-    });
+    ChannelPool pool = nettyChannelPool.get(new InetSocketAddress(uri.getHost(), uri.getPort()));
+    pool.acquire().addListener(channelFuture -> write(uri, payload, pool, channelFuture));
+  }
+
+  private void write(URI uri, byte[] payload, ChannelPool pool, Future<? super Channel> channelFuture) {
+    if (channelFuture.isSuccess()) {
+      Channel channel = (Channel) channelFuture.getNow();
+      FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
+        uri.getRawPath());
+      httpRequest.headers().set(HttpHeaderNames.HOST, uri.getHost());
+      httpRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, payload.length);
+      httpRequest.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+      httpRequest.content().clear().writeBytes(payload);
+      channel.writeAndFlush(httpRequest).addListener(writeFinished -> pool.release(channel));
+    } else {
+      throw new ChannelException("Can't acquire the channel for uri " + uri);
+    }
   }
 }

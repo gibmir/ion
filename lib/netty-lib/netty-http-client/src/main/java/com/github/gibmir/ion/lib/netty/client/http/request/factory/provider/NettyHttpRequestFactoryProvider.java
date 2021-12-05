@@ -64,7 +64,8 @@ public final class NettyHttpRequestFactoryProvider implements RequestFactoryProv
       new NettyChannelPoolFactory(NettyClientConfigurationUtils.createEventLoopGroup(configuration),
         NettyClientConfigurationUtils.resolveChannelClass(configuration), channelInitializer);
     LOGGER.info("Ion http json-rpc 2.0 client is ready to run");
-    return new NettyHttpRequestFactory(new NettyHttpJsonRpcSender(nettyChannelPool, responseListenerRegistry),
+    return new NettyHttpRequestFactory(new NettyHttpJsonRpcSender(nettyChannelPool, responseListenerRegistry,
+      LoggerFactory.getLogger(NettyHttpJsonRpcSender.class)),
       NettyClientConfigurationUtils.createUriWith(configuration), jsonb, charset);
   }
 

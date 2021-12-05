@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.FullHttpResponse;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
@@ -17,7 +16,7 @@ public final class HttpJsonRpcResponseDecoder extends MessageToMessageDecoder<Fu
   private final Charset charset;
   private final Logger logger;
 
-  public HttpJsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset, Logger logger) {
+  public HttpJsonRpcResponseDecoder(final Jsonb jsonb, final Charset charset, final Logger logger) {
     this.jsonb = jsonb;
     this.charset = charset;
     this.logger = logger;
