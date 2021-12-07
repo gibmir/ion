@@ -27,7 +27,7 @@ public final class HttpClientChannelHandlerAppender implements ChannelHandlerApp
 
   public HttpClientChannelHandlerAppender(final ResponseListenerRegistry responseListenerRegistry, final Charset charset,
                                           final Jsonb jsonb, final HttpResponseDecoderConfiguration decoderConfiguration,
-                                          final int maxContentLength, Logger decoderLogger) {
+                                          final int maxContentLength, final Logger decoderLogger) {
     this.responseListenerRegistry = responseListenerRegistry;
     this.charset = charset;
     this.jsonb = jsonb;

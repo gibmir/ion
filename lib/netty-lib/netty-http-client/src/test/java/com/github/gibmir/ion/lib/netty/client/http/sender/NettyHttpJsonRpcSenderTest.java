@@ -26,10 +26,10 @@ import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 
 import javax.json.bind.Jsonb;
+import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +39,12 @@ import java.util.concurrent.ExecutionException;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -220,7 +221,6 @@ class NettyHttpJsonRpcSenderTest {
 
     ArgumentCaptor<ResponseFuture> captor = ArgumentCaptor.forClass(ResponseFuture.class);
     doNothing().when(responseListenerRegistry).register(captor.capture());
-    jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET, String.class, TEST_URI);
 
     CompletableFuture<Object> futureResponse = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET,
       String.class, TEST_URI);
@@ -285,6 +285,7 @@ class NettyHttpJsonRpcSenderTest {
     doAnswer(__ -> channelPool).when(channelPoolMap).get(any());
 
     jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET, String.class, TEST_URI);
+    // receiving result
     verify(jsonb).toJson(requestDto);
     ArgumentCaptor<FullHttpRequest> captor = ArgumentCaptor.forClass(FullHttpRequest.class);
     verify(channel).writeAndFlush(captor.capture());
@@ -358,8 +359,7 @@ class NettyHttpJsonRpcSenderTest {
 
     ArgumentCaptor<ResponseFuture> captor = ArgumentCaptor.forClass(ResponseFuture.class);
     doNothing().when(responseListenerRegistry).register(captor.capture());
-    jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET, String.class, TEST_URI);
-
+    // receiving result
     CompletableFuture<Object> futureResponse = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET,
       String.class, TEST_URI);
     assertThat(futureResponse.isDone(), is(false));
@@ -390,7 +390,6 @@ class NettyHttpJsonRpcSenderTest {
 
     ArgumentCaptor<ResponseFuture> captor = ArgumentCaptor.forClass(ResponseFuture.class);
     doNothing().when(responseListenerRegistry).register(captor.capture());
-    jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET, String.class, TEST_URI);
 
     CompletableFuture<Object> futureResponse = jsonRpcNettySender.send(TEST_ID, requestDto, jsonb, TEST_CHARSET,
       String.class, TEST_URI);
@@ -403,6 +402,7 @@ class NettyHttpJsonRpcSenderTest {
 
   /*BATCH*/
   @Test
+  @SuppressWarnings("unchecked")
   void testSendBatchSuccessfully() {
     List<JsonRpcRequest> batchRequests = List.of(
       RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
@@ -410,109 +410,111 @@ class NettyHttpJsonRpcSenderTest {
       NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
     );
     NettyBatch nettyBatch = new NettyBatch(batchRequests, Collections.emptyList());
+    String requestJson = nettyBatch.toString();
+    doAnswer(__ -> mock(ChannelFuture.class)).when(channel).writeAndFlush(any());
+    doAnswer(__ -> requestJson).when(jsonb).toJson(nettyBatch.getBatchRequestDto());
+    Future<Channel> acquireFuture = mock(Future.class);
+    doAnswer(invocation -> {
+      GenericFutureListener<Future<Channel>> listener = invocation.getArgument(0, GenericFutureListener.class);
+      //successfully write into channel
+      SucceededFuture<Channel> channelSucceededFuture = new SucceededFuture<>(mock(EventExecutor.class), channel);
+      //executes lambda for testing
+      listener.operationComplete(channelSucceededFuture);
+      return mock(Future.class);
+    }).when(acquireFuture).addListener(any());
+    ChannelPool channelPool = mock(ChannelPool.class);
+    doAnswer(__ -> acquireFuture).when(channelPool).acquire();
+    doAnswer(__ -> channelPool).when(channelPoolMap).get(any());
     jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
       TEST_URI);
 
     verify(jsonb).toJson(nettyBatch.getBatchRequestDto());
-    verify(channel).writeAndFlush(nettyBatch.toString().getBytes(TEST_CHARSET));
-  }
-
-  @Test
-  void testSendBatchSuccessfullyWithChannelFutureIsNotSuccess() {
-    List<JsonRpcRequest> batchRequests = List.of(
-      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
-      RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS),
-      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
-    );
-    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
-    NettyBatch nettyBatch = new NettyBatch(batchRequests,
-      Collections.singletonList(new NettyBatch.BatchPart<>("", responseCallback, void.class)));
-    Jsonb jsonb = mock(Jsonb.class);
-    assertThrows(ChannelException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
-      TEST_URI));
-  }
-
-  @Test
-  void testSendBatchExceptionallyBecauseChannelPoolThrewException() {
-    List<JsonRpcRequest> batchRequests = List.of(
-      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
-      RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS),
-      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
-    );
-    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, List.of(new NettyBatch.BatchPart<>(TEST_ID, responseCallback, int.class)));
-    Jsonb jsonb = mock(Jsonb.class);
-    assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
-      TEST_URI));
-  }
-
-  @Test
-  void testSendBatchExceptionallyBecauseResponseListenerRegistryThrewException() {
-    List<JsonRpcRequest> batchRequests = List.of(
-      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
-      RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS),
-      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
-    );
-    ResponseCallback<?> responseCallback = mock(ResponseCallback.class);
-    List<NettyBatch.BatchPart<?>> batchParts = List.of(/*used with mock*/new NettyBatch.BatchPart<>(null,
-      responseCallback, null));
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
-    Jsonb jsonb = mock(Jsonb.class);
-    assertThrows(TestException.class, () -> jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
-      TEST_URI));
+    ArgumentCaptor<FullHttpRequest> captor = ArgumentCaptor.forClass(FullHttpRequest.class);
+    verify(channel).writeAndFlush(captor.capture());
+    FullHttpRequest request = captor.getValue();
+    assertThat(request.headers().get(HttpHeaderNames.HOST), equalTo(TEST_URI.getHost()));
+    assertThat(request.headers().get(HttpHeaderNames.CONTENT_TYPE), equalTo("application/json"));
+    assertThat(request.headers().get(HttpHeaderNames.CONTENT_LENGTH), equalTo(String.valueOf(requestJson.length())));
+    assertThat(new String(request.content().array(), TEST_CHARSET), containsString(requestJson));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  void testSendBatchWithSuccessResponseFutureCorrectProcessing() {
+  void testSendBatchWithCompletion() {
     List<JsonRpcRequest> batchRequests = List.of(
-      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
-      RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS),
-      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
+      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap())
     );
-    ResponseCallback<Object> responseCallback = mock(ResponseCallback.class);
-    List<NettyBatch.BatchPart<?>> batchParts = List.of(/*used with mock*/new NettyBatch.BatchPart<>(TEST_ID,
-      responseCallback, Object.class));
-    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
-
-    Jsonb jsonb = mock(Jsonb.class);
-    doAnswer(invocation -> Arrays.toString(invocation.getArguments())).when(jsonb).toJson(any());
-    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET, TEST_URI);
-    //    responseCache.get(TEST_ID).complete(expectedResult);
-
-    verify(responseCallback).onResponse(any(), any());
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  void testSendBatchWithErrorResponseFutureCorrectProcessing() {
-    List<JsonRpcRequest> batchRequests = List.of(
-      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap()),
-      RequestDto.positional(TEST_ID, TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS),
-      NotificationDto.positional(TEST_PROCEDURE_NAME, TEST_POSITIONAL_ARGS)
-    );
-    ResponseCallback<?> firstBatchCallback = mock(ResponseCallback.class);
-    ResponseCallback<Object> secondBatchCallback = mock(ResponseCallback.class);
+    ResponseCallback<Object> callback = mock(ResponseCallback.class);
+    Class<String> returnType = String.class;
     List<NettyBatch.BatchPart<?>> batchParts = List.of(
-      /*used with mock*/new NettyBatch.BatchPart<>(TEST_ID, firstBatchCallback, String.class),
-      new NettyBatch.BatchPart<>(TEST_ID + 2, secondBatchCallback, String.class));
+      new NettyBatch.BatchPart<>(TEST_ID, callback, returnType)
+    );
+
     NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
-    Jsonb jsonb = mock(Jsonb.class);
-    doAnswer(invocation -> Arrays.toString(invocation.getArguments())).when(jsonb).toJson(any());
-    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET, TEST_URI);
+    String requestJson = nettyBatch.toString();
+    doAnswer(__ -> mock(ChannelFuture.class)).when(channel).writeAndFlush(any());
+    doAnswer(__ -> requestJson).when(jsonb).toJson(nettyBatch.getBatchRequestDto());
+    Future<Channel> acquireFuture = mock(Future.class);
+    doAnswer(invocation -> {
+      GenericFutureListener<Future<Channel>> listener = invocation.getArgument(0, GenericFutureListener.class);
+      //successfully write into channel
+      SucceededFuture<Channel> channelSucceededFuture = new SucceededFuture<>(mock(EventExecutor.class), channel);
+      //executes lambda for testing
+      listener.operationComplete(channelSucceededFuture);
+      return mock(Future.class);
+    }).when(acquireFuture).addListener(any());
+    ChannelPool channelPool = mock(ChannelPool.class);
+    doAnswer(__ -> acquireFuture).when(channelPool).acquire();
+    doAnswer(__ -> channelPool).when(channelPoolMap).get(any());
 
-//    responsesCache.get(TEST_ID).completeExceptionally(new TestException());
-
-    ArgumentCaptor<Throwable> exceptionCaptor = ArgumentCaptor.forClass(Throwable.class);
-    verify(firstBatchCallback, times(1)).onResponse(any(), exceptionCaptor.capture());
-    Throwable throwable = exceptionCaptor.getValue();
-    assertTrue(throwable instanceof TestException);
-
-    //    responsesCache.get(TEST_ID + 2).complete(expectedSecondFutureResult);
-
-    //callback was invoked
-    verify(secondBatchCallback, times(1))
-      .onResponse(any(), any());
+    ArgumentCaptor<ResponseFuture> captor = ArgumentCaptor.forClass(ResponseFuture.class);
+    doNothing().when(responseListenerRegistry).register(captor.capture());
+    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
+      TEST_URI);
+    // receiving result
+    ResponseFuture futureResponse = captor.getValue();
+    String responseJson = "test-response";
+    futureResponse.complete(responseJson);
+    verify(jsonb).fromJson(eq(responseJson), eq((Type) returnType));
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  void testSendBatchWithException() {
+    List<JsonRpcRequest> batchRequests = List.of(
+      RequestDto.named(TEST_ID, TEST_PROCEDURE_NAME, Collections.emptyMap())
+    );
+    ResponseCallback<Object> callback = mock(ResponseCallback.class);
+    Class<String> returnType = String.class;
+    List<NettyBatch.BatchPart<?>> batchParts = List.of(
+      new NettyBatch.BatchPart<>(TEST_ID, callback, returnType)
+    );
+
+    NettyBatch nettyBatch = new NettyBatch(batchRequests, batchParts);
+    String requestJson = nettyBatch.toString();
+    doAnswer(__ -> mock(ChannelFuture.class)).when(channel).writeAndFlush(any());
+    doAnswer(__ -> requestJson).when(jsonb).toJson(nettyBatch.getBatchRequestDto());
+    Future<Channel> acquireFuture = mock(Future.class);
+    doAnswer(invocation -> {
+      GenericFutureListener<Future<Channel>> listener = invocation.getArgument(0, GenericFutureListener.class);
+      //successfully write into channel
+      SucceededFuture<Channel> channelSucceededFuture = new SucceededFuture<>(mock(EventExecutor.class), channel);
+      //executes lambda for testing
+      listener.operationComplete(channelSucceededFuture);
+      return mock(Future.class);
+    }).when(acquireFuture).addListener(any());
+    ChannelPool channelPool = mock(ChannelPool.class);
+    doAnswer(__ -> acquireFuture).when(channelPool).acquire();
+    doAnswer(__ -> channelPool).when(channelPoolMap).get(any());
+
+    ArgumentCaptor<ResponseFuture> captor = ArgumentCaptor.forClass(ResponseFuture.class);
+    doNothing().when(responseListenerRegistry).register(captor.capture());
+    jsonRpcNettySender.send(nettyBatch, jsonb, TEST_CHARSET,
+      TEST_URI);
+    // receiving result
+    ResponseFuture futureResponse = captor.getValue();
+    TestException responseException = new TestException();
+    futureResponse.completeExceptionally(responseException);
+    verify(callback).onResponse(eq(null), eq(responseException));
+  }
 }
