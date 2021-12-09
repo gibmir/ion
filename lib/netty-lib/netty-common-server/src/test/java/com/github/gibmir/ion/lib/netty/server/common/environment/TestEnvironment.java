@@ -29,6 +29,10 @@ public class TestEnvironment {
 
   }
 
+  public interface IncorrectProcedure {
+
+  }
+
   //classic procedures
   public interface TestProcedure0 extends JsonRemoteProcedure0<ReturnTestType> {
 

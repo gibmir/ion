@@ -32,6 +32,56 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
     this.procedureProcessorFactory = procedureProcessorFactory;
   }
 
+  @Override
+  public ProcedureProcessorFactory getProcedureProcessorFactory() {
+    return procedureProcessorFactory;
+  }
+
+  @Override
+  public ProcedureManager register(final ProcedureProcessor<?>... procedureProcessors) {
+    if (procedureProcessors.length == 0) {
+      throw new IllegalArgumentException("Count of procedure processors shouldn't equal 0");
+    }
+    LOGGER.debug("Procedure processors registration was started. Processors count [{}]", procedureProcessors.length);
+    List<ProcedureManager> managers = new ArrayList<>(procedureProcessors.length);
+    for (ProcedureProcessor<?> procedureProcessor : procedureProcessors) {
+      managers.add(register(procedureProcessor));
+    }
+    return new ComposedProcedureManager(managers);
+  }
+
+  @Override
+  public ProcedureManager register(final Collection<ProcedureProcessor<?>> procedureProcessors) {
+    int processorsCount = procedureProcessors.size();
+    if (processorsCount == 0) {
+      throw new IllegalArgumentException("Count of procedure processors shouldn't equal 0");
+    }
+    LOGGER.debug("Procedure processors registration was started. Processors count [{}]", processorsCount);
+    List<ProcedureManager> managers = new ArrayList<>(processorsCount);
+    for (ProcedureProcessor<?> procedureManager : procedureProcessors) {
+      managers.add(register(procedureManager));
+    }
+    return new ComposedProcedureManager(managers);
+  }
+
+  private ProcedureManager register(final ProcedureProcessor<?> procedureProcessor) {
+    Class<?> procedure = procedureProcessor.getProcedure();
+    Object processor = procedureProcessor.getProcessor();
+    Jsonb jsonb = procedureProcessor.jsonb();
+    if (JsonRemoteProcedure0.class.isAssignableFrom(procedure)) {
+      return registerProcedureProcessor0(procedure, processor, jsonb);
+    } else if (JsonRemoteProcedure1.class.isAssignableFrom(procedure)) {
+      return registerProcedureProcessor1(procedure, processor, jsonb);
+    } else if (JsonRemoteProcedure2.class.isAssignableFrom(procedure)) {
+      return registerProcedureProcessor2(procedure, processor, jsonb);
+    } else if (JsonRemoteProcedure3.class.isAssignableFrom(procedure)) {
+      return registerProcedureProcessor3(procedure, processor, jsonb);
+    } else {
+      String message = String.format("Procedure [%s] is not assignable from json remote procedure", procedure);
+      throw new IllegalArgumentException(message);
+    }
+  }
+
   private ProcedureManager registerProcedureProcessor0(final Class<?> procedureClass, final Object procedureImpl,
                                                        final Jsonb jsonb) {
     String procedureName = ProcedureScanner.getProcedureName(procedureClass);
@@ -70,48 +120,5 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
     procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor3(procedureClass,
       procedureImpl, jsonb));
     return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
-  }
-
-  @Override
-  public ProcedureProcessorFactory getProcedureProcessorFactory() {
-    return procedureProcessorFactory;
-  }
-
-  @Override
-  public ProcedureManager register(final ProcedureProcessor<?>... procedureProcessors) {
-    LOGGER.debug("Procedure processors registration was started. Processors count [{}]", procedureProcessors.length);
-    List<ProcedureManager> managers = new ArrayList<>(procedureProcessors.length);
-    for (ProcedureProcessor<?> procedureProcessor : procedureProcessors) {
-      managers.add(register(procedureProcessor));
-    }
-    return new ComposedProcedureManager(managers);
-  }
-
-  @Override
-  public ProcedureManager register(final Collection<ProcedureProcessor<?>> procedureProcessors) {
-    int processorsCount = procedureProcessors.size();
-    LOGGER.debug("Procedure processors registration was started. Processors count [{}]", processorsCount);
-    List<ProcedureManager> managers = new ArrayList<>(processorsCount);
-    for (ProcedureProcessor<?> procedureManager : procedureProcessors) {
-      managers.add(register(procedureManager));
-    }
-    return new ComposedProcedureManager(managers);
-  }
-
-  private ProcedureManager register(final ProcedureProcessor<?> procedureProcessor) {
-    Class<?> procedure = procedureProcessor.getProcedure();
-    Object processor = procedureProcessor.getProcessor();
-    Jsonb jsonb = procedureProcessor.jsonb();
-    if (JsonRemoteProcedure0.class.isAssignableFrom(procedure)) {
-      return registerProcedureProcessor0(procedure, processor, jsonb);
-    } else if (JsonRemoteProcedure1.class.isAssignableFrom(procedure)) {
-      return registerProcedureProcessor1(procedure, processor, jsonb);
-    } else if (JsonRemoteProcedure2.class.isAssignableFrom(procedure)) {
-      return registerProcedureProcessor2(procedure, processor, jsonb);
-    } else if (JsonRemoteProcedure3.class.isAssignableFrom(procedure)) {
-      return registerProcedureProcessor3(procedure, processor, jsonb);
-    } else {
-      throw new IllegalArgumentException();
-    }
   }
 }
