@@ -41,6 +41,9 @@ public final class NettyServerConfigurationUtils {
    */
   public static Integer getServerPortFrom(final Configuration configuration) {
     Integer port = configuration.getValue(NETTY_SERVER_SOCKET_ADDRESS_PORT, Integer.class);
+    if (port == null) {
+      throw new IllegalArgumentException("Please, specify [" + NETTY_SERVER_SOCKET_ADDRESS_PORT + "]");
+    }
     LOGGER.info("Server port was received [{}]", port);
     return port;
   }
@@ -59,7 +62,7 @@ public final class NettyServerConfigurationUtils {
       .map(NettyServerChannelType::valueOf)
       .orElse(NettyServerChannelType.NIO)
       .resolveChannelClass();
-    LOGGER.info("Server channel was received [{}]", serverChannelClass);
+    LOGGER.info("Server channel was resolved [{}]", serverChannelClass);
     return serverChannelClass;
   }
 
@@ -140,8 +143,8 @@ public final class NettyServerConfigurationUtils {
       LOGGER.info("Appending SSL with provider [{}]", sslProvider);
       try {
         SslContext sslContext = SslContextBuilder.forServer(NettyServerConfigurationUtils.resolveCertificate(configuration),
-          NettyServerConfigurationUtils.resolvePrivateKey(configuration),
-          NettyServerConfigurationUtils.resolveKeyPassword(configuration))
+            NettyServerConfigurationUtils.resolvePrivateKey(configuration),
+            NettyServerConfigurationUtils.resolveKeyPassword(configuration))
           .sslProvider(sslProvider.get())
           .trustManager(NettyServerConfigurationUtils.resolveTrustStore(configuration))
           .build();
