@@ -111,7 +111,7 @@ public class NettyHttpJsonRpcSender {
     pool.acquire().addListener(channelFuture -> write(uri, payload, pool, channelFuture));
   }
 
-  private void write(URI uri, byte[] payload, ChannelPool pool, Future<? super Channel> channelFuture) {
+  private void write(final URI uri, final byte[] payload, final ChannelPool pool, final Future<? super Channel> channelFuture) {
     if (channelFuture.isSuccess()) {
       Channel channel = (Channel) channelFuture.getNow();
       FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST,
