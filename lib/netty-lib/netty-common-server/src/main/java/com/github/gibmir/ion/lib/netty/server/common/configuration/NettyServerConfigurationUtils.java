@@ -149,7 +149,7 @@ public final class NettyServerConfigurationUtils {
           .trustManager(NettyServerConfigurationUtils.resolveTrustStore(configuration))
           .build();
         return SslAppenderDecorator.decorate(channelHandlerAppender, sslContext);
-      } catch (SSLException e) {
+      } catch (Exception e) {
         throw new NettyInitializationException("Exception occurred during ssl initialization", e);
       }
     }
