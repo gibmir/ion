@@ -69,7 +69,8 @@ public final class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServe
     ProcedureProcessorFactory procedureProcessorFactory = new NettyProcedureProcessorFactory(jsonb, charset);
     serverBootstrap.bind(NettyServerConfigurationUtils.getServerPortFrom(configuration));
     LOGGER.info("Ion http json-rpc 2.0 server is ready to run");
-    return new NettyJsonRpcServerFactory(bossGroup, workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
+    return new NettyJsonRpcServerFactory(LoggerFactory.getLogger(NettyJsonRpcServerFactory.class), bossGroup,
+      workerGroup, procedureProcessorRegistry, procedureProcessorFactory);
   }
 
   private static JsonRpcChannelInitializer createChannelInitializer(final ServerProcessor serverProcessor,
