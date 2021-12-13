@@ -9,20 +9,18 @@ import java.util.Collection;
 import java.util.List;
 
 public final class ComposedProcedureManager implements ProcedureManager {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ComposedProcedureManager.class);
-  private final ProcedureManager[] procedureManagers;
+  private final Logger logger;
 
-  public ComposedProcedureManager(final ProcedureManager[] procedureManagers) {
+  private final Collection<ProcedureManager> procedureManagers;
+
+  public ComposedProcedureManager(Logger logger, final Collection<ProcedureManager> procedureManagers) {
+    this.logger = logger;
     this.procedureManagers = procedureManagers;
-  }
-
-  public ComposedProcedureManager(final Collection<ProcedureManager> procedureManagers) {
-    this.procedureManagers = procedureManagers.toArray(new ProcedureManager[0]);
   }
 
   @Override
   public void close() {
-    LOGGER.debug("Closing multiple procedure managers");
+    logger.info("Closing multiple procedure managers {}", procedureManagers);
     List<Exception> closeExceptions = new ArrayList<>();
     for (ProcedureManager procedureManager : procedureManagers) {
       try {

@@ -47,7 +47,7 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
     for (ProcedureProcessor<?> procedureProcessor : procedureProcessors) {
       managers.add(register(procedureProcessor));
     }
-    return new ComposedProcedureManager(managers);
+    return new ComposedProcedureManager(LoggerFactory.getLogger(ComposedProcedureManager.class), managers);
   }
 
   @Override
@@ -61,7 +61,7 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
     for (ProcedureProcessor<?> procedureManager : procedureProcessors) {
       managers.add(register(procedureManager));
     }
-    return new ComposedProcedureManager(managers);
+    return new ComposedProcedureManager(LoggerFactory.getLogger(ComposedProcedureManager.class), managers);
   }
 
   private ProcedureManager register(final ProcedureProcessor<?> procedureProcessor) {
@@ -89,7 +89,8 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
       procedureImpl);
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor0(procedureClass, procedureImpl, jsonb));
-    return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
+    return new NettyProcedureManager(LoggerFactory.getLogger(NettyProcedureManager.class),
+      procedureProcessorRegistry, procedureName);
   }
 
   private ProcedureManager registerProcedureProcessor1(final Class<?> procedureClass, final Object procedureImpl,
@@ -99,7 +100,8 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
       procedureImpl);
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor1(procedureClass, procedureImpl, jsonb));
-    return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
+    return new NettyProcedureManager(LoggerFactory.getLogger(NettyProcedureManager.class),
+      procedureProcessorRegistry, procedureName);
   }
 
   private ProcedureManager registerProcedureProcessor2(final Class<?> procedureClass, final Object procedureImpl,
@@ -109,7 +111,8 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
       procedureImpl);
     procedureProcessorRegistry.register(procedureName,
       JsonRpcRequestProcessorFactory.createProcessor2(procedureClass, procedureImpl, jsonb));
-    return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
+    return new NettyProcedureManager(LoggerFactory.getLogger(NettyProcedureManager.class),
+      procedureProcessorRegistry, procedureName);
   }
 
   private ProcedureManager registerProcedureProcessor3(final Class<?> procedureClass, final Object procedureImpl,
@@ -119,6 +122,7 @@ public final class NettyJsonRpcServer implements JsonRpcServer {
       procedureImpl);
     procedureProcessorRegistry.register(procedureName, JsonRpcRequestProcessorFactory.createProcessor3(procedureClass,
       procedureImpl, jsonb));
-    return new NettyProcedureManager(procedureProcessorRegistry, procedureName);
+    return new NettyProcedureManager(LoggerFactory.getLogger(NettyProcedureManager.class),
+      procedureProcessorRegistry, procedureName);
   }
 }

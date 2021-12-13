@@ -1,24 +1,27 @@
 package com.github.gibmir.ion.lib.netty.server.common.manager;
 
-import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class NettyProcedureManager implements ProcedureManager {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NettyProcedureManager.class);
+  private final Logger logger;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
   private final String procedureName;
 
 
-  public NettyProcedureManager(final ProcedureProcessorRegistry procedureProcessorRegistry, final String procedureName) {
+  public NettyProcedureManager(Logger logger, final ProcedureProcessorRegistry procedureProcessorRegistry,
+                               final String procedureName) {
+    this.logger = logger;
     this.procedureProcessorRegistry = procedureProcessorRegistry;
     this.procedureName = procedureName;
   }
 
   @Override
   public void close() {
-    LOGGER.debug("Closing procedure [{}] processor", procedureName);
-    procedureProcessorRegistry.unregister(procedureName);
+    logger.info("Closing procedure [{}] processor", procedureName);
+    if (procedureProcessorRegistry != null) {
+      procedureProcessorRegistry.unregister(procedureName);
+    }
   }
 }
