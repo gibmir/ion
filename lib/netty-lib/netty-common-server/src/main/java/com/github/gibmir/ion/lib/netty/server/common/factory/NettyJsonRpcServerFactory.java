@@ -14,7 +14,7 @@ public final class NettyJsonRpcServerFactory implements JsonRpcServerFactory {
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
   private final ProcedureProcessorFactory procedureProcessorFactory;
 
-  public NettyJsonRpcServerFactory(Logger logger, final EventLoopGroup bossGroup, final EventLoopGroup workerGroup,
+  public NettyJsonRpcServerFactory(final Logger logger, final EventLoopGroup bossGroup, final EventLoopGroup workerGroup,
                                    final ProcedureProcessorRegistry procedureProcessorRegistry,
                                    final ProcedureProcessorFactory procedureProcessorFactory) {
     this.logger = logger;

@@ -3,19 +3,19 @@ package com.github.gibmir.ion.lib.netty.server.http.provider;
 import com.github.gibmir.ion.api.configuration.Configuration;
 import com.github.gibmir.ion.api.configuration.properties.ConfigurationUtils;
 import com.github.gibmir.ion.api.configuration.provider.ConfigurationProvider;
-import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
-import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
-import com.github.gibmir.ion.lib.netty.server.common.processor.registry.NettyProcedureProcessorRegistry;
 import com.github.gibmir.ion.api.server.factory.configuration.ServerConfigurationUtils;
 import com.github.gibmir.ion.api.server.factory.provider.JsonRpcServerFactoryProvider;
 import com.github.gibmir.ion.api.server.processor.ProcedureProcessorFactory;
+import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProcessorRegistry;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.common.http.configuration.NettyHttpConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.encoder.ResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.ServerProcessor;
 import com.github.gibmir.ion.lib.netty.server.common.processor.factory.NettyProcedureProcessorFactory;
+import com.github.gibmir.ion.lib.netty.server.common.processor.registry.NettyProcedureProcessorRegistry;
 import com.github.gibmir.ion.lib.netty.server.http.channel.appender.HttpServerChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.server.http.configuration.HttpRequestDecoderConfiguration;
 import com.github.gibmir.ion.lib.netty.server.http.configuration.NettyHttpServerConfigurationUtils;
@@ -50,7 +50,8 @@ public final class NettyJsonRpcHttpServerFactoryProvider implements JsonRpcServe
   private NettyJsonRpcServerFactory createJsonRpcServerFactory() {
     ProcedureProcessorRegistry procedureProcessorRegistry =
       new NettyProcedureProcessorRegistry(new ConcurrentHashMap<>());
-    ServerProcessor serverProcessor = new ServerProcessor(procedureProcessorRegistry);
+    ServerProcessor serverProcessor = new ServerProcessor(LoggerFactory.getLogger(ServerProcessor.class),
+      procedureProcessorRegistry);
     Configuration configuration = ConfigurationProvider.load().provide();
     Charset charset = ServerConfigurationUtils.createCharsetWith(configuration);
     Jsonb jsonb = ConfigurationUtils.createJsonbWith(configuration);

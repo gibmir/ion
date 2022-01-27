@@ -9,6 +9,7 @@ import com.github.gibmir.ion.api.dto.response.transfer.notification.Notification
 import com.github.gibmir.ion.api.message.BatchMessage;
 import com.github.gibmir.ion.api.message.ExceptionMessage;
 import com.github.gibmir.ion.api.message.Message;
+import com.github.gibmir.ion.api.message.MessageType;
 import com.github.gibmir.ion.api.message.NotificationMessage;
 import com.github.gibmir.ion.api.message.RequestMessage;
 import com.github.gibmir.ion.api.server.processor.request.JsonRpcRequestProcessor;
@@ -20,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ServerProcessor {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServerProcessor.class);
+  private final Logger logger;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
 
-  public ServerProcessor(final ProcedureProcessorRegistry procedureProcessorRegistry) {
+  public ServerProcessor(final Logger logger, final ProcedureProcessorRegistry procedureProcessorRegistry) {
+    this.logger = logger;
     this.procedureProcessorRegistry = procedureProcessorRegistry;
   }
 
@@ -32,18 +34,19 @@ public final class ServerProcessor {
    * @return request processing result
    */
   public JsonRpcResponse process(final Message message) {
-    switch (message.resolveType()) {
-      case BATCH:
-        return processBatch(message.asBatch());
-      case REQUEST:
-        return processRequest(message.asRequest());
-      case EXCEPTION:
-        return processException(message.asException());
-      case NOTIFICATION:
-        return processNotification(message.asNotification());
-      default:
-        return ErrorResponse.withNullId(Errors.INTERNAL_RPC_ERROR.getError()
-          .appendMessage(" Can't describe request message"));
+    MessageType messageType = message.resolveType();
+    logger.debug("Processing [{}] message", messageType);
+    if (messageType == MessageType.BATCH) {
+      return processBatch(message.asBatch());
+    } else if (messageType == MessageType.REQUEST) {
+      return processRequest(message.asRequest());
+    } else if (messageType == MessageType.EXCEPTION) {
+      return processException(message.asException());
+    } else if (messageType == MessageType.NOTIFICATION) {
+      return processNotification(message.asNotification());
+    } else {
+      return ErrorResponse.withNullId(Errors.INTERNAL_RPC_ERROR.getError()
+        .appendMessage(" Can't describe request message"));
     }
   }
 
@@ -51,19 +54,15 @@ public final class ServerProcessor {
     //todo parallel batch processing
     List<JsonRpcResponse> responses = new ArrayList<>();
     for (Message message : batchMessage.getMessages()) {
-      switch (message.resolveType()) {
-        case REQUEST:
-          responses.add(processRequest(message.asRequest()));
-          break;
-        case EXCEPTION:
-          responses.add(processException(message.asException()));
-          break;
-        case NOTIFICATION:
-          processNotification(message.asNotification());
-          break;
-        case BATCH:
-        default:
-          LOGGER.error("Batch part has incorrect format.");
+      MessageType messageType = message.resolveType();
+      if (messageType == MessageType.REQUEST) {
+        responses.add(processRequest(message.asRequest()));
+      } else if (messageType == MessageType.EXCEPTION) {
+        responses.add(processException(message.asException()));
+      } else if (messageType == MessageType.NOTIFICATION) {
+        processNotification(message.asNotification());
+      } else {
+        logger.error("Batch part has incorrect format [{}].", messageType);
       }
     }
     return new BatchResponseDto(responses.toArray(JsonRpcResponse[]::new));
@@ -88,7 +87,7 @@ public final class ServerProcessor {
     if (processor != null) {
       processor.processNotification(procedure, notificationMessage.getArgumentsJson());
     } else {
-      LOGGER.error("[{}] not present for notification", procedure);
+      logger.error("[{}] not present for notification", procedure);
     }
     return NotificationResponse.INSTANCE;
   }

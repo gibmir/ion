@@ -10,7 +10,7 @@ public final class NettyProcedureManager implements ProcedureManager {
   private final String procedureName;
 
 
-  public NettyProcedureManager(Logger logger, final ProcedureProcessorRegistry procedureProcessorRegistry,
+  public NettyProcedureManager(final Logger logger, final ProcedureProcessorRegistry procedureProcessorRegistry,
                                final String procedureName) {
     this.logger = logger;
     this.procedureProcessorRegistry = procedureProcessorRegistry;

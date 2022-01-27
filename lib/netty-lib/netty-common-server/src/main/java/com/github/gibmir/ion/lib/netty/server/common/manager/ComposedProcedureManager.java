@@ -2,7 +2,6 @@ package com.github.gibmir.ion.lib.netty.server.common.manager;
 
 import com.github.gibmir.ion.api.server.manager.ProcedureManager;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +12,7 @@ public final class ComposedProcedureManager implements ProcedureManager {
 
   private final Collection<ProcedureManager> procedureManagers;
 
-  public ComposedProcedureManager(Logger logger, final Collection<ProcedureManager> procedureManagers) {
+  public ComposedProcedureManager(final Logger logger, final Collection<ProcedureManager> procedureManagers) {
     this.logger = logger;
     this.procedureManagers = procedureManagers;
   }
