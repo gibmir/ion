@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
 class ProcedureProcessor0Test {
+
   @Test
   void testCharset() {
     Class<TestProcedure0> serviceClass = TestProcedure0.class;
@@ -46,6 +47,7 @@ class ProcedureProcessor0Test {
     var procedure = new ProcedureProcessor0<>(serviceClass, service, jsonb, charset);
     assertThat(procedure.getProcedure(), equalTo(serviceClass));
   }
+
   @Test
   void testGetProcessor() {
     Class<TestProcedure0> serviceClass = TestProcedure0.class;

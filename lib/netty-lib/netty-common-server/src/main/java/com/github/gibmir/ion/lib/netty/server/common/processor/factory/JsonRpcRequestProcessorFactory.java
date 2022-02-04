@@ -7,7 +7,6 @@ import com.github.gibmir.ion.api.dto.request.transfer.notification.NotificationD
 import com.github.gibmir.ion.api.dto.response.JsonRpcResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.ErrorResponse;
 import com.github.gibmir.ion.api.dto.response.transfer.error.Errors;
-import com.github.gibmir.ion.api.dto.response.transfer.error.JsonRpcError;
 import com.github.gibmir.ion.api.dto.response.transfer.success.SuccessResponse;
 import com.github.gibmir.ion.api.server.processor.request.JsonRpcRequestProcessor;
 import org.slf4j.Logger;
@@ -115,7 +114,8 @@ public final class JsonRpcRequestProcessorFactory {
     NamedMethodHandle namedMethodHandle = new NamedMethodHandle(methodHandle.asSpreader(Object[].class,
       jsonRemoteProcedureSignature.getParametersCount()), jsonRemoteProcedureSignature.getParameterNames(),
       jsonRemoteProcedureSignature.getGenericTypes());
-    return new MethodHandleJsonRpcRequestProcessor<>(namedMethodHandle, service, jsonb);
+    return new MethodHandleJsonRpcRequestProcessor<>(namedMethodHandle, service, jsonb,
+      LoggerFactory.getLogger(MethodHandleJsonRpcRequestProcessor.class));
   }
 
   public static class NamedMethodHandle {
@@ -140,22 +140,64 @@ public final class JsonRpcRequestProcessorFactory {
     public Object invokeWithArguments(final Object... args) throws Throwable {
       return methodHandle.invokeWithArguments(args);
     }
+
+    /**
+     * Returns arguments array length.
+     *
+     * @return arguments array length
+     */
+    public int getArgumentsCount() {
+      return argumentTypes.length;
+    }
+
+    /**
+     * Returns names array length.
+     *
+     * @return names array length
+     */
+    public int getParameterNamesCount() {
+      return parameterNames.length;
+    }
+
+    /**
+     * Returns parameter name by specified index.
+     *
+     * @param i parameter name index
+     * @return parameter name
+     */
+    public String getParameterName(final int i) {
+      return parameterNames[i];
+    }
+
+    /**
+     * Returns argument type by specified index.
+     *
+     * @param i argument type index
+     * @return argument type
+     */
+    public Type getArgumentType(final int i) {
+      return argumentTypes[i];
+    }
   }
 
-  private static class MethodHandleJsonRpcRequestProcessor<S> implements JsonRpcRequestProcessor {
+  public static class MethodHandleJsonRpcRequestProcessor<S> implements JsonRpcRequestProcessor {
     private static final Object[] EMPTY_ARGS = new Object[0];
-    public static final Logger LOGGER = LoggerFactory.getLogger(MethodHandleJsonRpcRequestProcessor.class);
+    private final Logger logger;
     private final NamedMethodHandle namedMethodHandle;
     private final S service;
     private final Jsonb jsonb;
 
-    MethodHandleJsonRpcRequestProcessor(final NamedMethodHandle namedMethodHandle, final S service,
-                                        final Jsonb jsonb) {
+    public MethodHandleJsonRpcRequestProcessor(final NamedMethodHandle namedMethodHandle, final S service,
+                                               final Jsonb jsonb, final Logger logger) {
       this.namedMethodHandle = namedMethodHandle;
       this.service = service;
       this.jsonb = jsonb;
+      this.logger = logger;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JsonRpcResponse processRequest(final String id, final String procedureName, final String argumentsJson) {
       JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
@@ -165,16 +207,19 @@ public final class JsonRpcRequestProcessorFactory {
       switch (paramsValue.getValueType()) {
         case ARRAY:
           return process(RequestDto.positional(id, procedureName,
-            getArgumentsFromArray(this.jsonb, paramsValue, namedMethodHandle.argumentTypes.length)));
+            getArgumentsFromArray(this.jsonb, paramsValue.asJsonArray(), namedMethodHandle.getArgumentsCount())));
         case OBJECT:
           return process(RequestDto.positional(id, procedureName,
-            getArgumentsFromMap(this.jsonb, paramsValue)));
+            getArgumentsFromMap(this.jsonb, paramsValue.asJsonObject())));
         default:
           return ErrorResponse.fromJsonRpcError(id, Errors.INVALID_METHOD_PARAMETERS.getError()
-            .appendMessage("Unsupported request Type"));
+            .appendMessage(String.format("Request with id [%s] has unsupported type", id)));
       }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void processNotification(final String procedureName, final String argumentsJson) {
       JsonValue paramsValue = jsonb.fromJson(argumentsJson, JsonValue.class);
@@ -182,49 +227,51 @@ public final class JsonRpcRequestProcessorFactory {
         process(NotificationDto.empty(procedureName));
         return;
       }
-      int argumentsCount = namedMethodHandle.argumentTypes.length;
       switch (paramsValue.getValueType()) {
         case ARRAY:
-          process(NotificationDto.positional(procedureName, getArgumentsFromArray(jsonb, paramsValue, argumentsCount)));
+          process(NotificationDto.positional(procedureName, getArgumentsFromArray(jsonb, paramsValue.asJsonArray(),
+            namedMethodHandle.getArgumentsCount())));
           return;
         case OBJECT:
           //named processing
-          process(NotificationDto.positional(procedureName, getArgumentsFromMap(jsonb, paramsValue)));
+          process(NotificationDto.positional(procedureName, getArgumentsFromMap(jsonb, paramsValue.asJsonObject())));
           return;
         default:
-          LOGGER.error("Exception [{}] occurred while processing notification",
-            Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Unsupported request Type"));
+          String message = String.format("Exception occurred while processing notification for procedure [%s]. %s",
+            procedureName, Errors.INVALID_METHOD_PARAMETERS.getError().appendMessage("Unsupported request Type"));
+          logger.error(message);
       }
     }
 
-    private Object[] getArgumentsFromArray(final Jsonb jsonb, final JsonValue paramsValue, final int argumentsCount) {
+    private Object[] getArgumentsFromArray(final Jsonb jsonb, final JsonArray jsonParamsArray, final int argumentsCount) {
       Object[] arguments = new Object[argumentsCount];
-      JsonArray jsonParamsArray = paramsValue.asJsonArray();
       for (int i = 0; i < argumentsCount; i++) {
-        arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.argumentTypes[i]);
+        arguments[i] = jsonb.fromJson(jsonParamsArray.get(i).toString(), namedMethodHandle.getArgumentType(i));
       }
       return arguments;
     }
 
-    private Object[] getArgumentsFromMap(final Jsonb jsonb, final JsonValue paramsValue) {
-      JsonObject jsonObject = paramsValue.asJsonObject();
-      int argumentsCount = namedMethodHandle.parameterNames.length;
+    private Object[] getArgumentsFromMap(final Jsonb jsonb, final JsonObject jsonObject) {
+      int argumentsCount = namedMethodHandle.getParameterNamesCount();
       Object[] arguments = new Object[argumentsCount];
       for (int i = 0; i < argumentsCount; i++) {
-        arguments[i] = jsonb.fromJson(jsonObject.get(namedMethodHandle.parameterNames[i]).toString(),
-          namedMethodHandle.argumentTypes[i]);
+        arguments[i] = jsonb.fromJson(jsonObject.get(namedMethodHandle.getParameterName(i)).toString(),
+          namedMethodHandle.getArgumentType(i));
       }
       return arguments;
     }
 
 
-    public JsonRpcResponse process(final RequestDto positionalRequest) {
+    private JsonRpcResponse process(final RequestDto positionalRequest) {
       try {
         return invokeMethod(positionalRequest);
       } catch (Throwable throwable) {
-        final String message = String.format("Exception [%s] occurred while invoking method [%s]. Message is:%s",
-          throwable, positionalRequest.getProcedureName(), throwable.getMessage());
-        return ErrorResponse.fromJsonRpcError(positionalRequest.getId(), new JsonRpcError(-32000, message));
+        logger.error("Exception occurred while executing request with id {}. ", positionalRequest.getId(),
+          throwable);
+        return ErrorResponse.fromJsonRpcError(positionalRequest.getId(),
+          Errors.APPLICATION_ERROR.getError().appendMessage(
+            String.format("Exception occurred while invoking request with id [%s] and method [%s]. %s",
+              positionalRequest.getId(), positionalRequest.getProcedureName(), throwable)));
       }
     }
 
@@ -234,19 +281,22 @@ public final class JsonRpcRequestProcessorFactory {
     }
 
 
-    public void process(final NotificationDto notificationRequest) {
+    private void process(final NotificationDto notificationRequest) {
       try {
         invokeMethod(notificationRequest);
       } catch (Throwable throwable) {
         String procedureName = notificationRequest.getProcedureName();
-        LOGGER.error("Exception occurred while invoking notification request to procedure [{}].", procedureName, throwable);
+        logger.error("Exception occurred while invoking notification request to procedure [{}].", procedureName, throwable);
       }
     }
 
     private void invokeMethod(final NotificationDto notificationRequest) throws Throwable {
       final Object result = namedMethodHandle.invokeWithArguments(service, notificationRequest.getArgs());
       if (result != null) {
-        LOGGER.warn("Result isn't null for notification request to procedure [{}]", notificationRequest.getProcedureName());
+        logger.warn("Result isn't null for notification request to procedure [{}]", notificationRequest.getProcedureName());
+      } else {
+        logger.debug("Notification request for procedure [{}] was successfully processed",
+          notificationRequest.getProcedureName());
       }
     }
   }

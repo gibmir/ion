@@ -16,6 +16,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,22 +60,28 @@ public final class ProcedureScanner {
   public static JsonRemoteProcedureSignature resolveSignature0(final Class<?> procedureClass) {
     int parametersCount = 0;
     //unchecked array
-    Method callMethod = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
-      ReflectionUtils.withParametersCount(parametersCount)).iterator().next();
-    //resolve parametrized types
-    Collection<Class<?>> analyzableHierarchy = resolveHierarchy(procedureClass, JsonRemoteProcedure0.class);
-    Collection<ParameterizedType> parametrizedInterfaces = getParametrizedInterfacesFrom(analyzableHierarchy);
-    String procedureName = getProcedureName(procedureClass);
-    for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
-      if (parametrizedInterface.getRawType() == JsonRemoteProcedure0.class) {
-        Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
-        return new ParameterizedJsonRemoteProcedureSignature(procedureName, EMPTY_ARGUMENT_NAMES,
-          EMPTY_ARGUMENT_TYPES,
-          getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
-          callMethod.getParameterTypes()), parametersCount);
+    Iterator<Method> methodIterator = ReflectionUtils.getMethods(procedureClass, ReflectionUtils.withName(PROCEDURE_MAIN_METHOD_NAME),
+      ReflectionUtils.withParametersCount(parametersCount)).iterator();
+    if (methodIterator.hasNext()) {
+
+      Method callMethod = methodIterator.next();
+      //resolve parametrized types
+      Collection<Class<?>> analyzableHierarchy = resolveHierarchy(procedureClass, JsonRemoteProcedure0.class);
+      Collection<ParameterizedType> parametrizedInterfaces = getParametrizedInterfacesFrom(analyzableHierarchy);
+      String procedureName = getProcedureName(procedureClass);
+      for (ParameterizedType parametrizedInterface : parametrizedInterfaces) {
+        if (parametrizedInterface.getRawType() == JsonRemoteProcedure0.class) {
+          Type[] actualTypeArguments = parametrizedInterface.getActualTypeArguments();
+          return new ParameterizedJsonRemoteProcedureSignature(procedureName, EMPTY_ARGUMENT_NAMES,
+            EMPTY_ARGUMENT_TYPES,
+            getReturnType(actualTypeArguments), MethodType.methodType(callMethod.getReturnType(),
+            callMethod.getParameterTypes()), parametersCount);
+        }
       }
+      throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
+    } else {
+      throw new IllegalArgumentException("[" + procedureClass + "] doesn't implements procedure");
     }
-    throw new IllegalArgumentException("Something went wrong, while analysing " + procedureName);
   }
 
   /**
