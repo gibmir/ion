@@ -7,6 +7,7 @@ public class BatchResponseDto implements JsonRpcResponse {
   private JsonRpcResponse[] jsonRpcResponses;
 
   public BatchResponseDto() {
+    this.jsonRpcResponses = new JsonRpcResponse[]{};
   }
 
   public BatchResponseDto(final JsonRpcResponse[] jsonRpcResponses) {

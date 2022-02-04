@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ServerProcessor {
+public class ServerProcessor {
   private final Logger logger;
   private final ProcedureProcessorRegistry procedureProcessorRegistry;
 
