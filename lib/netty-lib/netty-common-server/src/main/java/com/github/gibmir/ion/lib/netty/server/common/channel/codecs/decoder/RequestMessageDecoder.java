@@ -37,7 +37,7 @@ public final class RequestMessageDecoder extends MessageToMessageDecoder<JsonVal
         return decodeBatch(json.asJsonArray());
       case OBJECT:
         //if json is object - it contains named/positional request/notification
-        return decodeRequest(json.asJsonObject());
+        return decode(json.asJsonObject());
       default:
         //other value types - incorrect json
         JsonRpcError error = Errors.INVALID_RPC.getError();
@@ -52,17 +52,17 @@ public final class RequestMessageDecoder extends MessageToMessageDecoder<JsonVal
     for (int i = 0; i < batchSize; i++) {
       try {
         JsonObject jsonObject = jsonArray.get(i).asJsonObject();
-        batchMessages[i] = decodeRequest(jsonObject);
+        batchMessages[i] = decode(jsonObject);
       } catch (Exception e) {
         LOGGER.error("Unexpected exception occurred while decoding batch ", e);
         JsonRpcError error = Errors.INVALID_RPC.getError();
-        batchMessages[i] = NettyExceptionMessage.withoutId(error.getCode(), error.getMessage() + e.getMessage());
+        batchMessages[i] = NettyExceptionMessage.withoutId(error.getCode(), error.getMessage() + e);
       }
     }
     return new NettyBatchMessage(batchMessages);
   }
 
-  private static Message decodeRequest(final JsonObject jsonObject) {
+  private static Message decode(final JsonObject jsonObject) {
     String id = resolveId(jsonObject);
     String argumentsJson = resolveArgumentsJson(jsonObject);
     JsonString protocolJson = jsonObject.getJsonString(SerializationProperties.PROTOCOL_KEY);

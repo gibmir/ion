@@ -12,7 +12,7 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.List;
 
-class NettyJsonRpcResponseProcessor implements JsonRpcResponseProcessor {
+public class NettyJsonRpcResponseProcessor implements JsonRpcResponseProcessor {
   private final Logger logger;
   private final Jsonb jsonb;
   private final Charset charset;
@@ -26,18 +26,27 @@ class NettyJsonRpcResponseProcessor implements JsonRpcResponseProcessor {
     this.out = out;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void process(final ErrorResponse errorResponse) {
     logger.debug("Sending error response for request with id [{}]", errorResponse.getId());
     out.add(jsonb.toJson(errorResponse).getBytes(charset));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void process(final SuccessResponse successResponse) {
     logger.debug("Sending response for request with id [{}]", successResponse.getId());
     out.add(jsonb.toJson(successResponse).getBytes(charset));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void process(final BatchResponseDto batchResponseDto) {
     JsonRpcResponse[] responses = batchResponseDto.getJsonRpcResponses();
@@ -45,6 +54,9 @@ class NettyJsonRpcResponseProcessor implements JsonRpcResponseProcessor {
     out.add(jsonb.toJson(responses).getBytes(charset));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void process(final NotificationResponse notificationResponse) {
     //there is no answer for notification
