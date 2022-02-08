@@ -10,7 +10,7 @@ import com.github.gibmir.ion.api.server.processor.request.registry.ProcedureProc
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.JsonRpcChannelInitializer;
 import com.github.gibmir.ion.lib.netty.common.channel.initializer.appender.ChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.common.configuration.decoder.FrameDecoderConfig;
-import com.github.gibmir.ion.lib.netty.server.appender.JsonRpcServerChannelHandlerAppender;
+import com.github.gibmir.ion.lib.netty.server.appender.TcpServerChannelHandlerAppender;
 import com.github.gibmir.ion.lib.netty.server.common.channel.codecs.encoder.ResponseEncoder;
 import com.github.gibmir.ion.lib.netty.server.common.configuration.NettyServerConfigurationUtils;
 import com.github.gibmir.ion.lib.netty.server.common.factory.NettyJsonRpcServerFactory;
@@ -26,8 +26,8 @@ import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFactoryProvider {
-  private static final Logger LOGGER = LoggerFactory.getLogger(NettyJsonRpcServerFactoryProvider.class);
+public final class NettyTcpServerFactoryProvider implements JsonRpcServerFactoryProvider {
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyTcpServerFactoryProvider.class);
   private static volatile NettyJsonRpcServerFactory nettyJsonRpcServerFactory;
 
   @Override
@@ -78,7 +78,7 @@ public final class NettyJsonRpcServerFactoryProvider implements JsonRpcServerFac
                                                                                  final Charset charset, final Jsonb jsonb,
                                                                                  final FrameDecoderConfig decoderConfig,
                                                                                  final int encoderFrameLength) {
-    ChannelHandlerAppender channelHandlerAppender = new JsonRpcServerChannelHandlerAppender(serverProcessor, charset,
+    ChannelHandlerAppender channelHandlerAppender = new TcpServerChannelHandlerAppender(serverProcessor, charset,
       jsonb, decoderConfig, encoderFrameLength, LoggerFactory.getLogger(ResponseEncoder.class));
     return new JsonRpcChannelInitializer(NettyServerConfigurationUtils.decorateWithSsl(channelHandlerAppender,
       configuration));

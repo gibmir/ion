@@ -17,7 +17,15 @@ import org.slf4j.Logger;
 import javax.json.bind.Jsonb;
 import java.nio.charset.Charset;
 
-public final class JsonRpcServerChannelHandlerAppender implements ChannelHandlerAppender {
+public final class TcpServerChannelHandlerAppender implements ChannelHandlerAppender {
+  public static final String FRAME_DECODER_NAME = "frameDecoder";
+  public static final String BYTES_DECODER_NAME = "bytesDecoder";
+  public static final String JSON_DECODER_NAME = "jsonDecoder";
+  public static final String MESSAGE_DECODER_NAME = "messageDecoder";
+  public static final String FRAME_ENCODER_NAME = "frameEncoder";
+  public static final String BYTES_ENCODER_NAME = "bytesEncoder";
+  public static final String RESPONSE_ENCODER_NAME = "responseEncoder";
+  public static final String JSON_RPC_REQUEST_HANDLER_NAME = "jsonRpcRequestHandler";
   private final ServerProcessor serverProcessor;
   private final Jsonb jsonb;
   private final Charset charset;
@@ -25,9 +33,9 @@ public final class JsonRpcServerChannelHandlerAppender implements ChannelHandler
   private final int lengthFieldLength;
   private final Logger responseEncoderLogger;
 
-  public JsonRpcServerChannelHandlerAppender(final ServerProcessor serverProcessor, final Charset charset,
-                                             final Jsonb jsonb, final FrameDecoderConfig frameDecoderConfig,
-                                             final int encoderFieldLength, final Logger responseEncoderLogger) {
+  public TcpServerChannelHandlerAppender(final ServerProcessor serverProcessor, final Charset charset,
+                                         final Jsonb jsonb, final FrameDecoderConfig frameDecoderConfig,
+                                         final int encoderFieldLength, final Logger responseEncoderLogger) {
     this.serverProcessor = serverProcessor;
     this.jsonb = jsonb;
     this.charset = charset;
@@ -40,17 +48,17 @@ public final class JsonRpcServerChannelHandlerAppender implements ChannelHandler
   public void appendTo(final ChannelPipeline channelPipeline) {
     channelPipeline
       //decoder
-      .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(frameDecoderConfig.getMaxFrameLength(),
+      .addLast(FRAME_DECODER_NAME, new LengthFieldBasedFrameDecoder(frameDecoderConfig.getMaxFrameLength(),
         frameDecoderConfig.getLengthFieldOffset(), frameDecoderConfig.getLengthFieldLength(),
         frameDecoderConfig.getLengthAdjustment(), frameDecoderConfig.getInitialBytesToStrip()))
-      .addLast("bytesDecoder", new ByteArrayDecoder())
-      .addLast("jsonDecoder", new JsonRpcRequestDecoder(jsonb, charset))
-      .addLast("messageDecoder", new RequestMessageDecoder())
+      .addLast(BYTES_DECODER_NAME, new ByteArrayDecoder())
+      .addLast(JSON_DECODER_NAME, new JsonRpcRequestDecoder(jsonb, charset))
+      .addLast(MESSAGE_DECODER_NAME, new RequestMessageDecoder())
       //encoder
-      .addLast("frameEncoder", new LengthFieldPrepender(lengthFieldLength))
-      .addLast("bytesEncoder", new ByteArrayEncoder())
-      .addLast("responseEncoder", new ResponseEncoder(responseEncoderLogger, jsonb, charset))
+      .addLast(FRAME_ENCODER_NAME, new LengthFieldPrepender(lengthFieldLength))
+      .addLast(BYTES_ENCODER_NAME, new ByteArrayEncoder())
+      .addLast(RESPONSE_ENCODER_NAME, new ResponseEncoder(responseEncoderLogger, jsonb, charset))
       //handler
-      .addLast("jsonRpcRequestHandler", new RequestMessageHandler(serverProcessor));
+      .addLast(JSON_RPC_REQUEST_HANDLER_NAME, new RequestMessageHandler(serverProcessor));
   }
 }
