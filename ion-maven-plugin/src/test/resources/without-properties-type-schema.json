@@ -1,0 +1,7 @@
+{
+  "types": {
+    "testType": {
+      "description": "type for testing"
+    }
+  }
+}

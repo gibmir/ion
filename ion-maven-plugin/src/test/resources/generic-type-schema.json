@@ -1,0 +1,18 @@
+{
+  "types": {
+    "testType": {
+      "description": "type for testing",
+      "parametrization": {
+        "T": {
+          "description": "parameter type"
+        }
+      },
+      "properties": {
+        "testTypeProperty": {
+          "type": "T",
+          "description": "property for test type"
+        }
+      }
+    }
+  }
+}

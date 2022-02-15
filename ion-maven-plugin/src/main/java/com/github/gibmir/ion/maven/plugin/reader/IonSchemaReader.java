@@ -65,6 +65,48 @@ public final class IonSchemaReader {
   }
 
   /**
+   * Reads type properties.
+   *
+   * @param typeProperties type properties json
+   * @return property types
+   */
+  private static Set<PropertyType> getTypeProperties(final JsonValue typeProperties) {
+    if (typeProperties != null) {
+      JsonObject propertiesObject = typeProperties.asJsonObject();
+      Set<PropertyType> propertyTypes = new HashSet<>();
+      for (String propertyName : propertiesObject.keySet()) {
+        JsonObject propertyObject = propertiesObject.get(propertyName).asJsonObject();
+        propertyTypes.add(new PropertyTypeBean(propertyObject.getString(ID_KEY, DEFAULT_ID), propertyName,
+          propertyObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION), propertyObject.getString(TYPE_KEY)));
+      }
+      return propertyTypes;
+    } else {
+      return Collections.emptySet();
+    }
+  }
+
+  /**
+   * Reads type parameters.
+   *
+   * @param typeParametersJson type parameters json
+   * @return type parameters
+   */
+  private static Set<TypeParameter> getTypeParameters(final JsonValue typeParametersJson) {
+    if (typeParametersJson != null) {
+      JsonObject parametersObject = typeParametersJson.asJsonObject();
+      Set<TypeParameter> typeParameters = new HashSet<>();
+      for (String parameterName : parametersObject.keySet()) {
+        JsonObject parameterObject = parametersObject.get(parameterName).asJsonObject();
+        typeParameters.add(new TypeParameterBean(parameterObject.getString(ID_KEY, DEFAULT_ID),
+          parameterName, parameterObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION)));
+      }
+      return typeParameters;
+    } else {
+      return Collections.emptySet();
+    }
+  }
+
+  /**
    * Reads procedures from json ion schema.
    *
    * @param schema json ion schema
@@ -109,48 +151,6 @@ public final class IonSchemaReader {
       return propertyTypeBeans;
     } else {
       return Collections.emptyList();
-    }
-  }
-
-  /**
-   * Reads type properties.
-   *
-   * @param typeProperties type properties json
-   * @return property types
-   */
-  public static Set<PropertyType> getTypeProperties(final JsonValue typeProperties) {
-    if (typeProperties != null) {
-      JsonObject propertiesObject = typeProperties.asJsonObject();
-      Set<PropertyType> propertyTypes = new HashSet<>();
-      for (String propertyName : propertiesObject.keySet()) {
-        JsonObject propertyObject = propertiesObject.get(propertyName).asJsonObject();
-        propertyTypes.add(new PropertyTypeBean(propertyObject.getString(ID_KEY, DEFAULT_ID), propertyName,
-          propertyObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION), propertyObject.getString(TYPE_KEY)));
-      }
-      return propertyTypes;
-    } else {
-      return Collections.emptySet();
-    }
-  }
-
-  /**
-   * Reads type parameters.
-   *
-   * @param typeParametersJson type parameters json
-   * @return type parameters
-   */
-  public static Set<TypeParameter> getTypeParameters(final JsonValue typeParametersJson) {
-    if (typeParametersJson != null) {
-      JsonObject parametersObject = typeParametersJson.asJsonObject();
-      Set<TypeParameter> typeParameters = new HashSet<>();
-      for (String parameterName : parametersObject.keySet()) {
-        JsonObject parameterObject = parametersObject.get(parameterName).asJsonObject();
-        typeParameters.add(new TypeParameterBean(parameterObject.getString(ID_KEY, DEFAULT_ID),
-          parameterName, parameterObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION)));
-      }
-      return typeParameters;
-    } else {
-      return Collections.emptySet();
     }
   }
 }

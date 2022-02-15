@@ -1,0 +1,13 @@
+{
+  "types": {
+    "testType": {
+      "description": "type for testing",
+      "properties": {
+        "testTypeProperty": {
+          "type": "string",
+          "description": "property for test type"
+        }
+      }
+    }
+  }
+}
