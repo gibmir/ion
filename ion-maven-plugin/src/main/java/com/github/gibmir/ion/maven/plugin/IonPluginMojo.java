@@ -83,7 +83,6 @@ public final class IonPluginMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException {
     try {
-      String codeGenerationString = resolveCodeGenerationString();
       Path scanPath = Path.of(scanDirectoryPath);
       LOGGER.info("Scanning [{}]...", scanPath);
       List<JsonValue> schemas = Files.walk(scanPath)
@@ -93,6 +92,7 @@ public final class IonPluginMojo extends AbstractMojo {
         .map(schemaJson -> JSONB.fromJson(schemaJson, JsonValue.class))
         .collect(Collectors.toList());
       List<Schema> schemaList = new ArrayList<>(schemas.size());
+      String codeGenerationString = resolveCodeGenerationString();
       for (JsonValue schemaJson : schemas) {
         JsonObject schemaObject = schemaJson.asJsonObject();
         Map<String, TypeDeclaration> typeDeclarations = IonSchemaReader.readTypes(schemaObject);

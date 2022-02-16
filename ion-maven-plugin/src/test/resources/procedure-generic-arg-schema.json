@@ -1,0 +1,17 @@
+{
+  "procedures": {
+    "testProcedure": {
+      "description": "This is test procedure",
+      "arguments": {
+        "testArgument": {
+          "type": "testType<string>",
+          "description": "test argument"
+        }
+      },
+      "return": {
+        "type": "string",
+        "description": "test return argument"
+      }
+    }
+  }
+}

@@ -153,6 +153,7 @@
                             <excludes>
                                 <exclude>com/github/gibmir/ion/**/*Provider.class</exclude>
                                 <exclude>com/github/gibmir/ion/**/*Exception.class</exclude>
+                                <exclude>com/github/gibmir/ion/**/*Mojo.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

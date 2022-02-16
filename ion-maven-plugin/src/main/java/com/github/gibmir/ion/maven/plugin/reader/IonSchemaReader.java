@@ -121,7 +121,12 @@ public final class IonSchemaReader {
       List<Procedure> procedureBeans = new ArrayList<>(proceduresCount);
       for (String procedureName : procedureNames) {
         JsonObject procedureObject = proceduresJsonObject.get(procedureName).asJsonObject();
-        JsonObject returnTypeObject = procedureObject.get(RETURN_TYPE_KEY).asJsonObject();
+        JsonValue returnJson = procedureObject.get(RETURN_TYPE_KEY);
+        if (returnJson == null) {
+          String message = String.format("Return argument for procedure [%s] must be specified", procedureName);
+          throw new IllegalArgumentException(message);
+        }
+        JsonObject returnTypeObject = returnJson.asJsonObject();
         PropertyTypeBean returnType = new PropertyTypeBean(returnTypeObject.getString(ID_KEY, DEFAULT_ID),
           "return", returnTypeObject.getString(DESCRIPTION_KEY, DEFAULT_DESCRIPTION), returnTypeObject.getString(TYPE_KEY));
         JsonValue argumentsJson = procedureObject.get(ARGUMENTS_KEY);
