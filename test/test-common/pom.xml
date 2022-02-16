@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.gibmir.ion</groupId>
         <artifactId>test</artifactId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>com.github.gibmir.ion</groupId>
                 <artifactId>ion-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <goals>

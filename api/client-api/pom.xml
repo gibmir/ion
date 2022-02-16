@@ -5,7 +5,7 @@
     <parent>
         <artifactId>api</artifactId>
         <groupId>com.github.gibmir.ion</groupId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,12 +15,12 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-batch-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-request-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

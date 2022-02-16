@@ -28,6 +28,7 @@ out/
 # Compiled class file
 *.class
 target/
+.flattened-pom.xml
 # Log file
 *.log
 # Package Files #

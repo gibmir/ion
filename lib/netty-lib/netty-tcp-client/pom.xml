@@ -5,7 +5,7 @@
     <parent>
         <artifactId>netty-lib</artifactId>
         <groupId>com.github.gibmir.ion</groupId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,32 +19,32 @@
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>netty-common-client</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>client-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>dto-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>configuration-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>netty-common-lib</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gibmir.ion</groupId>
             <artifactId>scanner</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse</groupId>

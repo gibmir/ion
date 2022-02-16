@@ -6,7 +6,7 @@
 
     <groupId>com.github.gibmir.ion</groupId>
     <artifactId>ion</artifactId>
-    <version>0.1</version>
+    <version>${revision}</version>
     <modules>
         <module>api</module>
         <module>lib</module>
@@ -15,6 +15,7 @@
         <module>scanner</module>
     </modules>
     <properties>
+        <revision>0.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.30</slf4j.version>
         <json-b.version>1.0</json-b.version>
@@ -37,6 +38,7 @@
         <mvn.checkstyle.plugin.version>3.1.2</mvn.checkstyle.plugin.version>
         <netty.version>4.1.50.Final</netty.version>
         <jacoco.version>0.8.7</jacoco.version>
+        <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
     </properties>
     <packaging>pom</packaging>
     <name>ion</name>
@@ -73,6 +75,31 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
