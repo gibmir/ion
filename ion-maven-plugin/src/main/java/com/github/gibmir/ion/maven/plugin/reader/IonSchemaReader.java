@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class IonSchemaReader {
+  public static final String SCHEMA_NAMESPACES_KEY = "namespaces";
   public static final String SCHEMA_TYPES_KEY = "types";
   public static final String DESCRIPTION_KEY = "description";
   public static final String DEFAULT_DESCRIPTION = "empty description";

@@ -1,52 +1,56 @@
 {
-  "types": {
-    "testType": {
-      "description": "Type for testing.",
-      "parametrization": {
-        "T": {
-          "description": "parameter type"
+  "namespaces": {
+    "testingnamespace": {
+      "types": {
+        "testType": {
+          "description": "Type for testing.",
+          "parametrization": {
+            "T": {
+              "description": "parameter type"
+            }
+          },
+          "properties": {
+            "testTypeProperty": {
+              "type": "string",
+              "description": "property for test type"
+            },
+            "testStringList": {
+              "type": "list<string>"
+            }
+          }
+        },
+        "testComposedType": {
+          "description": "composed type",
+          "properties": {
+            "numericProperty": {
+              "type": "number",
+              "description": "numeric property"
+            },
+            "typedProperty": {
+              "type": "testType",
+              "description": "test type property"
+            }
+          }
         }
       },
-      "properties": {
-        "testTypeProperty": {
-          "type": "string",
-          "description": "property for test type"
-        },
-        "testStringList": {
-          "type": "list<string>"
+      "procedures": {
+        "testProcedure": {
+          "description": "This is test procedure",
+          "arguments": {
+            "testArgument": {
+              "type": "testType<string>",
+              "description": "test argument argument"
+            },
+            "testComposedArgument": {
+              "type": "testComposedType",
+              "description": "test composed argument"
+            }
+          },
+          "return": {
+            "type": "string",
+            "description": "test return argument"
+          }
         }
-      }
-    },
-    "testComposedType": {
-      "description": "composed type",
-      "properties": {
-        "numericProperty": {
-          "type": "number",
-          "description": "numeric property"
-        },
-        "typedProperty": {
-          "type": "testType",
-          "description": "test type property"
-        }
-      }
-    }
-  },
-  "procedures": {
-    "testProcedure": {
-      "description": "This is test procedure",
-      "arguments": {
-        "testArgument": {
-          "type": "testType<string>",
-          "description": "test argument argument"
-        },
-        "testComposedArgument": {
-          "type": "testComposedType",
-          "description": "test composed argument"
-        }
-      },
-      "return": {
-        "type": "string",
-        "description": "test return argument"
       }
     }
   }

@@ -1,40 +1,30 @@
 package com.github.gibmir.ion.lib.schema;
 
 import com.github.gibmir.ion.api.schema.Schema;
-import com.github.gibmir.ion.api.schema.procedure.Procedure;
-import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
+import com.github.gibmir.ion.api.schema.namespace.Namespace;
 
 import java.util.List;
-import java.util.Map;
 
 public final class SchemaBean implements Schema {
-  private List<Procedure> procedures;
-  private Map<String, TypeDeclaration> types;
+  private final List<Namespace> namespaces;
 
-  public SchemaBean() {
-    super();
+  public SchemaBean(final List<Namespace> namespaces) {
+    this.namespaces = namespaces;
   }
 
-  public SchemaBean(final Map<String, TypeDeclaration> types,
-                    final List<Procedure> procedures) {
-    this.types = types;
-    this.procedures = procedures;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Map<String, TypeDeclaration> getTypes() {
-    return types;
-  }
-
-  @Override
-  public List<Procedure> getProcedures() {
-    return procedures;
+  public List<Namespace> getNamespaces() {
+    return namespaces;
   }
 
   @Override
   public String toString() {
     return "SchemaBean{"
-      + "procedures=" + procedures
-      + ", types=" + types + '}';
+      + "namespaces="
+      + namespaces
+      + '}';
   }
 }

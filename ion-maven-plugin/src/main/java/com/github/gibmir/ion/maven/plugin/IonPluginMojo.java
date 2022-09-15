@@ -1,9 +1,11 @@
 package com.github.gibmir.ion.maven.plugin;
 
 import com.github.gibmir.ion.api.schema.Schema;
+import com.github.gibmir.ion.api.schema.namespace.Namespace;
 import com.github.gibmir.ion.api.schema.procedure.Procedure;
 import com.github.gibmir.ion.api.schema.type.TypeDeclaration;
 import com.github.gibmir.ion.lib.schema.SchemaBean;
+import com.github.gibmir.ion.lib.schema.namespace.NamespaceBean;
 import com.github.gibmir.ion.maven.plugin.exceptions.IonPluginException;
 import com.github.gibmir.ion.maven.plugin.procedure.ProcedureGenerationUtils;
 import com.github.gibmir.ion.maven.plugin.reader.IonSchemaReader;
@@ -30,6 +32,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -41,13 +44,12 @@ public final class IonPluginMojo extends AbstractMojo {
   private static final Jsonb JSONB = JsonbProvider.provider().create().build();
   public static final String JSON_FILE_EXTENSION = "json";
   public static final String SEPARATOR = FileSystems.getDefault().getSeparator();
-  public static final String TYPES_PATH_SUFFIX = "types";
-  public static final String PROCEDURES_PATH_SUFFIX = "procedures";
+  public static final String PACKAGE_SEPARATOR = ".";
   @Parameter(property = "scan", defaultValue = "${project.build.resources[0].directory}")
   private String scanDirectoryPath;
   @Parameter(property = "codeGen", defaultValue = "${project.build.directory}")
   private String codeGenPath;
-  @Parameter(property = "package", defaultValue = "ionised")
+  @Parameter(property = "package")
   private String packageName;
 
   /**
@@ -95,22 +97,48 @@ public final class IonPluginMojo extends AbstractMojo {
       String codeGenerationString = resolveCodeGenerationString();
       for (JsonValue schemaJson : schemas) {
         JsonObject schemaObject = schemaJson.asJsonObject();
-        Map<String, TypeDeclaration> typeDeclarations = IonSchemaReader.readTypes(schemaObject);
-        Stack<TypeDeclaration> loadingStack = TypeGenerationUtils.buildLoadingStack(typeDeclarations);
-        TypeGenerationUtils.loadTypes(loadingStack, packageName,
-          Path.of(codeGenerationString + SEPARATOR + TYPES_PATH_SUFFIX));
-        List<Procedure> procedures = IonSchemaReader.readProcedures(schemaObject);
-        for (Procedure procedure : procedures) {
-          JavaFile.builder(packageName, ProcedureGenerationUtils.asTypeSpecification(procedure)).build()
-            .writeTo(Path.of(codeGenerationString + SEPARATOR + PROCEDURES_PATH_SUFFIX));
-        }
-        Schema schema = new SchemaBean(typeDeclarations, procedures);
+        List<Namespace> namespaces = readNamespaces(codeGenerationString, schemaObject);
+        Schema schema = new SchemaBean(namespaces);
         schemaList.add(schema);
       }
       LOGGER.info("Goal was executed. Schemas {}", schemaList);
     } catch (Exception e) {
       throw new MojoExecutionException("Exception occurred while executing \"ionise\" goal", e);
     }
+  }
+
+  private List<Namespace> readNamespaces(final String codeGenerationString, final JsonObject schemaObject) throws IOException {
+    JsonValue namespacesJson = schemaObject.get(IonSchemaReader.SCHEMA_NAMESPACES_KEY);
+    JsonObject namespacesObject = namespacesJson.asJsonObject();
+    Set<String> namespaceNames = namespacesObject.keySet();
+    List<Namespace> namespaces = new ArrayList<>();
+    for (String namespaceName : namespaceNames) {
+      JsonValue namespaceJson = namespacesObject.get(namespaceName);
+      JsonObject namespaceObject = namespaceJson.asJsonObject();
+      Map<String, TypeDeclaration> typeDeclarations = IonSchemaReader.readTypes(namespaceObject);
+      Stack<TypeDeclaration> loadingStack = TypeGenerationUtils.buildLoadingStack(typeDeclarations);
+      String namespacedPackageName = getNamespacedPackageName(packageName, namespaceName);
+      LOGGER.info("Loading namespace [{}] into package [{}]", namespaceName, namespacedPackageName);
+      TypeGenerationUtils.loadTypes(loadingStack, namespacedPackageName,
+        Path.of(codeGenerationString));
+      List<Procedure> procedures = IonSchemaReader.readProcedures(namespaceObject);
+      for (Procedure procedure : procedures) {
+        JavaFile.builder(namespacedPackageName,
+            ProcedureGenerationUtils.asTypeSpecification(procedure)).build()
+          .writeTo(Path.of(codeGenerationString));
+      }
+      String namespaceId = namespaceObject.getString(IonSchemaReader.ID_KEY, IonSchemaReader.DEFAULT_DESCRIPTION);
+      String namespaceDescription = namespaceObject.getString(IonSchemaReader.DESCRIPTION_KEY, IonSchemaReader.DEFAULT_DESCRIPTION);
+      namespaces.add(new NamespaceBean(namespaceId, namespaceName, namespaceDescription, procedures, typeDeclarations));
+    }
+    return namespaces;
+  }
+
+  private String getNamespacedPackageName(final String packageName, final String namespaceName) {
+    if (packageName == null || packageName.isEmpty()) {
+      return namespaceName;
+    }
+    return packageName + PACKAGE_SEPARATOR + namespaceName;
   }
 
   private String resolveCodeGenerationString() {
