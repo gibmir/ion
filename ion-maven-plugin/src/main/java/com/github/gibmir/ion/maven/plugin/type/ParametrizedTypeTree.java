@@ -140,6 +140,7 @@ public final class ParametrizedTypeTree {
       case BOOLEAN:
       case STRING:
       case NUMBER:
+      case INT:
       case LIST:
       case MAP:
         return ClassName.get(currentType.resolve());

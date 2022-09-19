@@ -11,7 +11,7 @@
           },
           "properties": {
             "testTypeProperty": {
-              "type": "string",
+              "type": "int",
               "description": "property for test type"
             },
             "testStringList": {

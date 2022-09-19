@@ -7,6 +7,7 @@ public enum Types {
   BOOLEAN("boolean", Boolean.class, false),
   STRING("string", String.class, false),
   NUMBER("number", Double.class, false),
+  INT("int", Integer.class, false),
   CUSTOM("custom", null, true),
   LIST("list", List.class, true),
   MAP("map", Map.class, true);
@@ -31,6 +32,8 @@ public enum Types {
       return STRING;
     } else if (typeName.equals(NUMBER.typeName)) {
       return NUMBER;
+    } else if (typeName.equals(INT.typeName)) {
+      return INT;
     } else if (typeName.equals(BOOLEAN.typeName)) {
       return BOOLEAN;
     } else if (typeName.equals(LIST.typeName)) {
